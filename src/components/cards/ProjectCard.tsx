@@ -62,7 +62,7 @@ const ProjectCard = ({project, additionalStyles, onanimationend}: ProjectCardPro
                     `}
                     titleProps=
                     {`
-                        bg-[--color-secondary]
+                        bg-(--color-secondary)
                         lg:text-xl md:text-2xl sm:text-xl ss:text-md text-sm
                         md:px-[8%] px-[10%]
                         mb-[4%]
@@ -73,7 +73,7 @@ const ProjectCard = ({project, additionalStyles, onanimationend}: ProjectCardPro
                         md:px-[8%] px-[10%]
                         md:mt-0 mt-2
                         mb-[4%]
-                        break-words
+                        wrap-break-word
                     `}
                     tagsProps=
                     {`

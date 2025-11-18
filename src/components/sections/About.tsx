@@ -41,7 +41,7 @@ const About = () => {
             object-center
             aspect-square
             rounded-[5px]
-            2xl:w-[93%] xl:w-[100%] w-[100%]
+            2xl:w-[93%] xl:w-full w-full
             max-w-[280px]
             right-0
             shadow-xl
@@ -53,7 +53,7 @@ const About = () => {
           className=
           {`
             xl:text-lg lg:text-base
-            text-[--color-tertiary]
+            text-(--color-tertiary)
             cursor-pointer
             hover:translate-x-1.5
             transition-all
@@ -96,7 +96,7 @@ const About = () => {
             lg:hidden
             pt-[20px]
             sm:text-md ss:text-md xs:text-sm text-2xs
-            text-[--color-tertiary]
+            text-(--color-tertiary)
             overflow-x-visible
           `}
         > {placeholderMessages.find(message => message.context === "aboutAdditionalLink")!.content[currentLang]} </a>

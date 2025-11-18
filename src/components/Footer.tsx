@@ -67,7 +67,7 @@ const Footer = () => {
               href={navLink.link}
               className=
               {`
-                ${(navLink.link).toLowerCase() === currentNavigation ? 'text-[--color-tertiary]' : ""}
+                ${(navLink.link).toLowerCase() === currentNavigation ? 'text-(--color-tertiary)' : ""}
                 ${styles.hyperlink}
               `}
               onClick={() => setCurrentNavigation((navLink.link).toLowerCase())}

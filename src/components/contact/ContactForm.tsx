@@ -179,7 +179,7 @@ const ContactForm = () => {
           onChange={(e) => setFormFirstName(e.target.value)}
         />
         {contactForm.mendatoryFields && contactForm.mendatoryFields.includes('name') 
-          ? <a key="names-asterisk" className='absolute text-[--color-tertiary] top-0 -right-3'>*</a>
+          ? <a key="names-asterisk" className='absolute text-(--color-tertiary) top-0 -right-3'>*</a>
           : ""
         }
       </div>
@@ -212,7 +212,7 @@ const ContactForm = () => {
           onChange={(e) => setFormEmail(e.target.value)}
         />
         {contactForm.mendatoryFields && contactForm.mendatoryFields.includes('email') 
-          ? <a key="email-asterisk" id="email-asterisk" className='absolute text-[--color-tertiary] self-end px-2'>*</a>
+          ? <a key="email-asterisk" id="email-asterisk" className='absolute text-(--color-tertiary) self-end px-2'>*</a>
           : ""
         }
       </div>
@@ -233,7 +233,7 @@ const ContactForm = () => {
           transition-all
           duration-300
           ease-in-out
-          focus-within:border-[--color-tertiary]
+          focus-within:border-(--color-tertiary)
         `}
       >
         <PhoneCodeContext.Provider value={{phoneCode, setPhoneCode}}>
@@ -260,7 +260,7 @@ const ContactForm = () => {
           onChange={(e) => setFormPhone(e.target.value)}
         />
         {contactForm.mendatoryFields && contactForm.mendatoryFields.includes('phone') 
-          ? <a key="phone-asterisk" id="message-asterisk" className='absolute text-[--color-tertiary] self-end px-2'>*</a>
+          ? <a key="phone-asterisk" id="message-asterisk" className='absolute text-(--color-tertiary) self-end px-2'>*</a>
           : ""
         }
       </div>
@@ -295,7 +295,7 @@ const ContactForm = () => {
           onChange={(e) => setFormMessage(e.target.value)}
         />
         {contactForm.mendatoryFields && contactForm.mendatoryFields.includes('message') 
-          ? <a key="message-asterisk" id="message-asterisk" className='absolute text-[--color-tertiary] self-end px-2'>*</a>
+          ? <a key="message-asterisk" id="message-asterisk" className='absolute text-(--color-tertiary) self-end px-2'>*</a>
           : ""
         }
       </div>
@@ -318,12 +318,12 @@ const ContactForm = () => {
           rounded-md
           ${canSubmit ? 
             'color-scheme-quaternary \
-            hover:bg-[--color-quinary] \
+            hover:bg-(--color-quinary) \
             focus:scale-[0.96]'
             : 
             'border-2 \
-            border-[--color-quaternary] \
-            bg-[--color-secondary] \
+            border-(--color-quaternary) \
+            bg-(--color-secondary) \
             cursor-wait \
             disabled'
           }

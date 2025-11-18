@@ -135,7 +135,7 @@ const RetexViewer = () => {
                     shadow-lg
                     overflow-x-hidden
                     md:overflow-hidden overflow-y-scroll
-                    z-[22]
+                    z-22
                     md:ml-[2%]
                     relative
                     transition-all
@@ -156,7 +156,7 @@ const RetexViewer = () => {
                             ${getActiveBreakpoint('number') as number < 2 ? "hidden" : ""}
                             top-[2%]
                             right-[1%]
-                            z-[23]
+                            z-23
                             ${styles.sizeFit}
                             cursor-pointer
                         `}
@@ -296,12 +296,12 @@ const RetexViewer = () => {
                                         ${styles.flexRow}
                                         ${styles.contentCenter}
                                         z-50
-                                        bg-[--color-secondary]
-                                        text-[--color-tertiary]
+                                        bg-(--color-secondary)
+                                        text-(--color-tertiary)
                                         text-xs
                                         enabled:hover:scale-105
                                         font-semibold
-                                        enabled:hover:text-[--color-quinary]
+                                        enabled:hover:text-(--color-quinary)
                                         disabled:text-wrap
                                         transition-all
                                         duration-300
@@ -347,7 +347,7 @@ const RetexViewer = () => {
                                     ${getActiveBreakpoint('number') as number < 2 ? styles.flexRow : "hidden"}
                                     ${styles.contentStartX}
                                     space-x-[3%]
-                                    ${currentTheme === 'dark' ? 'text-[--color-tertiary]' : 'text-[--color-primary]'}
+                                    ${currentTheme === 'dark' ? 'text-(--color-tertiary)' : 'text-(--color-primary)'}
                                     transition-all
                                     duration-400
                                     ease-in-out

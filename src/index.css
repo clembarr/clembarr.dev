@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@300;400;600&family=Montserrat:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@300;400;600&family=Montserrat:wght@100..900&display=swap')
+layer(base);
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400&display=swap')
+layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 /* App global style variables */
 :root {
@@ -12,6 +12,8 @@
    --font-secondary: "Hind Vadodara", sans-serif;
    --font-tertiary: "Kanit", sans-serif;
    --base-font-size: 20px;
+
+   --max-page-width: 1920px;
 }
 
 .light {

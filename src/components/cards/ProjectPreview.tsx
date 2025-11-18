@@ -41,7 +41,7 @@ const ProjectPreview = (project: Retex) => {
             <div className=
                 {`
                     m-[6%]
-                    mb-[0]
+                    mb-0
                 `}
             >
                 <img id={`card-${project.title}-img`}

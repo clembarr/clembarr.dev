@@ -1,11 +1,6 @@
 import { Hyperlink, NavbarPattern } from "./assets/dataTypes";
 import { navLinks } from "./assets/constants";
-import resolveConfig from 'tailwindcss/resolveConfig'
-import config from '../tailwind.config.d'
-import { Config } from "tailwindcss";
-import { p } from "framer-motion/client";
-
-const TAILWIND_CONFIG = resolveConfig(config as Config);
+import { customTheme as themeConfig} from  "../custom-theme";
 
 /**
  * @function randomNumberBetween Get a random number between min and max
@@ -246,19 +241,20 @@ export const getRandomTailwindColor = () => {
  */
 export const getActiveBreakpoint = (returnType: "string" | "number") => {
     const currentWidth = window.innerWidth;
-    if (parseInt(TAILWIND_CONFIG.theme.screens["2xl"]) <= currentWidth) {
+
+    if (parseInt(themeConfig.screens && (themeConfig.screens as any)["2xl"]) <= currentWidth) {
         return returnType === "number" ? 5 : "2xl";
     }
-    else if (parseInt(TAILWIND_CONFIG.theme.screens["xl"]) <= currentWidth) {
+    else if (parseInt(themeConfig.screens && (themeConfig.screens as any)["xl"]) <= currentWidth) {
         return returnType === "number" ? 4 : "xl";
     }
-    else if (parseInt(TAILWIND_CONFIG.theme.screens["lg"]) <= currentWidth) {
+    else if (parseInt(themeConfig.screens && (themeConfig.screens as any)["lg"]) <= currentWidth) {
         return returnType === "number" ? 3 : "lg";
     }
-    else if (parseInt(TAILWIND_CONFIG.theme.screens["md"]) <= currentWidth) {
+    else if (parseInt(themeConfig.screens && (themeConfig.screens as any)["md"]) <= currentWidth) {
         return returnType === "number" ? 2 : "md"
     }
-    else if (parseInt(TAILWIND_CONFIG.theme.screens["sm"]) <= currentWidth) {
+    else if (parseInt(themeConfig.screens && (themeConfig.screens as any)["sm"]) <= currentWidth) {
         return returnType === "number" ? 1 : "sm";
     }
     else {

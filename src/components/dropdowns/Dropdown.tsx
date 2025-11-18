@@ -77,12 +77,12 @@ const Dropdown = ({items, animationStyle, menuState, itemState, additionalStyles
                 className=
                 {`
                     ${toggleMenu ? 'block' : 'hidden'}
-                    z-[10]
+                    z-10
                     absolute
                     px-4
                     2xl:pb-1       
                     2xl:pt-2 pt-1
-                    bg-[--color-secondary]
+                    bg-(--color-secondary)
                     rounded-md
                     shadow-md
                     -top-1

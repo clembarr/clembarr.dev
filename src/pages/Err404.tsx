@@ -47,7 +47,7 @@ const Err404 = () => {
             text-[80%]
             rounded-lg
             border-2
-            hover:bg-[--light-color-secondary]
+            hover:bg-(--light-color-secondary)
             px-[1%]
             py-[0.5%]
           `}

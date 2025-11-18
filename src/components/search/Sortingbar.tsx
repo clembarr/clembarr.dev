@@ -46,7 +46,7 @@ const SortingBar = () => {
                         ${styles.hyperlink}
                         duration-300
                         text-nowrap
-                        ${option.context === toMatch[0] ? "text-[--color-tertiary]" : ""}
+                        ${option.context === toMatch[0] ? "text-(--color-tertiary)" : ""}
                     `}
                 > {option.content[currentLang].toUpperCase()} 
                     <hr id='lib-hr'

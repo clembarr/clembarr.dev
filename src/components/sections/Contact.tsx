@@ -61,7 +61,7 @@ const Contact = () => {
                 md:space-y-[1%] base:space-y-[3%]
                 md:color-scheme-primary base:color-scheme-secondary
                 md:rounded-none base:rounded-lg
-                md:p-[0] base:py-[3%] base:px-[5%]
+                md:p-0 base:py-[3%] base:px-[5%]
                 md:shadow-none base:shadow-md
               `}
             >

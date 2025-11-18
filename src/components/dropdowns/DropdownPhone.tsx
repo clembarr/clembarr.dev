@@ -21,8 +21,8 @@ const DropdownPhone = () => {
                     className=
                     {`
                         cursor-pointer
-                        hover:text-[--color-tertiary]
-                        z-[1]
+                        hover:text-(--color-tertiary)
+                        z-1
                     `}
                     onClick={() => setSelectedCode(code.phoneCode)}
                 >

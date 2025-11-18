@@ -49,7 +49,7 @@ const Layout = ({children}: {children: ReactNode}) => {
                 {`
                     ${styles.flexCol}
                     ${styles.sizeFull}
-                    bg-[--color-layout-bg]
+                    bg-(--color-layout-bg)
                 `}
                 style={{
                     minHeight: "calc(100vh - 120px)",
@@ -65,7 +65,7 @@ const Layout = ({children}: {children: ReactNode}) => {
                     w-full
                     h-fit
                     ${styles.contentEndAll}
-                    bg-[--color-secondary]
+                    bg-(--color-secondary)
                 `}
             > <Footer /> </div>
         </div>

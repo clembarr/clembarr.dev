@@ -50,7 +50,7 @@ const DropdownSort = ({alreadyDisplayedItems}: DropdownSortProps) => {
                         cursor-pointer
                         text-nowrap
                         ${styles.hyperlink}
-                        z-[1]
+                        z-1
                     `}
                     onClick={() => {
                         setSelectedItem(option); 
@@ -83,7 +83,7 @@ const DropdownSort = ({alreadyDisplayedItems}: DropdownSortProps) => {
             `}
             additionalButtonStyles=
             {`
-                ${placeholder === dropdownPlaceholder ? "" : "text-[--color-tertiary]"}
+                ${placeholder === dropdownPlaceholder ? "" : "text-(--color-tertiary)"}
             `}
         />
     )

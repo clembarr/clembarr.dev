@@ -81,7 +81,7 @@ const Card = ({title, content, tags, moreTopClasses, titleProps, contentProps, t
                     return (
                         <a key={index}
                             className={`
-                                text-[--color-tertiary]
+                                text-(--color-tertiary)
                                 text-nowrap
                             `}
                         > {tag} </a>

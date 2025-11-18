@@ -27,7 +27,7 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                 h-fit
                 md:w-3/12 w-full
                 ${styles.flexCol}
-                z-[21]
+                z-21
                 overflow-hidden
             `}
         >
@@ -40,7 +40,7 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                     ${getActiveBreakpoint('number') as number < 2 ? "" : "hidden"}
                     top-[30px]
                     right-[30px]
-                    z-[23]
+                    z-23
                     ${styles.sizeFit}
                     cursor-pointer
                 `}
@@ -177,7 +177,7 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                                     ${styles.flexRow}
                                     ${styles.contentStartX}
                                     space-x-[3%]
-                                    ${currentTheme === 'dark' ? 'text-[--color-tertiary]' : 'text-[--color-primary]'}
+                                    ${currentTheme === 'dark' ? 'text-(--color-tertiary)' : 'text-(--color-primary)'}
                                     hover:text-white
                                     hover:cursor-pointer
                                     hover:translate-x-[2%]

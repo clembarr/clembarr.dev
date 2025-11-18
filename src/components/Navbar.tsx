@@ -80,7 +80,7 @@ const Navbar = () => {
         xl:py-[1%] lg:py-[1%] py-1
         ${styles.flexRow}
         ${styles.contentStartX}
-        bg-[--color-secondary]
+        bg-(--color-secondary)
         2xl:text-lg  xl:text-md  text-base
         transition-transform
         duration-300
@@ -106,12 +106,12 @@ const Navbar = () => {
                     font-secondary-regular
                     tracking-widest
                     cursor-pointer
-                    hover:text-[--color-tertiary]
+                    hover:text-(--color-tertiary)
                     transition-all
                     duration-300
                     ease-in-out
                     text-nowrap
-                    ${(nav.link).toLowerCase() === currentNavigation ? 'text-[--color-tertiary]' : ""}
+                    ${(nav.link).toLowerCase() === currentNavigation ? 'text-(--color-tertiary)' : ""}
                 `}
               >
                 {/** If the navigation link is an anchor on the page, it become an <a>. Else if it
@@ -245,12 +245,12 @@ const Navbar = () => {
                         font-secondary-regular
                         tracking-widest
                         cursor-pointer
-                        hover:text-[--color-tertiary]
+                        hover:text-(--color-tertiary)
                         transition-all
                         duration-300
                         ease-in-out
                         text-nowrap
-                        ${(nav.link).toLowerCase() === currentNavigation ? 'text-[--color-tertiary]' : ""}
+                        ${(nav.link).toLowerCase() === currentNavigation ? 'text-(--color-tertiary)' : ""}
                     `}
                   >
                     {/** If the navigation link is an anchor on the page, it become an <a>. Else if it

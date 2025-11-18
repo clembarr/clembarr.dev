@@ -102,7 +102,7 @@ const ProjectsListing = () => {
                 ${getActiveBreakpoint("number") as number > 1 ? styles.flexRow : styles.flexCol}
                 ${styles.contentCenter}
                 md:space-x-[3%] base:space-x-[0]
-                md:space-y-[0] space-y-[20px]
+                md:space-y-0 space-y-[20px]
                 mt-[5%]
             `}
         >
@@ -117,7 +117,7 @@ const ProjectsListing = () => {
                 ${displayedRetexTitle === undefined ? "hidden" : "block"}
                 ${styles.sizeFull}
                 fixed
-                z-[20]
+                z-20
                 top-0
                 left-0
                 backdrop-blur-md

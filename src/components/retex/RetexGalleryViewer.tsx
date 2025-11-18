@@ -54,7 +54,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     absolute
                     md:-top-[5%] -top-[10px]
                     md:-right-[3%] -right-[15px]
-                    z-[23]
+                    z-23
                     ${styles.sizeFit}
                     cursor-pointer
                 `}
@@ -95,7 +95,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     overflow-y-hidden
                     w-4/5
                     h-1/6
-                    -bottom-0
+                    bottom-0
                 `}
             >
                 <div id="gallery-thumbnails"
@@ -129,11 +129,11 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                                 
                                 ${focusedImage === image ? 
                                     'border-2 \
-                                    border-[--color-tertiary] \
+                                    border-(--color-tertiary) \
                                     mb-[1.5%]' 
                                 : 
-                                    'border-[1px] \
-                                    border-[--color-quaternary]'
+                                    'border \
+                                    border-(--color-quaternary)'
                                 }
                             `}
                             onClick={() => { setIndex(index) }}
@@ -145,7 +145,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                         {`
                             absolute
                             block
-                            bg-[--color-tertiary]
+                            bg-(--color-tertiary)
                             h-[4px]
                             border-none
                             w-1/5
