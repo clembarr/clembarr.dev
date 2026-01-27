@@ -1,148 +1,191 @@
 import styles from "../../style"
-import { coreImages } from "../../assets"
 import { author } from "../../assets/constants"
 import { subtitleMessages } from "../../assets/contents"
 import { useContext, useEffect, useState } from "react"
 import DOMPurify from "dompurify"
 import { ThemeContext } from "../theme/ThemeEngine"
 import { LangContext } from "../language"
-import { getActiveBreakpoint, isFullScreen } from "../../utils"
+import { getActiveBreakpoint } from "../../utils"
+import HeroIllustration from "./HeroIllustration"
 
 const Hero = () => {
-const { currentTheme } = useContext(ThemeContext);
-const [displayText, setDisplayText] = useState('');
-const [currentMessage, setCurrentMessage] = useState(0);
-const { currentLang } = useContext(LangContext);
+  const { currentTheme } = useContext(ThemeContext);
+  const [displayText, setDisplayText] = useState('');
+  const [currentMessage, setCurrentMessage] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const { currentLang } = useContext(LangContext);
 
-useEffect(() => {
-  const message: string = subtitleMessages[currentMessage].content[currentLang];
-  let index = 0;
-  let text = '';
-  let interval = setInterval(() => {
-    if (index === message.length) {
-      clearInterval(interval);
-      setTimeout(() => {
-        interval = setInterval(() => {
-          if (index === 0) {
-            clearInterval(interval);
-            setCurrentMessage((currentMessage + 1) % subtitleMessages.length);
-          } else {
-            index--;
-            text = message.substring(0, index);
-            setDisplayText(text);
-          }
-        }, 1);
-      }, 4000);
-    } else {
-      index++;
-      text = message.substring(0, index);
-      setDisplayText(text);
-    }
-  }, 50);
-  
-  return () => clearInterval(interval);
-}, [currentMessage]);
+  const isDark = currentTheme === 'dark';
 
-return (
-  <section id="hero" 
-    className=
-    {`
-      ${styles.sizeFull}
-      ${styles.flexRow}
-      ${getActiveBreakpoint('number') as number <= 2 ? styles.contentStartX : styles.contentCenter}
-      overflow-visible
-      font-primary-regular
-      relative
-    `}
-  >
-    <img id="hero-image"
-      src={coreImages.sysiphus.content[currentTheme]} 
-      alt={coreImages.sysiphus.alt}
+  //fade in effect on mount
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  //typing effect for subtitle messages
+  useEffect(() => {
+    const message: string = subtitleMessages[currentMessage].content[currentLang];
+    let index = 0;
+    let text = '';
+
+    let interval = setInterval(() => {
+      if (index === message.length) {
+        clearInterval(interval);
+
+        setTimeout(() => {
+          interval = setInterval(() => {
+            if (index === 0) {
+              clearInterval(interval);
+              setCurrentMessage((currentMessage + 1) % subtitleMessages.length);
+
+            } else {
+              index--;
+              text = message.substring(0, index);
+              setDisplayText(text);
+            }
+          }, 1);
+
+        }, 4000);
+
+      } else {
+        index++;
+        text = message.substring(0, index);
+        setDisplayText(text);
+      }
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [currentMessage, currentLang]);
+
+  return (
+    <section id="hero"
       className=
       {`
-        absolute
-        2xl:opacity-100 xl:opacity-100 lg:opacity-100 md:opacity-80 sm:opacity-25 opacity-25
-        2xl:w-[75%] xl:w-[70%] lg:w-[65%] md:w-[70%] sm:w-[70%] ss:w-[300px] xs:w-[250px] w-[200px]
-        2xl:max-w-[780px] xl:max-w-[600px] lg:max-w-[550px] sm:max-w-[500px]
-        2xl:top-[7%] xl:top-[6%] lg:top-[6%] md:top-[5%] sm:top-[5%] ss:top-[15%] xs:top-[25%] top-[35%]
-        2xl:right-0 xl:right-0 lg:right-0 md:-right-[2%] sm:-right-[2%] ss:-right-[0] xs:-right-[2%] -right-[2%]
-        object-cover
+        ${styles.sizeFull}
+        ${styles.flexRow}
+        ${getActiveBreakpoint('number') as number <= 2 ? styles.contentStartX : styles.contentCenter}
+        overflow-visible
+        font-primary-regular
+        relative
+        min-h-125
       `}
-    />
+    >
+      <HeroIllustration isVisible={isVisible} />
 
       <div id="hero-text"
         className=
         {`
-          w-full
-          h-full
+          ${styles.sizeFull}
           z-10
           ${styles.flexCol}
           ${styles.contentStartAll}
-          2xl:space-y-[55px] lg:space-y-[40px] space-y-[30px]
+          2xl:space-y-13.75 lg:space-y-10 space-y-7.5
           relative
           2xl:pr-[75%] xl:pr-[75%] lg:pr-[70%] md:pr-[65%] sm:pr-[65%] ss:pr-[50%] xs:pr-[40%] pr-[40%]
         `}
       >
-          <div className=
+        <div id="text-container" 
+          className=
+          {`
+            ${styles.sizeFit}
+            relative
+            2xl:mt-37.5 xl:mt-27.5 lg:mt-25 md:mt-20 sm:mt-15 mt-11.25
+            transition-all duration-700
+            ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}
+          `}
+        >
+          <h1 id="main-title-container"
+            className=
             {`
-              ${styles.sizeFit}
-              relative
-              2xl:mt-[150px] xl:mt-[110px] lg:mt-[100px] md:mt-[80px] sm:mt-[60px] mt-[45px]
+              tracking-[0.05em]
+              2xl:leading-13 xl:leading-12 lg:leading-11 md:leading-9 leading-9
+              2xl:text-9xl xl:text-5xl lg:text-4xl text-
             `}
           >
-            <h1 className=
+            <span id="first-line"
+              className=
               {`
-                tracking-[0.05em]
-                2xl:leading-[60px] xl:leading-[48px] lg:leading-[44px] md:leading-[38px] leading-[36px]
-                2xl:text-7xl xl:text-5xl lg:text-4xl text-3xl
-              `}
-            >
-              <a className=
-                {`
-                  text-lg
-                `}
-              > {author.firstName} </a> <br/>
+                text-[54px]
+                text-(--color-muted)
+                font-primary-regular
+            `}>
+              {author.firstName}
+            </span>
+            <br/>
 
-              <a className=
-                {`
-                  font-primary-bold 
-                  text-2xl
-                  tracking-wide
-                `}
-              > 
-                {author.lastName.toUpperCase()}
-              </a>
-              <br className="sm:block base:hidden"/> 
-            </h1>
-
-            <hr className=
+            <span id="second-line"
+              className=
               {`
-                absolute
-                ${styles.line}
-                2xl:-bottom-[18px] lg:-bottom-[14px] -bottom-[10px]
-                sm:left-1/4 left-[26%]
-                2xl:h-[4px]
-              `}
-            />
+                font-primary-bold
+                text-7xl
+                tracking-wide
+                ${isDark ? 'text-(--color-tertiary)' : 'text-(--color-quaternary)'}
+            `}>
+              {author.lastName.toUpperCase()}
+            </span>
+            <br className="sm:block base:hidden"/>
+          </h1>
 
-          </div>
+          <div id="underline" 
+            className=
+            {`
+              absolute
+              2xl:-bottom-4.5 lg:-bottom-3.5 -bottom-2.5
+              sm:left-1/4 left-[26%]
+              w-2/3
+              2xl:h-1 h-0.75
+              bg-(--color-tertiary)
+              rounded-full
+              transition-all duration-700
+              ${isVisible ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}
+              origin-left
+            `}
+            style={{ transitionDelay: '200ms' }}
+          />
+        </div>
 
-          <p dangerouslySetInnerHTML={
-              {__html: DOMPurify.sanitize(
+        <div id="typing-subtitles-container"
+          className={`
+            transition-all duration-700
+            2xl:mt-2
+            ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+          `}
+          style={{ transitionDelay: '300ms' }}
+        >
+          <p id="current-subtitle"
+            className={`
+              2xl:text-xl lg:text-md md:text-sm text-xs
+              text-wrap
+              text-(--color-quaternary)
+              inline
+            `}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(
+                /*escape HTML angle brackets to prevent rendering issues*/
                 displayText[displayText.length-1] === "<" ?
                 displayText.substring(0, displayText.length-1)
                 : displayText
-              )}
-            }
-            className=
-            {`
-              2xl:text-xl lg:text-md md:text-sm text-xs
-              text-wrap
-            `}
+              )
+            }}
           />
+          
+          <span id="typing-cursor"
+            className={`
+              inline-block
+              w-0.5
+              h-[1.2em]
+              ml-1
+              align-middle
+              bg-(--color-tertiary)
+              animate-[glow-pulse_1s_ease_infinite]
+              ${isDark ? 'shadow-(--glow-sm)' : ''}
+            `} 
+          />
+        </div>
       </div>
-  </section>
-)
+    </section>
+  )
 }
 
 export default Hero
