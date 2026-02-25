@@ -1,5 +1,32 @@
 
 
+/** The career entry types supported by the app. */
+export enum CareerEntryType {
+  EDUCATION = "EDUCATION",
+  EXPERIENCE = "EXPERIENCE",
+  PROJECT = "PROJECT",
+  CERTIFICATION = "CERTIFICATION",
+  VOLUNTEERING = "VOLUNTEERING",
+}
+
+/**
+ * Structure of a career timeline entry.
+ * @param type - type of the career entry
+ * @param title - title of the entry (multilingual)
+ * @param organization - organization name (multilingual)
+ * @param period - time period (multilingual)
+ * @param description - description of the entry (multilingual)
+ * @param tags - optional list of related technology/skill tags
+ */
+export interface CareerEntry {
+  type: CareerEntryType;
+  title: {[lang: string]: string};
+  organization: {[lang: string]: string};
+  period: {[lang: string]: string};
+  description: {[lang: string]: string};
+  tags?: string[];
+}
+
 /** The skill categories supported by the app. */
 export enum AvailableSkillCategories {
   LANGUAGE = "LANGUAGE",
@@ -257,4 +284,65 @@ export interface ErrorMessage extends Message {
 export interface FlashMessage extends Message {
   context: string;
   type: "error" | "info" | "ok";
+}
+
+/** Blog post categories supported by the app. */
+export enum BlogCategory {
+  RESEARCH = "RESEARCH",
+  DEVELOPMENT = "DEVELOPMENT",
+  TUTORIAL = "TUTORIAL",
+  ALGORITHM = "ALGORITHM",
+  OPINION = "OPINION",
+}
+
+/**
+ * Structure of a table of contents item.
+ * @param id - unique identifier for the heading (slug)
+ * @param text - text content of the heading
+ * @param level - heading level (1-6)
+ */
+export interface TableOfContentsItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+/**
+ * Blog post metadata from frontmatter.
+ * @param title - title of the blog post (multilingual)
+ * @param description - short description (multilingual)
+ * @param date - publication date
+ * @param category - category of the post
+ * @param tags - list of tags
+ * @param author - author of the post
+ * @param coverImage - optional cover image URL
+ * @param readingTime - estimated reading time in minutes
+ * @param published - whether the post is published
+ */
+export interface BlogMetadata {
+  title: {[lang: string]: string};
+  description: {[lang: string]: string};
+  date: Date;
+  category: BlogCategory;
+  tags: string[];
+  author: Author;
+  coverImage?: string;
+  readingTime: number;
+  published: boolean;
+}
+
+/**
+ * Complete blog post structure.
+ * @param slug - URL-friendly identifier
+ * @param metadata - frontmatter metadata
+ * @param content - HTML content of the post (multilingual)
+ * @param rawContent - raw Markdown content (multilingual)
+ * @param tableOfContents - auto-generated table of contents (multilingual)
+ */
+export interface BlogPost {
+  slug: string;
+  metadata: BlogMetadata;
+  content: {[lang: string]: string};
+  rawContent: {[lang: string]: string};
+  tableOfContents: {[lang: string]: TableOfContentsItem[]};
 }

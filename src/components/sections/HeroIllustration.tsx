@@ -15,7 +15,7 @@ const HeroIllustration = ({ isVisible }: HeroIllustrationProps) => {
     overflow-hidden
     2xl:w-[75%] xl:w-[70%] lg:w-[65%] md:w-[70%] sm:w-[70%] ss:w-[300px] xs:w-[250px] w-50
     2xl:max-w-195 xl:max-w-150 lg:max-w-137.5 sm:max-w-125
-    2xl:top-[7%] xl:top-[6%] lg:top-[6%] md:top-[5%] sm:top-[5%] ss:top-[15%] xs:top-[25%] top-[35%]
+    2xl:top-[7%] xl:top-[6%] lg:top-[36%] md:top-[5%] sm:top-[10%] ss:top-[15%] xs:top-[25%] top-[15%]
     2xl:right-0 xl:right-0 lg:right-0 md:-right-[2%] sm:-right-[2%] ss:-right-[0] xs:-right-[2%] -right-[2%]
     transition-all duration-700
     ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}
@@ -51,7 +51,6 @@ const HeroIllustration = ({ isVisible }: HeroIllustrationProps) => {
             className={`
               relative
               w-full
-              right-
               object-cover
               ${imageResponsiveOpacity}
               drop-shadow-[0_0_30px_rgba(124,255,196,0.15)]

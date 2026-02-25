@@ -99,14 +99,14 @@ const Hero = () => {
             className=
             {`
               tracking-[0.05em]
-              2xl:leading-13 xl:leading-12 lg:leading-11 md:leading-9 leading-9
-              2xl:text-9xl xl:text-5xl lg:text-4xl text-
+              2xl:leading-11 leading-9.5
+              2xl:text-md
             `}
           >
             <span id="first-line"
               className=
               {`
-                text-[54px]
+                2xl:text-[60px] text-md
                 text-(--color-muted)
                 font-primary-regular
             `}>
@@ -117,8 +117,8 @@ const Hero = () => {
             <span id="second-line"
               className=
               {`
-                font-primary-bold
-                text-7xl
+                2xl:font-black
+                2xl:text-7xl text-[38px]
                 tracking-wide
                 ${isDark ? 'text-(--color-tertiary)' : 'text-(--color-quaternary)'}
             `}>
@@ -155,7 +155,7 @@ const Hero = () => {
         >
           <p id="current-subtitle"
             className={`
-              2xl:text-xl lg:text-md md:text-sm text-xs
+              2xl:text-lg text-md
               text-wrap
               text-(--color-quaternary)
               inline

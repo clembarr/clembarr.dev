@@ -1,13 +1,16 @@
 import styles from './style'
 import { Footer, Navbar } from './components'
 import { ReactNode, useContext, useEffect, useRef } from 'react'
-import { getActiveBreakpoint } from './utils'
 import { RetexContext } from './components/retex'
+import { ThemeContext } from './components/theme/ThemeEngine'
 
 const Layout = ({children}: {children: ReactNode}) => {
     const { displayedRetexTitle } = useContext(RetexContext);
+    const { currentTheme } = useContext(ThemeContext);
     const navbarContainer = useRef<HTMLDivElement>(null);
     const footerContainer = useRef<HTMLDivElement>(null);
+
+    const isDark = currentTheme === 'dark';
 
     useEffect(() => {
         if (displayedRetexTitle != undefined) {
@@ -29,18 +32,27 @@ const Layout = ({children}: {children: ReactNode}) => {
                 relative
             `}
         >
+            {isDark && (
+                <div
+                    className="
+                        fixed inset-0
+                        pointer-events-none
+                        z-0
+                        opacity-30
+                        cyber-grid
+                    "
+                />
+            )}
+
             <div id="navbar-container"
                 ref={navbarContainer}
                 className={`
-                    z-50
+                    z-(--z-fixed)
                     top-0
                     w-full
                     h-fit
-                    min-h-[60px]
-                    bg-[${
-                        getActiveBreakpoint('number') as number <= 1 ?
-                        "--color-layout-bg" : "--color-secondary"
-                    }]
+                    min-h-15
+                    bg-(--color-primary)
                 `}
             > <Navbar /> </div>
 
@@ -50,6 +62,8 @@ const Layout = ({children}: {children: ReactNode}) => {
                     ${styles.flexCol}
                     ${styles.sizeFull}
                     bg-(--color-layout-bg)
+                    relative
+                    z-10
                 `}
                 style={{
                     minHeight: "calc(100vh - 120px)",
@@ -59,13 +73,12 @@ const Layout = ({children}: {children: ReactNode}) => {
             <div id="footer-container"
                 ref={footerContainer}
                 className={`
-                    z-50
+                    z-(--z-sticky)
                     bottom-0
-                    min-h-[60px]
+                    min-h-15
                     w-full
                     h-fit
                     ${styles.contentEndAll}
-                    bg-(--color-secondary)
                 `}
             > <Footer /> </div>
         </div>

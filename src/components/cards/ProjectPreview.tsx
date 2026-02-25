@@ -19,6 +19,7 @@ const ProjectPreview = (project: Retex) => {
             {`
                 ${styles.flexCol}
                 color-scheme-primary
+                bg-(--color-secondary)
                 md:w-[30%] base:w-full
                 h-[500px]
                 rounded-md

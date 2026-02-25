@@ -12,6 +12,8 @@ const Footer = () => {
   const { currentLang } = useContext(LangContext)
   const { currentTheme } = useContext(ThemeContext)
 
+  const isDark = currentTheme === 'dark';
+
   useEffect(() => {
     setCurrentNavigation(getCurrentNavigation())
 
@@ -24,15 +26,23 @@ const Footer = () => {
         w-screen
         h-full
         px-[5%]
-        2xl:pt-[2%] lg:pt-[4%] pt-[10%]
-        lg:pb-[2%] pb-[5%]
+        2xl:pt-8 lg:pt-10 pt-12
+        lg:pb-6 pb-8
         ${getActiveBreakpoint('number') as number <= 2 ? styles.flexCol : styles.flexRow}
-        lg:space-y-0 space-y-[8%]
-        color-scheme-secondary
+        lg:space-y-0 space-y-8
+        bg-(--color-secondary)
+        border-t border-(--color-border)
         relative
-        shadow-md
+        ${isDark ? 'shadow-[0_-4px_20px_rgba(0,0,0,0.3)]' : 'shadow-[0_-2px_10px_rgba(0,0,0,0.05)]'}
       `}
     >
+      {/* Decorative top line */}
+      <div className={`
+        absolute top-0 left-1/2 -translate-x-1/2
+        w-1/3 h-px
+        bg-gradient-to-r from-transparent via-(--color-tertiary) to-transparent
+        ${isDark ? 'opacity-50' : 'opacity-30'}
+      `} />
       <div id="footer-content"
         className=
         {`
@@ -50,13 +60,16 @@ const Footer = () => {
           {`
             ${styles.flexCol}
             w-fit
+            gap-2
           `}
         >
           <h3 id="nav-links-title"
             className=
             {`
               font-primary-semibold
-              lg:text-lg
+              lg:text-base text-sm
+              text-(--color-quaternary)
+              mb-1
             `}
           >Navigation</h3>
 
@@ -67,8 +80,12 @@ const Footer = () => {
               href={navLink.link}
               className=
               {`
-                ${(navLink.link).toLowerCase() === currentNavigation ? 'text-(--color-tertiary)' : ""}
-                ${styles.hyperlink}
+                text-sm
+                transition-all duration-200
+                ${(navLink.link).toLowerCase() === currentNavigation
+                  ? `text-(--color-tertiary) ${isDark ? 'drop-shadow-[0_0_4px_rgba(124,255,196,0.4)]' : ''}`
+                  : 'text-(--color-muted) hover:text-(--color-tertiary)'
+                }
               `}
               onClick={() => setCurrentNavigation((navLink.link).toLowerCase())}
             > {navLink.content[currentLang] || navLink.content[0]} </a>
@@ -81,14 +98,17 @@ const Footer = () => {
             ${styles.flexCol}
             ${styles.contentStartAll}
             text-nowrap
+            gap-2
           `}
         >
           <h3 id="credits-title"
             className=
             {`
               font-primary-semibold
-              lg:text-lg
+              lg:text-base text-sm
+              text-(--color-quaternary)
               w-full
+              mb-1
             `}
           >Credits</h3>
 
@@ -96,15 +116,26 @@ const Footer = () => {
             <a key={`credit-${index}`}
               id={`credit-${credit.content[currentLang]}`}
               href={
-                credit.link ? credit.link 
-                : (Array.isArray(credit.contentRef) ? 
-                  credit.contentRef[0].content[currentTheme] 
+                credit.link ? credit.link
+                : (Array.isArray(credit.contentRef) ?
+                  credit.contentRef[0].content[currentTheme]
                   : credit.contentRef.content[currentTheme])
               }
-              className={`${styles.hyperlink}`}
-              target="_blank" 
+              className={`
+                text-sm
+                text-(--color-muted)
+                hover:text-(--color-tertiary)
+                transition-all duration-200
+                inline-flex items-center gap-1
+              `}
+              target="_blank"
               rel="noopener noreferrer"
-            > {credit.content[currentLang]} </a>
+            >
+              {credit.content[currentLang]}
+              <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
           ))}
         </div>
 
@@ -116,47 +147,50 @@ const Footer = () => {
             w-fit
             h-full
             text-nowrap
+            gap-2
           `}
         >
           <h3 id="see-also-title"
             className=
             {`
               font-primary-semibold
-              lg:text-lg
+              lg:text-base text-sm
+              text-(--color-quaternary)
+              mb-1
             `}
           >See also</h3>
-          
+
           <div id="see-also-links-cols"
             className=
             {`
-              ${styles.flexRow}
-              ${styles.sizeFull}
-              space-x-[8%]
+              ${styles.flexCol}
+              gap-2
             `}
           >
-            <div id="links-col-1"
-              className=
-              {`
-                ${styles.sizeFull}
-                ${styles.flexCol}
-                overflow-y-scroll
-                overflow-x-hidden
-              `}
-            >
-              {shuffle(shuffle(sharedLinks)).map((link, index) => {
-                if (index >= 4) {return;}
+            {shuffle(shuffle(sharedLinks)).map((link, index) => {
+              if (index >= 4) {return;}
 
-                return (
-                  <a key={`credit-${index}`}
-                    id={`credit-${index}`}
-                    href={link.link}
-                    className={`${styles.hyperlink}`}
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  > {link.content[currentLang]} </a>
-                )
-              })}
-            </div>
+              return (
+                <a key={`see-also-${index}`}
+                  id={`see-also-${index}`}
+                  href={link.link}
+                  className={`
+                    text-sm
+                    text-(--color-muted)
+                    hover:text-(--color-tertiary)
+                    transition-all duration-200
+                    inline-flex items-center gap-1
+                  `}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {link.content[currentLang]}
+                  <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              )
+            })}
           </div>
         </div>
       </div>
@@ -168,22 +202,25 @@ const Footer = () => {
           ${getActiveBreakpoint('number') as number <= 2 ? styles.contentStartX : styles.contentEndAll}
           ${styles.sizeFull}
           self-end
-          text-3xs
+          pt-4
+          mt-4
+          border-t border-(--color-border)
         `}
       >
-        {
-          <a id="copyrigth" 
-            href={copyrigthText.link}
-            className=
-            {`
-              ${getActiveBreakpoint('number') as number <= 2 ? "text-left" : "text-right"}
-              ${styles.hyperlink}
-            `}
-            target="_blank" 
-            rel="noopener noreferrer"
-            dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(copyrigthText.content[0])}}
-          />
-        }
+        <a id="copyrigth"
+          href={copyrigthText.link}
+          className=
+          {`
+            ${getActiveBreakpoint('number') as number <= 2 ? "text-left" : "text-right"}
+            text-xs
+            text-(--color-muted)
+            hover:text-(--color-tertiary)
+            transition-all duration-200
+          `}
+          target="_blank"
+          rel="noopener noreferrer"
+          dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(copyrigthText.content[0])}}
+        />
       </div>
 
     </footer>

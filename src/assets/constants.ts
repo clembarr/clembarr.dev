@@ -1,9 +1,9 @@
 import { socialsIcons, documents, coreImages, menuIcons } from "./index";
-import { 
-  SocialMedia, 
-  CreditMention, 
+import {
+  SocialMedia,
+  CreditMention,
   ContactForm,
-  NavbarPattern, 
+  NavbarPattern,
   Author,
   Country,
   ErrorMessage,
@@ -19,8 +19,31 @@ import {
   AvailableSortOptions,
   SortOption,
 } from "./dataTypes";
+import { UNIVERSAL_LANG } from "./i18n";
 
 export const CARD_TEXT_MAX_LINES = 5;
+
+export const PageTransitionsConstants = {
+  DURATION: 0.4,
+  REDUCED_MOTION_DURATION: 0.01,
+  INITIAL_OPACITY: "0",
+  INITIAL_Y: 20,
+  ANIMATE_OPACITY: 1,
+  ANIMATE_Y: "0",
+  EXIT_OPACITY: "0",
+  EXIT_Y: -20,
+  EASE: "0.25 0.1 0.25 1", //space separated values
+}
+
+export const ScrollRevealConstants = {
+  DURATION: 0.6,
+  REDUCED_MOTION_DURATION: 0.01,
+  INITIAL_POS: 50, //varies based on direction
+  INITIAL_OPACITY: 0,
+  ANIMATE_POS: 0,
+  ANIMATE_OPACITY: 1,
+  EASE: "0.25 0.1 0.25 1", //space separated values
+}
 
 export const skillCategories: Array<SkillCategorie> = [
   {
@@ -55,7 +78,7 @@ export const skillSubcategories: Array<SkillSubcategorie> = [
     parentCategory: AvailableSkillCategories.LANGUAGE,
     content: 
     {
-      0: "Web",
+      [UNIVERSAL_LANG]: "Web",
     },
   },
   {
@@ -72,7 +95,7 @@ export const skillSubcategories: Array<SkillSubcategorie> = [
     parentCategory: AvailableSkillCategories.LANGUAGE,
     content: 
     {
-      0: "Big Data",
+      [UNIVERSAL_LANG]: "Big Data",
     },
   },
   {
@@ -119,7 +142,7 @@ export const sortOptions: Array<SortOption> = [
     {
       content:
       {
-        0: "Newest",
+        [UNIVERSAL_LANG]: "Newest",
       },
     },
   },
@@ -134,7 +157,7 @@ export const sortOptions: Array<SortOption> = [
     {
       content:
       {
-        0: "Oldest",
+        [UNIVERSAL_LANG]: "Oldest",
       },
     },
   },
@@ -149,7 +172,7 @@ export const sortOptions: Array<SortOption> = [
     {
       content:
       {
-        0: "Data",
+        [UNIVERSAL_LANG]: "Data",
       },
     },
   },
@@ -164,7 +187,7 @@ export const sortOptions: Array<SortOption> = [
   //   {
   //     content:
   //     {
-  //       0: "Perso",
+  //       [UNIVERSAL_LANG]: "Perso",
   //     },
   //   },
   // },
@@ -243,7 +266,7 @@ export const sortOptions: Array<SortOption> = [
   //   {
   //     content:
   //     {
-  //       0: "Acad",
+  //       [UNIVERSAL_LANG]: "Acad",
   //     },
   //   },
   // },
@@ -258,7 +281,7 @@ export const sortOptions: Array<SortOption> = [
   //   {
   //     content:
   //     {
-  //       0: "Pro",
+  //       [UNIVERSAL_LANG]: "Pro",
   //     },
   //   },
   // },
@@ -274,7 +297,7 @@ export const sortOptions: Array<SortOption> = [
     context: AvailableSortOptions.WEB,
     content: 
     {
-      0: "Web",
+      [UNIVERSAL_LANG]: "Web",
     },
   },
 ];
@@ -288,32 +311,47 @@ export const navLinks: Array<NavbarPattern> = [
     route: '',
     links: [
       {
-        content: 
+        content:
         {
           fr: "À propos",
-          0: "About",
+          [UNIVERSAL_LANG]: "About",
         },
         link: "/#about",
       },
       {
-        content: 
+        content:
         {
           fr: "Projets",
-          0: "Projects",
+          [UNIVERSAL_LANG]: "Projects",
         },
         link: "/projects",
       },
       {
-        content: 
+        content:
         {
-          0: "Contact",
+          [UNIVERSAL_LANG]: "Blog",
         },
-        link: "/#contact",
-      }, 
+        link: "/blog",
+      },
       {
         content:
         {
-          0: "CV",
+          fr: "Carrière",
+          [UNIVERSAL_LANG]: "Career",
+        },
+        link: "/career",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Contact",
+        },
+        link: "/#contact",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "CV",
         },
         link: documents.cv,
       },
@@ -326,7 +364,7 @@ export const navLinks: Array<NavbarPattern> = [
         content:
         {
           fr: "Accueil",
-          0: "Home",
+          [UNIVERSAL_LANG]: "Home",
         },
         link: "/",
       },
@@ -334,21 +372,236 @@ export const navLinks: Array<NavbarPattern> = [
         content:
         {
           fr: "Projets",
-          0: "Projects",
+          [UNIVERSAL_LANG]: "Projects",
         },
         link: "/projects",
       },
       {
-        content: 
+        content:
         {
-          0: "Contact",
+          [UNIVERSAL_LANG]: "Blog",
+        },
+        link: "/blog",
+      },
+      {
+        content:
+        {
+          fr: "Carrière",
+          [UNIVERSAL_LANG]: "Career",
+        },
+        link: "/career",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Contact",
         },
         link: "/#contact",
-      }, 
+      },
       {
-        content: 
+        content:
         {
-          0: "CV",
+          [UNIVERSAL_LANG]: "CV",
+        },
+        link: documents.cv,
+      },
+    ],
+  },
+  {
+    route: 'blog',
+    links: [
+      {
+        content:
+        {
+          fr: "Accueil",
+          [UNIVERSAL_LANG]: "Home",
+        },
+        link: "/",
+      },
+      {
+        content:
+        {
+          fr: "Projets",
+          [UNIVERSAL_LANG]: "Projects",
+        },
+        link: "/projects",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Blog",
+        },
+        link: "/blog",
+      },
+      {
+        content:
+        {
+          fr: "Carrière",
+          [UNIVERSAL_LANG]: "Career",
+        },
+        link: "/career",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Contact",
+        },
+        link: "/#contact",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "CV",
+        },
+        link: documents.cv,
+      },
+    ],
+  },
+  {
+    route: 'career',
+    links: [
+      {
+        content:
+        {
+          fr: "Accueil",
+          [UNIVERSAL_LANG]: "Home",
+        },
+        link: "/",
+      },
+      {
+        content:
+        {
+          fr: "Projets",
+          [UNIVERSAL_LANG]: "Projects",
+        },
+        link: "/projects",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Blog",
+        },
+        link: "/blog",
+      },
+      {
+        content:
+        {
+          fr: "Carrière",
+          [UNIVERSAL_LANG]: "Career",
+        },
+        link: "/career",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Contact",
+        },
+        link: "/#contact",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "CV",
+        },
+        link: documents.cv,
+      },
+    ],
+  },
+  {
+    route: 'showcase',
+    links: [
+      {
+        content:
+        {
+          fr: "Accueil",
+          [UNIVERSAL_LANG]: "Home",
+        },
+        link: "/",
+      },
+      {
+        content:
+        {
+          fr: "Projets",
+          [UNIVERSAL_LANG]: "Projects",
+        },
+        link: "/projects",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Blog",
+        },
+        link: "/blog",
+      },
+      {
+        content:
+        {
+          fr: "Carrière",
+          [UNIVERSAL_LANG]: "Career",
+        },
+        link: "/career",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Contact",
+        },
+        link: "/#contact",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "CV",
+        },
+        link: documents.cv,
+      },
+    ],
+  },
+  {
+    route: 'glitch-demo',
+    links: [
+      {
+        content:
+        {
+          fr: "Accueil",
+          [UNIVERSAL_LANG]: "Home",
+        },
+        link: "/",
+      },
+      {
+        content:
+        {
+          fr: "Projets",
+          [UNIVERSAL_LANG]: "Projects",
+        },
+        link: "/projects",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Blog",
+        },
+        link: "/blog",
+      },
+      {
+        content:
+        {
+          fr: "Carrière",
+          [UNIVERSAL_LANG]: "Career",
+        },
+        link: "/career",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "Contact",
+        },
+        link: "/#contact",
+      },
+      {
+        content:
+        {
+          [UNIVERSAL_LANG]: "CV",
         },
         link: documents.cv,
       },
@@ -493,7 +746,7 @@ export const creditsMentions: Array<CreditMention> = [
  */
 export const copyrigthText: Hyperlink = {
   content: {
-    0: `clembarr.dev © 2025,<br/>by Clément Barrière,<br/>under CC BY 4.0`,
+    [UNIVERSAL_LANG]: `clembarr.dev © 2026,<br/>by Clément Barrière,<br/>under CC BY 4.0`,
   },
   link: "https://creativecommons.org/licenses/by/4.0/",
 };
@@ -601,7 +854,7 @@ export const placeholderMessages: Array<Message> = [
     context: "formEmail",
     content: 
     {
-      0: "Email...",
+      [UNIVERSAL_LANG]: "Email...",
     },
   },
   {
@@ -627,14 +880,6 @@ export const placeholderMessages: Array<Message> = [
       fr: "Autre",
       en: "Other",
     },
-  },
-  {
-    context: "aboutAdditionalLink",
-    content:
-    {
-      fr: "→ Lien vers mon CV",
-      en: "→ Link to my resume"
-    }
   },
   {
     context: "projectGalleryButton",
@@ -762,3 +1007,29 @@ export const contactForm: ContactForm = {
   tentativeLimit: 2, 
   tentativeCooldown: 86400000, 
 };
+
+/**
+ * Store all the information for the about section links.
+ * context == "0" indicates another page redirection (<Link>) 
+ * and context == "1" indicates an external link (<a>) 
+ */
+export const aboutLinks: Array<Hyperlink> = [
+  {
+    context: "0",
+    content:
+    {
+      fr: "→ Carrière",
+      en: "→ Career path",
+    },
+    link: documents.cv
+  },
+  {
+    context: "1",
+    content:
+    {
+      fr: "→ Curiculum vitae",
+      en: "→ Resume"
+    },
+    link: "/career"
+  },
+];

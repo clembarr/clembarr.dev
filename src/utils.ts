@@ -1,6 +1,5 @@
 import { Hyperlink, NavbarPattern } from "./assets/dataTypes";
 import { navLinks } from "./assets/constants";
-import { customTheme as themeConfig} from  "../custom-theme";
 
 /**
  * @function randomNumberBetween Get a random number between min and max
@@ -234,27 +233,41 @@ export const getRandomTailwindColor = () => {
 }
 
 /**
- * @function getActiveBreakpoint compare the current screen width with the custom 
- * breakpoints in the tailwindcss config file.
+ * @function getCSSBreakpoint Read a breakpoint value from the Tailwind 4 CSS
+ * custom property `--breakpoint-<name>` defined in `@theme` (index.css).
+ * @param name the breakpoint name (e.g. "sm", "2xl")
+ * @returns the breakpoint value in pixels, or 0 if not found.
+ */
+const getCSSBreakpoint = (name: string): number => {
+    const value = getComputedStyle(document.documentElement)
+        .getPropertyValue(`--breakpoint-${name}`)
+        .trim();
+    return parseInt(value) || 0;
+}
+
+/**
+ * @function getActiveBreakpoint Compare the current screen width with the custom
+ * breakpoints defined as CSS custom properties by Tailwind 4 in index.css.
+ * Breakpoints checked (descending): 2xl, xl, lg, md, sm, base.
  * @param returnType the type of the return value: 'string' or 'number'
- * @returns the active breakpoint.
+ * @returns the active breakpoint as a label string or a rank number (0-5).
  */
 export const getActiveBreakpoint = (returnType: "string" | "number") => {
     const currentWidth = window.innerWidth;
 
-    if (parseInt(themeConfig.screens && (themeConfig.screens as any)["2xl"]) <= currentWidth) {
+    if (getCSSBreakpoint("2xl") <= currentWidth) {
         return returnType === "number" ? 5 : "2xl";
     }
-    else if (parseInt(themeConfig.screens && (themeConfig.screens as any)["xl"]) <= currentWidth) {
+    else if (getCSSBreakpoint("xl") <= currentWidth) {
         return returnType === "number" ? 4 : "xl";
     }
-    else if (parseInt(themeConfig.screens && (themeConfig.screens as any)["lg"]) <= currentWidth) {
+    else if (getCSSBreakpoint("lg") <= currentWidth) {
         return returnType === "number" ? 3 : "lg";
     }
-    else if (parseInt(themeConfig.screens && (themeConfig.screens as any)["md"]) <= currentWidth) {
-        return returnType === "number" ? 2 : "md"
+    else if (getCSSBreakpoint("md") <= currentWidth) {
+        return returnType === "number" ? 2 : "md";
     }
-    else if (parseInt(themeConfig.screens && (themeConfig.screens as any)["sm"]) <= currentWidth) {
+    else if (getCSSBreakpoint("sm") <= currentWidth) {
         return returnType === "number" ? 1 : "sm";
     }
     else {

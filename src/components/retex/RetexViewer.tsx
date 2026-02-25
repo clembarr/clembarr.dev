@@ -10,6 +10,7 @@ import { placeholderMessages } from '../../assets/constants';
 import RetexHeader from './RetexHeader';
 import RetexGalleryViewer from './RetexGalleryViewer';
 import { ThemeContext } from "../theme/ThemeEngine";
+import { ShareButton } from '../share';
 
 const RetexViewer = () => {
     const { currentLang } = useContext(LangContext);
@@ -109,6 +110,12 @@ const RetexViewer = () => {
     if (!displayedRetexTitle) return;
     if (!relatedProject) {console.warn(`No project found for '${displayedRetexTitle}'.`); return;}
 
+    // Generate shareable URL
+    const projectSlug = relatedProject.title[0].toLowerCase().replace(/\s+/g, '-');
+    const shareUrl = `${window.location.origin}/projects/${projectSlug}`;
+    const shareTitle = relatedProject.title[currentLang] || relatedProject.title[0];
+    const shareText = relatedProject.description[currentLang] || relatedProject.description['en'];
+
     return (
         <div id={`retex-${displayedRetexTitle}`}
             className=
@@ -147,21 +154,28 @@ const RetexViewer = () => {
                 {toggleGallery && relatedProject.img && relatedProject.img.length > 0 
                 ? <RetexGalleryViewer images={relatedProject.img} untoggler={() => setToggleGallery(false)}/>
                 : <>
-                    <img src={menuIcons.close_menu_icon.content[currentTheme]}
-                        id='close-button'
-                        alt={menuIcons.close_menu_icon.alt}
-                        className=
-                        {`
-                            absolute
-                            ${getActiveBreakpoint('number') as number < 2 ? "hidden" : ""}
-                            top-[2%]
-                            right-[1%]
-                            z-23
-                            ${styles.sizeFit}
-                            cursor-pointer
-                        `}
-                        onClick={() => setDisplayedRetex(undefined)}
-                    />
+                    <div className="absolute top-[2%] right-[1%] z-23 flex items-center gap-3">
+                        {/* Share Button */}
+                        <ShareButton
+                            title={shareTitle}
+                            text={shareText}
+                            url={shareUrl}
+                            className="text-xs"
+                        />
+
+                        {/* Close Button */}
+                        <img src={menuIcons.close_menu_icon.content[currentTheme]}
+                            id='close-button'
+                            alt={menuIcons.close_menu_icon.alt}
+                            className=
+                            {`
+                                ${getActiveBreakpoint('number') as number < 2 ? "hidden" : ""}
+                                ${styles.sizeFit}
+                                cursor-pointer
+                            `}
+                            onClick={() => setDisplayedRetex(undefined)}
+                        />
+                    </div>
 
                     <span id='specs'
                         ref={specsContainer}

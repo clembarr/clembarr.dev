@@ -1,0 +1,126 @@
+/**
+ * Print-optimized styles for portfolio
+ * Optimizes layout when printing or exporting to PDF
+ */
+
+@media print {
+  /* Hide non-essential elements */
+  #navbar-container,
+  #footer-container,
+  #hero-container,
+  #close-button,
+  .share-button,
+  button,
+  nav {
+    display: none !important;
+  }
+
+  /* Optimize page breaks */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  img, figure, table {
+    page-break-inside: avoid;
+  }
+
+  /* Ensure black text on white background */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Remove shadows and effects */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Optimize retex viewer for print */
+  #retex-content {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 20px !important;
+    margin: 0 !important;
+    page-break-inside: avoid;
+  }
+
+  /* Show all project images in print */
+  #retex-gallery-preview {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    page-break-inside: avoid;
+  }
+
+  #retex-gallery-preview img {
+    width: 100% !important;
+    height: auto !important;
+    filter: none !important;
+  }
+
+  /* Optimize typography */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  h1 {
+    font-size: 24pt;
+  }
+
+  h2 {
+    font-size: 18pt;
+  }
+
+  h3 {
+    font-size: 14pt;
+  }
+
+  /* Show link URLs */
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #666;
+  }
+
+  /* Optimize lists */
+  ul, ol {
+    page-break-inside: avoid;
+  }
+
+  /* Force color for important elements */
+  .text-tertiary,
+  .text-\\(--color-tertiary\\) {
+    color: #479561 !important;
+  }
+
+  /* Optimize spacing */
+  section {
+    margin-bottom: 20px;
+  }
+
+  /* Remove animations */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Print-specific utilities */
+.print-only {
+  display: none;
+}
+
+@media print {
+  .print-only {
+    display: block !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

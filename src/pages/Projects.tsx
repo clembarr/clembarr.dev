@@ -1,10 +1,12 @@
 import styles from '../style'
 import ProjectsListing from '../components/sections/ProjectsListing'
 import { SearchEngine } from '../components/search/SearchEngine'
+import { PageTransition } from '../components/animations'
 
 const Projects = () => {
 
     return (
+        <PageTransition>
         <div id="projects-page-container"
             className=
             {`
@@ -30,6 +32,7 @@ const Projects = () => {
                 </SearchEngine>
             </div>
         </div>
+        </PageTransition>
   )
 }
 

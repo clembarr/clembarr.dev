@@ -67,66 +67,75 @@ const Navbar = () => {
     }
   }, [scrollData]);
 
+  const isDark = currentTheme === 'dark';
+
   return (
     <nav id="navbar"
       ref={navbar}
-      className=
+      className= 
       {`
         fixed
         top-0
         w-screen
         items-center
         px-[5%]
-        xl:py-[1%] lg:py-[1%] py-1
+        xl:py-1 lg:py-2.5 py-2
         ${styles.flexRow}
         ${styles.contentStartX}
-        bg-(--color-secondary)
-        2xl:text-lg  xl:text-md  text-base
-        transition-transform
+        bg-(--color-navbar-bg)/95
+        backdrop-blur-md
+        2xl:text-sm xl:text-md text-base
+        transition-all
         duration-300
-        ease-in-out
+        ease-out
+        z-(--z-fixed)
+        ${isDark ? 'shadow-[0_1px_20px_rgba(0,0,0,0.3)]' : 'shadow-[0_1px_8px_rgba(0,0,0,0.1)]'}
       `}
     >
       <ul id="navbar-items"
         className="
-          space-x-10
-          list-none 
-          lg:flex hidden"
+          space-x-8
+          list-none
+          lg:flex hidden
+          items-center"
       >
         {/**Map the navigation links from the data file according to the current URL.*/
         navLinks.find(
           (nav) => nav.route.includes(window.location.pathname.split('/')[1])
         )?.links.map((nav, index) => {
-          let thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
+          const thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
+          const isActive = (nav.link).toLowerCase() === currentNavigation;
           return (
-            <>
-              <li key={`navlink-${index}`}
-                className=
-                {`
-                    font-secondary-regular
-                    tracking-widest
-                    cursor-pointer
-                    hover:text-(--color-tertiary)
-                    transition-all
-                    duration-300
-                    ease-in-out
-                    text-nowrap
-                    ${(nav.link).toLowerCase() === currentNavigation ? 'text-(--color-tertiary)' : ""}
-                `}
-              >
-                {/** If the navigation link is an anchor on the page, it become an <a>. Else if it
-                 * is supposed to redirect on another page, it become a React <Link>. */
-                nav.link.includes('#') ?
-                  <a href={nav.link}
-                    onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
-                  > {thisNav} </a>
-                  :
-                  <Link to={nav.link}
-                    onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
-                  > {thisNav} </Link>
+            <li key={`navlink-${index}`}
+              className=
+              {`
+                font-secondary-regular
+                tracking-wider
+                cursor-pointer
+                relative
+                py-1
+                transition-all
+                duration-300
+                ease-out
+                text-nowrap
+                ${isActive
+                  ? `text-(--color-tertiary) ${isDark ? 'drop-shadow-[0_0_8px_rgba(124,255,196,0.5)]' : ''}`
+                  : 'text-(--color-quaternary) hover:text-(--color-tertiary)'
                 }
-              </li>
-            </>
+              `}
+            >
+              {/** If the navigation link is an anchor on the page, it become an <a>. Else if it
+               * is supposed to redirect on another page, it become a React <Link>. */
+              nav.link.includes('#') ?
+                <a href={nav.link}
+                  onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
+                > {thisNav} </a>
+                :
+                <Link to={nav.link}
+                  onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
+                > {thisNav} </Link>
+              }
+            </li>
           )
         })}
       </ul>
@@ -138,7 +147,7 @@ const Navbar = () => {
           ${styles.flexRow}
           ${getActiveBreakpoint('number') as number < 3 ? styles.contentStartX : styles.contentEndX}
           font-primary-regular
-          lg:space-x-[3%] space-x-[10%] 
+          space-x-4
         `}
       >
 
@@ -152,7 +161,7 @@ const Navbar = () => {
         className=
         {`
           ${styles.sizeFull}
-          min-h-[60px]
+          min-h-15
           ${styles.contentEndX}
           ${getActiveBreakpoint('number') as number < 3 ?
             `${styles.flexRow}` : `hidden`
@@ -221,51 +230,56 @@ const Navbar = () => {
             {`
               list-none
               absolute
-              color-scheme-secondary
               -top-5
               -right-5
-              px-[20px]
-              pt-[45px]
-              pb-[15px]
-              space-y-[10%]
-              shadow-md
-              rounded-md
+              px-5
+              pt-12
+              pb-4
+              space-y-3
+              rounded-xl
+              bg-(--color-surface)
+              border border-(--color-border)
+              ${isDark ? 'shadow-[0_8px_30px_rgba(0,0,0,0.4)]' : 'shadow-lg'}
+              backdrop-blur-lg
             `}
           >
             {/**Map the navigation links from the data file according to the current URL.*/
             navLinks.find(
               (nav) => nav.route.includes(window.location.pathname.split('/')[1])
             )?.links.map((nav, index) => {
-              let thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
+              const thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
+              const isActive = (nav.link).toLowerCase() === currentNavigation;
               return (
-                <>
-                  <li key={`navlink-${index}`}
-                    className=
-                    {`
-                        font-secondary-regular
-                        tracking-widest
-                        cursor-pointer
-                        hover:text-(--color-tertiary)
-                        transition-all
-                        duration-300
-                        ease-in-out
-                        text-nowrap
-                        ${(nav.link).toLowerCase() === currentNavigation ? 'text-(--color-tertiary)' : ""}
-                    `}
-                  >
-                    {/** If the navigation link is an anchor on the page, it become an <a>. Else if it
-                     * is supposed to redirect on another page, it become a React <Link>. */
-                    nav.link.includes('#') ?
-                      <a href={nav.link}
-                        onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
-                      > {thisNav} </a>
-                      :
-                      <Link to={nav.link}
-                        onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
-                      > {thisNav} </Link>
+                <li key={`navlink-${index}`}
+                  className=
+                  {`
+                    font-secondary-regular
+                    tracking-wider
+                    cursor-pointer
+                    px-3 py-1.5
+                    rounded-lg
+                    transition-all
+                    duration-300
+                    ease-(--ease-out)
+                    text-nowrap
+                    ${isActive
+                      ? `text-(--color-tertiary) bg-(--color-tertiary)/10 ${isDark ? 'shadow-(--glow-sm)' : ''}`
+                      : 'text-(--color-quaternary) hover:text-(--color-tertiary) hover:bg-(--color-tertiary)/5'
                     }
-                  </li>
-                </>
+                  `}
+                >
+                  {/** If the navigation link is an anchor on the page, it become an <a>. Else if it
+                   * is supposed to redirect on another page, it become a React <Link>. */
+                  nav.link.includes('#') ?
+                    <a href={nav.link}
+                      onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
+                    > {thisNav} </a>
+                    :
+                    <Link to={nav.link}
+                      onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
+                    > {thisNav} </Link>
+                  }
+                </li>
               )
             })}
           </ul>

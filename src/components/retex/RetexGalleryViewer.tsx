@@ -4,6 +4,7 @@ import styles from "../../style";
 import { menuIcons } from "../../assets";
 import { ThemeContext } from "../theme/ThemeEngine";
 import { getActiveBreakpoint } from "../../utils";
+import { motion } from "framer-motion";
 
 type RetexGalleryViewerProps = {
     images: string[];
@@ -13,22 +14,46 @@ type RetexGalleryViewerProps = {
 const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
     const {currentTheme} = useContext(ThemeContext);
     const [focusedImage, setFocusedImage] = useState<string>(images[0]);
+    const [zoom, setZoom] = useState<number>(1);
+    const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
     let index = useRef<number>(0);
+    const imageRef = useRef<HTMLImageElement>(null);
     
     useEffect(() => {
-        document.addEventListener('keydown', (e) => {
+        const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'ArrowRight') {
                 setIndex((index.current + 1) % images.length);
             }
             else if (e.key === 'ArrowLeft') {
                 setIndex((index.current - 1 + images.length) % images.length);
             }
-        });
+            else if (e.key === '+' || e.key === '=') {
+                // Zoom in
+                setZoom((prev) => Math.min(prev + 0.25, 3));
+            }
+            else if (e.key === '-' || e.key === '_') {
+                // Zoom out
+                setZoom((prev) => Math.max(prev - 0.25, 1));
+            }
+            else if (e.key === '0') {
+                // Reset zoom
+                setZoom(1);
+                setPanOffset({ x: 0, y: 0 });
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
 
         return () => {
-            document.removeEventListener('keydown', () => {});
+            document.removeEventListener('keydown', handleKeyDown);
         }
-    }, []);
+    }, [images.length]);
+
+    // Reset zoom when changing images
+    useEffect(() => {
+        setZoom(1);
+        setPanOffset({ x: 0, y: 0 });
+    }, [focusedImage]);
 
     const setIndex = (newIndex: number) => {
         index.current = newIndex;
@@ -70,19 +95,75 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     transition-all
                     duration-300
                     ease-in-out
+                    overflow-hidden
+                    relative
                 `}
             >
-                <img id="gallery-focused-image"
+                <motion.img
+                    ref={imageRef}
+                    id="gallery-focused-image"
                     src={focusedImage || ''}
                     alt={`Focused Retex Image`}
                     className=
                     {`
                         ${styles.sizeFull}
-                        object-fill
+                        object-contain
                         object-center
                         rounded-lg
+                        ${zoom > 1 ? 'cursor-move' : 'cursor-zoom-in'}
                     `}
+                    style={{
+                        transform: `scale(${zoom}) translate(${panOffset.x}px, ${panOffset.y}px)`,
+                    }}
+                    drag={zoom > 1}
+                    dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
+                    dragElastic={0.1}
+                    onClick={() => {
+                        if (zoom === 1) {
+                            setZoom(2);
+                        } else {
+                            setZoom(1);
+                            setPanOffset({ x: 0, y: 0 });
+                        }
+                    }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
+
+                {/* Zoom controls */}
+                <div className="absolute bottom-[15%] right-4 flex flex-col gap-2 bg-(--color-secondary) bg-opacity-90 rounded-lg p-2 shadow-lg">
+                    <button
+                        onClick={() => setZoom((prev) => Math.min(prev + 0.25, 3))}
+                        className="px-3 py-1 text-(--color-tertiary) hover:scale-110 transition-transform"
+                        aria-label="Zoom in"
+                    >
+                        +
+                    </button>
+                    <span className="px-2 text-xs text-(--color-quaternary)">
+                        {Math.round(zoom * 100)}%
+                    </span>
+                    <button
+                        onClick={() => setZoom((prev) => Math.max(prev - 0.25, 1))}
+                        className="px-3 py-1 text-(--color-tertiary) hover:scale-110 transition-transform"
+                        aria-label="Zoom out"
+                    >
+                        −
+                    </button>
+                    <button
+                        onClick={() => {
+                            setZoom(1);
+                            setPanOffset({ x: 0, y: 0 });
+                        }}
+                        className="px-2 py-1 text-xs text-(--color-tertiary) hover:scale-110 transition-transform"
+                        aria-label="Reset zoom"
+                    >
+                        Reset
+                    </button>
+                </div>
+
+                {/* Keyboard shortcuts hint */}
+                <div className="absolute top-4 left-4 bg-(--color-secondary) bg-opacity-90 rounded-lg px-3 py-2 text-xs text-(--color-quaternary) shadow-lg">
+                    <p>← → Navigate | +/- Zoom | 0 Reset | Esc Close</p>
+                </div>
             </div>
 
             <nav id="gallery-navigation"

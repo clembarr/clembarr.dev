@@ -24,6 +24,7 @@ const DropdownLang = () => {
                         cursor-pointer
                         hover:text-(--color-tertiary)
                         z-1
+                        text-lg
                     `}
                     onClick={() => setSelectedLang(lang.symbol.toUpperCase())}
                 >
@@ -43,7 +44,7 @@ const DropdownLang = () => {
             menuState={[toggleLang, setToggleLang]}
             itemState={[selectedLang, setSelectedLang]}
             additionalButtonStyles={`
-                text-md
+                text-lg
             `}
         />
     )

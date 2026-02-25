@@ -1,14 +1,15 @@
-import { useContext, useEffect, useRef, useState } from "react"
-import { skills } from "../../assets/contents"
-import { AvailableSkillCategories, SkillCategorie} from "../../assets/dataTypes"
-import styles from "../../style"
-import { skillCategories } from "../../assets/constants"
-import { ThemeContext } from "../theme/ThemeEngine"
+// WIP - Commented out to fix build errors
+// import { useContext, useEffect, useRef, useState } from "react"
+// import { skills } from "../../assets/contents"
+// import { AvailableSkillCategories, SkillCategorie} from "../../assets/dataTypes"
+// import styles from "../../style"
+// import { skillCategories } from "../../assets/constants"
+// import { ThemeContext } from "../theme/ThemeEngine"
 
-type GraphData = {
-  nodes: {id: string, name: string, img: string, val: number, group: SkillCategorie}[];
-  links: {source: string, target: string}[];
-}
+// type GraphData = {
+//   nodes: {id: string, name: string, img: string, val: number, group: SkillCategorie}[];
+//   links: {source: string, target: string}[];
+// }
 
 const Skills = () => {
 //   const { currentTheme } = useContext(ThemeContext)

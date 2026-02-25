@@ -121,8 +121,7 @@ const ProjectsListing = () => {
                 top-0
                 left-0
                 backdrop-blur-md
-                bg-black
-                bg-opacity-30
+                bg-transparent
                 ${getActiveBreakpoint('number') as number < 2 ? "overflow-scroll" : ""}
             `}
             style={{
