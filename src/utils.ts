@@ -165,7 +165,7 @@ export const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, div: HTMLDi
 export const handleMouseLeave = (div: HTMLDivElement | null) => {
     if (!div) return;
     div.style.transform = `rotateX(0deg) rotateY(0deg)`;
-    div.style.backgroundColor = `var(--color-secondary)`;
+    div.style.background = '';
     injectCursorPosition(0, 0);
 }
 

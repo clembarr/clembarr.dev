@@ -236,7 +236,8 @@ const styles = {
 
   debugBorders: `border-2 border-`.concat(getRandomTailwindColor()),
 
-  defaultTransition: `transition-all duration-300 ease-in-out`
+  defaultTransition: `transition-all duration-300 ease-in-out`,
+  easeOutTransition: `transition-all duration-300 ease-out`
 };
 
 export default styles;

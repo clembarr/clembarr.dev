@@ -177,7 +177,7 @@ const ProjectsSlider = () => {
           ${styles.line}
           top-[82%]
           w-6
-          h-[5px]
+          h-1.25
           opacity-25
           rounded-full
         `} />
@@ -201,7 +201,7 @@ const ProjectsSlider = () => {
             className={`
               object-cover
               -rotate-90
-              lg:w-[30px] md:w-[40px] w-[35px]
+              lg:w-7.5 md:w-10 w-8.75
             `}
           /> 
         </button>
@@ -226,7 +226,7 @@ const ProjectsSlider = () => {
             className={`
               object-cover
               rotate-90
-              lg:w-[30px] md:w-[40px] w-[35px]
+              lg:w-7.5 md:w-10 w-8.75
             `}
           /> 
         </button>
@@ -251,6 +251,7 @@ const ProjectsSlider = () => {
               2xl:w-[80%] xl:w-[88%]
               absolute
               2xl:left-[3%] base:left-0
+              ${currentTheme === "dark" ? "-bottom-10" : ""}
             `}
           />
       </div>

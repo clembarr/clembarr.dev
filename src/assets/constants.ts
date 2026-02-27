@@ -904,6 +904,14 @@ export const placeholderMessages: Array<Message> = [
       fr: "Retour à l'accueil",
       en: "Back to home",
     },
+  },
+  {
+    context: "loadingComponent",
+    content:
+    {
+      fr: "Chargement du composant...",
+      en: "Loading component...",
+    },
   }
 ]
 
@@ -925,7 +933,7 @@ export const contactForm: ContactForm = {
     phone: placeholderMessages.find((message) => message.context === "formPhone")!,
     message: placeholderMessages.find((message) => message.context === "formMessage")!,
   },
-  mendatoryFields: [ "name", "email", "message" ],
+  mendatoryFields: [ "firstname", "lastname", "email", "message" ],
   alert: [
     {
       context: "email",

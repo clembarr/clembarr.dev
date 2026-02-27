@@ -149,9 +149,8 @@ export interface SocialMedia {
  * @param content - biography text
  * @param active - true if the biography is displayed, else false
  */
-export interface Biography {
+export interface Biography extends Message {
   title: {[lang: string]: string};
-  content: {[lang: string]: string};
   active: boolean;
 }
 

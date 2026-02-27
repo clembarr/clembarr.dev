@@ -43,13 +43,12 @@ const Card = ({title, content, tags, moreTopClasses, titleProps, contentProps, t
         relative
       `}
     >
-      {/* Card Header */}
       <header id="card-header"
         className={`
           flex
           w-full
           h-1/4
-          max-h-[25%]
+          max-h-[15%]
           ${styles.contentStartX}
           font-primary-bold
           ${titleProps}
@@ -64,7 +63,6 @@ const Card = ({title, content, tags, moreTopClasses, titleProps, contentProps, t
         />
       </header>
 
-      {/* Card Content */}
       <p id={`card-${title}-text`}
         className={`
           flex
@@ -81,7 +79,6 @@ const Card = ({title, content, tags, moreTopClasses, titleProps, contentProps, t
         dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(content, {ALLOWED_TAGS: ['br']})}}
       />
 
-      {/* Card Tags */}
       <div id={`card-${title}-tags`}
         className={`
           flex
@@ -91,15 +88,18 @@ const Card = ({title, content, tags, moreTopClasses, titleProps, contentProps, t
           ${styles.contentStartX}
           gap-2
           overflow-hidden
-          flex-wrap
+          flex-nowrap
           ${tagsProps}
         `}
       >
         {displayedTags.map((tag, index) => (
           <span key={index}
             className={`
-              inline-flex items-center
-              px-2.5 py-0.5
+              inline-flex
+              items-center
+              whitespace-nowrap
+              px-2.5
+              py-0.5
               text-2xs
               font-primary-semibold
               rounded-full
@@ -114,7 +114,17 @@ const Card = ({title, content, tags, moreTopClasses, titleProps, contentProps, t
           </span>
         ))}
         {tags.length > displayedTags.length && (
-          <span className="inline-flex items-center px-2 py-0.5 text-2xs font-primary-regular text-(--color-muted)">
+          <span className={`
+              inline-flex
+              items-center
+              whitespace-nowrap
+              px-2
+              py-0.5
+              text-2xs
+              font-primary-regular
+              text-(--color-muted)
+            `}
+          >
             +{tags.length - displayedTags.length}
           </span>
         )}

@@ -6,7 +6,8 @@ import { getActiveBreakpoint } from '../../utils'
 import { ThemeContext } from '../theme/ThemeEngine'
 import { useContext } from 'react'
 
-const Contact = () => {
+const 
+Contact = () => {
   const { currentTheme } = useContext(ThemeContext);
 
   return (
@@ -14,19 +15,15 @@ const Contact = () => {
       className=
       {`
         ${styles.sizeFull}
-        ${getActiveBreakpoint('number') as number <= 1 ?
-          `${styles.flexCol}` : `${styles.flexRow}`
-        }
+        ${getActiveBreakpoint('number') as number <= 1 ? `${styles.flexCol}` : `${styles.flexRow}`}
         ${styles.contentCenter}
-        xl:space-x-[200px] lg:space-x-[150px] 
+        xl:space-x-50 lg:space-x-37.5
       `}
     >
         <div id='form-container'
             className=
             {`
-              ${getActiveBreakpoint('number') as number <= 1 ?
-                `hidden` : `${styles.flexRow}`
-              }
+              ${getActiveBreakpoint('number') as number <= 1 ? `hidden` : `${styles.flexRow}`}
               w-2/5
               h-full
               ${styles.contentCenter}
@@ -52,9 +49,7 @@ const Contact = () => {
             <div key={`icon-${social.label}-container`}
               className=
               {`
-                ${getActiveBreakpoint('number') as number <= 1 ?
-                  `${styles.flexRow}` : `${styles.flexCol}`
-                }
+                ${getActiveBreakpoint('number') as number <= 1 ? `${styles.flexRow}` : `${styles.flexCol}`}
                 ${styles.contentStartAll}
                 w-full
                 h-fit

@@ -33,10 +33,13 @@ const DropdownPhone = () => {
     }
 
     return (
-        <Dropdown animationStyle={{animation: `phone-dropdown-menu 0.5s 1 ${toggleMenu ? 'forwards' : 'reverte'}`}}
+        <Dropdown animationStyle={{
+                animation: `phone-dropdown-menu 0.5s 1 ${toggleMenu ? 'forwards' : 'reverte'}`
+            }}
             items={phoneCodes()}
             itemState={[selectedCode, setSelectedCode]}
-            menuState={[toggleMenu, setToggleMenu]}  
+            menuState={[toggleMenu, setToggleMenu]}
+            additionalMenuStyles="min-w-20 -left-3.5 top-1"
         />
             
     )

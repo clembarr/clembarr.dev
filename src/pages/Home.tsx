@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import styles from "../style";
 import { Hero, About, Contact } from "../components/sections";
 import { ScrollReveal, PageTransition } from "../components/animations";
+import { SuspenseFallback } from "../components";
 
 const ProjectsSlider = lazy(() => import("../components/sections/ProjectsSlider"));
 
@@ -53,11 +54,7 @@ const Home = () => {
             overflow-visible
           `}
         >
-          <Suspense fallback={
-            <div className="w-full h-[500px] flex items-center justify-center">
-              <div className="text-(--color-tertiary) text-xl">Loading 3D experience...</div>
-            </div>
-          }>
+          <Suspense fallback={<SuspenseFallback />}>
             <ProjectsSlider />
           </Suspense>
         </div>

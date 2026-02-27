@@ -9,6 +9,7 @@ import {
   Hyperlink,
   CareerEntry,
   CareerEntryType,
+  GraphicAsset,
 } from "./dataTypes";
 
 /** All the skill to display and their related information. */
@@ -389,43 +390,100 @@ export const sharedLinks: Array<Hyperlink> = [
   }
 ];
 
-/** Encarts de tags affichés dans la section About, entre le titre et les paragraphes. */
-export const aboutTags = [
-  { label: { fr: "Domaine", en: "Domain" }, tags: { fr: ["Dev Web", "IA", "Data"], en: ["Web Dev", "AI", "Data"] } },
-  { label: { fr: "Hobbies", en: "Hobbies" }, tags: { fr: ["Musique", "Jeux vidéo", "Open Source"], en: ["Music", "Video Games", "Open Source"] } },
+/** Mottos displayed randomly in the About dashboard. */
+export const aboutMottos: Array<Biography> = [
+  { 
+    title: {
+      fr: "",
+      en: "",
+    },
+    content: {
+      fr: "Développer un futur libre et équitable.",
+      en: "Develop the future, free and fair.",
+    },
+    active: true,
+  },
+  { 
+    title: {
+      fr: "",
+      en: "",
+    },
+    content: {
+      fr: "L'utilité au service du plus grand nombre.",
+      en: "Utility at the service of everyone.",
+    },
+    active: true,
+  },
+  { 
+    title: {
+      fr: "",
+      en: ""
+    },
+    content: {
+      fr: "La polyvalence est une force.",
+      en: "Versatility is a strength.",
+    },
+    active: true,
+  },
+  { 
+    title: {
+      fr: "",
+      en: ""
+    },
+    content: {
+      fr: "Coder, c'est donner forme aux idées.",
+      en: "Coding is giving shape to ideas.",
+    },
+    active: true,
+  },
+  { 
+    title: {
+      fr: "",
+      en: ""
+    },
+    content: {
+      fr: "Simplicité, accessibilité, impact.",
+      en: "Simplicity, accessibility, impact.",
+    },
+    active: true,
+  },
 ];
 
-/** Les deux encarts textuels de la section About : présentation personnelle et projet actuel. */
-export const aboutSections = [
-  {
-    title: { fr: "À propos de moi", en: "About me" },
-    content: {
-      fr:
-        "Principalement intéressé par le développement d'outils intelligents, je cherche avant tout à lier <strong>utilité</strong> et <strong>accessibilité</strong> dans mes projets. \
-        Mon objectif est de permettre au plus grand nombre de profiter des technologies utilitaires avancées. \
-        <br/><br/> \
-        La programmation est un art, nous permettant de matérialiser nos idées. J'en suis passionné depuis plusieurs années, \
-        et mes nombreuses inspirations ont forgées <strong>ma polyvalence</strong>, qui fait aujourd'hui ma force.",
-      en:
-        "Mainly interested in the development of <strong>intelligent</strong> tools, I seek to link <strong>utility</strong> and <strong>accessibility</strong> in my projects. \
-        My goal is to allow as many people as possible to benefit from advanced utility technologies.\
-        <br/><br/> \
-        Programming is an art that brings abstractions of the mind to life. I have been passionate about it for several years, \
-        and my inspirations have forged <strong>my versatility</strong>, one of my key assets today.",
-    },
-  },
-  {
-    title: { fr: "Mon projet", en: "My project" },
-    content: {
-      fr:
-        "Je prépare actuellement un Bachelor Universitaire de Technologie (<strong>BUT</strong>) \
-        en informatique, à l'Institut Universitaire de Technologie (IUT) de Bordeaux, France.",
-      en:
-        "I am currently preparing a University Bachelor of Technology (<strong>BUT</strong>) \
-        in computer science, at the University Institute of Technology (IUT) of Bordeaux, France.",
-    },
-  },
+/** Languages spoken with proficiency level. */
+export const aboutLanguages = [
+  { label: { fr: "Français", en: "French" }, level: { fr: "Natif", en: "Native" } },
+  { label: { fr: "Anglais", en: "English" }, level: { fr: "Courant (C1)", en: "Fluent (C1)" } },
+  { label: { fr: "Espagnol", en: "Spanish" }, level: { fr: "Notions (A2)", en: "Basic (A2)" } },
 ];
+
+/** Location info for About dashboard. */
+export const aboutLocation = {
+  city: "Bordeaux",
+  country: { fr: "France", en: "France" },
+};
+
+/** Core tech stack icons displayed in About dashboard. */
+export const aboutStack: GraphicAsset[] = [
+  skillsIcons.react_icon,
+  skillsIcons.typescript_icon,
+  skillsIcons.python_icon,
+  skillsIcons.tailwind_icon,
+  skillsIcons.go_icon,
+  skillsIcons.docker_icon,
+];
+
+/** About me text block for the About dashboard. */
+export const aboutSection = {
+  title: { fr: "À propos de moi", en: "About me" },
+  content: {
+    fr:
+      "Passionné par le développement d'outils intelligents, je lie <strong>utilité</strong> et <strong>accessibilité</strong> dans mes projets. \
+      La programmation est un art, et <strong>ma polyvalence</strong> fait aujourd'hui ma force.",
+    en:
+      "Passionate about building intelligent tools, I combine <strong>utility</strong> and <strong>accessibility</strong> in my projects. \
+      Programming is an art, and <strong>my versatility</strong> is one of my key assets today.",
+  },
+};
 
 /** Page title and subtitle for the Career page. */
 export const careerPageContent = {
