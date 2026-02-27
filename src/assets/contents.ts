@@ -10,7 +10,9 @@ import {
   CareerEntry,
   CareerEntryType,
   GraphicAsset,
+  FooterColumn,
 } from "./dataTypes";
+import { navLinks, creditsMentions } from "./constants";
 
 /** All the skill to display and their related information. */
 export const skills: Array<Skill> = [
@@ -388,6 +390,25 @@ export const sharedLinks: Array<Hyperlink> = [
     },
     link: "https://rodolphent.github.io/",
   }
+];
+
+/** Footer columns definition, mapping each column to its title, context and content. */
+export const footerColumns: FooterColumn[] = [
+  {
+    title: { fr: "Navigation", en: "Navigation" },
+    context: "navigation",
+    content: navLinks,
+  },
+  {
+    title: { fr: "Crédits", en: "Credits" },
+    context: "credits",
+    content: creditsMentions,
+  },
+  {
+    title: { fr: "Voir aussi", en: "See also" },
+    context: "see-also",
+    content: sharedLinks,
+  },
 ];
 
 /** Mottos displayed randomly in the About dashboard. */

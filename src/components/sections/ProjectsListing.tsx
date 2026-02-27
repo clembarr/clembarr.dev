@@ -22,6 +22,7 @@ const ProjectsListing = () => {
 
     useEffect(() => {
         const matchingProjects: Retex[] = [];
+        let allTags: string[];
         projects.filter((project) => toMatch.some((filter) => {
             switch (filter) {
                 case "ALL":
@@ -48,7 +49,7 @@ const ProjectsListing = () => {
                         ) { matchingProjects.push(project); break;}
                     }
                     
-                    let allTags: string[] = [];
+                    allTags = [];
                     for (const lang in project.tags) {
                         allTags.push(...project.tags[lang].map((tag) => tag.toUpperCase()));
                     }
@@ -102,7 +103,7 @@ const ProjectsListing = () => {
                 ${getActiveBreakpoint("number") as number > 1 ? styles.flexRow : styles.flexCol}
                 ${styles.contentCenter}
                 md:space-x-[3%] base:space-x-[0]
-                md:space-y-0 space-y-[20px]
+                md:space-y-0 
                 mt-[5%]
             `}
         >

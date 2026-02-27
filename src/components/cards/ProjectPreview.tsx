@@ -21,7 +21,7 @@ const ProjectPreview = (project: Retex) => {
                 color-scheme-primary
                 bg-(--color-secondary)
                 md:w-[30%] base:w-full
-                h-[500px]
+                h-125
                 rounded-md
                 shadow-xl
                 overflow-hidden
@@ -50,7 +50,7 @@ const ProjectPreview = (project: Retex) => {
                     alt="project image"
                     className=
                     {`
-                        lg:h-[200px] h-full
+                        lg:h-50 h-full
                         w-full
                         aspect-video
                         object-cover
@@ -65,15 +65,16 @@ const ProjectPreview = (project: Retex) => {
                 moreTopClasses=
                 {`
                     px-[8%]
+                    space-y-[3%]
                 `}
-                titleProps=
-                {`
+                titleProps={`
+                    mt-4
                 `}
-                contentProps=
-                {`
+                contentProps={`
+                    wrap-break-word
                 `}
-                tagsProps=
-                {`
+                tagsProps={`
+                    text-base
                 `}
             />
         </div>

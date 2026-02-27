@@ -33,7 +33,7 @@ const Projects = () => {
             </div>
         </div>
         </PageTransition>
-  )
+    )
 }
 
 export default Projects

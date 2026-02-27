@@ -285,6 +285,18 @@ export interface FlashMessage extends Message {
   type: "error" | "info" | "ok";
 }
 
+/**
+ * Structure of a footer column.
+ * @param title - multilingual title of the column
+ * @param context - discriminant for the rendering logic (e.g. "navigation", "credits", "see-also")
+ * @param content - the data to render, varying by context
+ */
+export interface FooterColumn {
+  title: {[lang: string]: string};
+  context: string;
+  content: Hyperlink[] | CreditMention[] | NavbarPattern[];
+}
+
 /** Blog post categories supported by the app. */
 export enum BlogCategory {
   RESEARCH = "RESEARCH",
