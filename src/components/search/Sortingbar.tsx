@@ -4,6 +4,7 @@ import { SearchContext } from "./SearchEngine";
 import { DropdownSort } from "../dropdowns";
 import { getActiveBreakpoint } from "../../utils";
 import { sortOptions } from "../../assets/constants";
+import { menuIcons } from "../../assets/menu_icons";
 import { LangContext } from "../language";
 import { ThemeContext } from "../theme/ThemeEngine";
 import { AvailableSortOptions } from "../../assets/dataTypes";
@@ -11,19 +12,20 @@ import { AvailableSortOptions } from "../../assets/dataTypes";
 /** Options merged into the Date pill and excluded from the regular pills loop. */
 const DATE_OPTIONS = [AvailableSortOptions.NEWEST, AvailableSortOptions.OLDEST];
 
-/** Options excluded from the regular pills loop entirely (ALL is implicit, date options merged). */
+/** Options excluded from the regular pills loop (ALL is its own pill, date options merged). */
 const EXCLUDED_FROM_PILLS = [AvailableSortOptions.ALL, ...DATE_OPTIONS];
 
-/** Maximum number of regular pills shown on desktop (excluding the Date pill). */
+/** Maximum number of regular pills shown on desktop (excluding ALL and Date). */
 const MAX_PILLS = 4;
 
 /**
- * @description Sorting bar for projects filtering. Displays filter pills on desktop
- * with a special Date pill that cycles between inactive → newest → oldest → inactive.
- * A dropdown shows remaining options. On mobile, only the dropdown is shown.
+ * @description Sorting bar for projects filtering. Always displays an ALL pill
+ * and a Date pill (with a chevron cycling newest/oldest). Regular filter pills
+ * follow, using abbreviations when available. A dropdown shows remaining options.
+ * On mobile, only the dropdown is shown.
  */
 const SortingBar = () => {
-    const { toMatch, setToMatch } = useContext(SearchContext);
+    const { toMatch, updateSearch, setSearchInput } = useContext(SearchContext);
     const { currentLang } = useContext(LangContext);
     const { currentTheme } = useContext(ThemeContext);
     const [isMobile, setIsMobile] = useState((getActiveBreakpoint("number") as number <= 1));
@@ -67,12 +69,11 @@ const SortingBar = () => {
      * inactive → NEWEST → OLDEST → inactive (back to ALL).
      */
     const handleDateClick = () => {
-        if (dateState === null) {
-            setToMatch([AvailableSortOptions.NEWEST]);
-        } else if (dateState === AvailableSortOptions.NEWEST) {
-            setToMatch([AvailableSortOptions.OLDEST]);
+        setSearchInput("");
+        if (dateState === null || dateState === AvailableSortOptions.OLDEST) {
+            updateSearch([AvailableSortOptions.NEWEST]);
         } else {
-            setToMatch([AvailableSortOptions.ALL]);
+            updateSearch([AvailableSortOptions.OLDEST]);
         }
     };
 
@@ -83,9 +84,22 @@ const SortingBar = () => {
      */
     const isActive = (context: string) => context === toMatch[0];
 
-    /** Shared pill class names for both the Date pill and regular pills. */
+    /**
+     * @function getPillLabel Returns the abbreviated label for a sort option if available,
+     * otherwise falls back to the full content label.
+     * @param option the sort option to get the label for
+     * @returns the uppercased label string
+     */
+    const getPillLabel = (option: typeof sortOptions[number]) => {
+        const label = option.abreviation
+            ? (option.abreviation.content[currentLang] || option.abreviation.content[0])
+            : option.content[currentLang];
+        return label.toUpperCase();
+    };
+
+    /** Shared pill class names. */
     const pillBase = `
-        px-4 py-1.5
+        px-2.5 py-1
         rounded-md
         text-nowrap
         text-sm
@@ -113,74 +127,79 @@ const SortingBar = () => {
         hover:bg-(--color-tertiary)/5
     `;
 
-    const dateLabel = currentLang === "fr" ? "DATE" : "DATE";
+    const allOption = sortOptions.find((o) => o.context === AvailableSortOptions.ALL)!;
 
     return (
-    <div id="sorting-bar-container"
-        className=
-        {`
-            ${styles.sizeFit}
-            ${styles.flexRow}
-            ${styles.contentCenter}
-            gap-3
-        `}
-    >
-        {!isMobile && (
-            <>
-                {/* Date pill with rotating chevron */}
-                <button
-                    onClick={handleDateClick}
-                    className={`
-                        ${pillBase}
-                        ${styles.flexRow}
-                        ${styles.contentCenter}
-                        gap-1.5
-                        ${dateState !== null ? pillActive : pillInactive}
-                    `}
-                >
-                    {dateLabel}
-                    <svg
-                        className={`
-                            w-2.5 h-2.5
-                            transition-all duration-300 ease-out
-                            ${dateState === null ? 'opacity-0 scale-75' : 'opacity-100 scale-100'}
-                            ${dateState === AvailableSortOptions.OLDEST ? 'rotate-180' : 'rotate-0'}
-                        `}
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2.5}
-                        viewBox="0 0 24 24"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-
-                {/* Regular filter pills */}
-                {regularPills.slice(0, MAX_PILLS).map((option, index) => (
-                    <button key={index}
-                        onClick={() => setToMatch([option.context])}
-                        className={`
-                            ${pillBase}
-                            ${isActive(option.context) ? pillActive : pillInactive}
-                        `}
-                    > {option.content[currentLang].toUpperCase()} </button>
-                ))}
-            </>
-        )}
-
-        <div id="dropdown-sort-container"
+        <div id="sorting-bar-container"
             className=
             {`
                 ${styles.sizeFit}
                 ${styles.flexRow}
-                ${styles.contentStartX}
-                ${isMobile ? "" : "ml-1"}
+                ${styles.contentCenter}
+                gap-4
             `}
         >
-            <DropdownSort alreadyDisplayedItems={alreadyDisplayedItems} />
+            {!isMobile && (
+                <>
+                    <button
+                        onClick={() => { setSearchInput(""); updateSearch([AvailableSortOptions.ALL]); }}
+                        className={`
+                            ${pillBase}
+                            ${isActive(AvailableSortOptions.ALL) ? pillActive : pillInactive}
+                        `}
+                    > {allOption.content[currentLang].toUpperCase()} </button>
+
+                    <button
+                        onClick={handleDateClick}
+                        className={`
+                            ${pillBase}
+                            ${styles.flexRow}
+                            ${styles.contentCenter}
+                            ${dateState !== null ? pillActive : pillInactive}
+                        `}
+                    >
+                        DATE
+                        {dateState !== null && (
+                            <img
+                                src={menuIcons.chevron_icon.content[currentTheme]}
+                                alt={menuIcons.chevron_icon.alt}
+                                className={`
+                                    w-4
+                                    ml-1    
+                                    ${styles.easeOutTransition}
+                                    ${dateState === AvailableSortOptions.OLDEST ? 'rotate-180' : 'rotate-0'}
+                                `}
+                            />
+                        )}
+                    </button>
+
+                    {regularPills.slice(0, MAX_PILLS).map((option, index) => (
+                        <button key={index}
+                            onClick={() => { setSearchInput(""); updateSearch([option.context]); }}
+                            data-tooltip={option.abreviation ? option.content[currentLang] : undefined}
+                            className={`
+                                ${pillBase}
+                                ${isActive(option.context) ? pillActive : pillInactive}
+                                ${(option.abreviation && (option.abreviation.content[currentLang] !== '')) ? 'pill-tooltip' : ''}
+                            `}
+                        > {getPillLabel(option)} </button>
+                    ))}
+                </>
+            )}
+
+            <div id="dropdown-sort-container"
+                className=  
+                {`
+                    ${styles.sizeFit}
+                    ${styles.flexRow}
+                    ${styles.contentStartX}
+                    ml-6
+                `}
+            >
+                <DropdownSort alreadyDisplayedItems={alreadyDisplayedItems} />
+            </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default SortingBar

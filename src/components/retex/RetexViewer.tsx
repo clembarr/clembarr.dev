@@ -17,7 +17,7 @@ const RetexViewer = () => {
     const { displayedRetexTitle, setDisplayedRetex } = useContext(RetexContext);
     const { currentTheme } = useContext(ThemeContext);
     const [toggleGallery, setToggleGallery] = useState<boolean>(false);
-    let galleryToggleState = useRef<boolean>(toggleGallery);
+    const galleryToggleState = useRef<boolean>(toggleGallery);
 
     const galleryButton = useRef<HTMLButtonElement>(null);
     const galleryPreview = useRef<HTMLDivElement>(null);
@@ -124,7 +124,6 @@ const RetexViewer = () => {
                 ${getActiveBreakpoint('number') as number < 2 ? styles.flexCol : styles.flexRow}
                 p-[6%]
                 relative
-                md:space-y-0 space-y-[20px]
                 md:overflow-hidden overflow-scroll
             `}
         > 
@@ -148,7 +147,7 @@ const RetexViewer = () => {
                     transition-all
                     duration-200
                     ease-in-out
-                    md:space-y-0 space-y-[20px]
+                    space-y-0
                 `}
             >
                 {toggleGallery && relatedProject.img && relatedProject.img.length > 0 

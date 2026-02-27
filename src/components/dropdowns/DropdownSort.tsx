@@ -12,10 +12,10 @@ type DropdownSortProps = {
 }
 
 const DropdownSort = ({alreadyDisplayedItems}: DropdownSortProps) => {
-    const { toMatch, setToMatch } = useContext(SearchContext);
+    const { toMatch, updateSearch, setSearchInput } = useContext(SearchContext);
     const { currentLang } = useContext(LangContext);
     const [toggleMenu, setToggleMenu] = useState(false);
-    let dropdownPlaceholder = (
+    const dropdownPlaceholder = (
         getActiveBreakpoint('number') as number < 2 ? "Filters"
         : placeholderMessages.find((message) => message.context === 'dropdownSort')!.content[currentLang]
     );
@@ -24,7 +24,8 @@ const DropdownSort = ({alreadyDisplayedItems}: DropdownSortProps) => {
 
     useEffect(() => {
         if (selectedItem !== undefined) {
-            setToMatch([
+            setSearchInput("");
+            updateSearch([
                 selectedItem.abreviation ? (selectedItem.abreviation.content[currentLang] || selectedItem.abreviation.content[0]).toUpperCase()
                 : (selectedItem.content[currentLang] || selectedItem.content[0]).toUpperCase()
             ])

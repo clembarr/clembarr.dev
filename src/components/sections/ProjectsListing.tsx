@@ -100,11 +100,9 @@ const ProjectsListing = () => {
             {`
                 w-full
                 h-fit
-                ${getActiveBreakpoint("number") as number > 1 ? styles.flexRow : styles.flexCol}
+                ${getActiveBreakpoint("number") as number > 1 ? styles.flexRow + " space-x-40" : styles.flexCol}
                 ${styles.contentCenter}
-                md:space-x-[3%] base:space-x-[0]
-                md:space-y-0 
-                mt-[5%]
+                mr-30
             `}
         >
             <Searchbar />
@@ -136,7 +134,7 @@ const ProjectsListing = () => {
             className=
             {`
                 ${styles.flexWrap}
-                ${styles.contentStartX}
+                ${displayedProjects.length > 0 ?  styles.contentStartX : styles.contentCenter}
                 gap-x-[3%]
                 w-full
                 h-fit

@@ -67,7 +67,7 @@ const Dropdown = ({items, animationStyle, menuState, itemState, additionalStyles
                     className=
                     {`
                         object-cover 
-                        w-3
+                        w-4
                         rounded-full
                     `}
                 />
