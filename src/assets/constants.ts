@@ -18,10 +18,18 @@ import {
   AvailableSkillSubcategories,
   AvailableSortOptions,
   SortOption,
+  GalleryControl,
 } from "./dataTypes";
 import { UNIVERSAL_LANG } from "./i18n";
 
 export const CARD_TEXT_MAX_LINES = 5;
+
+export const galleryControls: Array<GalleryControl> = [
+  { label: "Navigate",  binding: "← →" },
+  { label: "Zoom",      binding: "+/-" },
+  { label: "Reset",     binding: "0" },
+  { label: "Close",     binding: "Esc" },
+];
 
 export const PageTransitionsConstants = {
   DURATION: 0.4,

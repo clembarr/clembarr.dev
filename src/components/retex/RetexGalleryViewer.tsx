@@ -4,6 +4,7 @@ import styles from "../../style";
 import { menuIcons } from "../../assets";
 import { ThemeContext } from "../theme/ThemeEngine";
 import { getActiveBreakpoint } from "../../utils";
+import { galleryControls } from "../../assets/constants";
 import { motion } from "framer-motion";
 
 type RetexGalleryViewerProps = {
@@ -12,11 +13,13 @@ type RetexGalleryViewerProps = {
 }
 
 const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
+    const HINTS_DELAY_MS: number = 5000;
     const {currentTheme} = useContext(ThemeContext);
     const [focusedImage, setFocusedImage] = useState<string>(images[0]);
     const [zoom, setZoom] = useState<number>(1);
     const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
-    let index = useRef<number>(0);
+    const [showHints, setShowHints] = useState<boolean>(true);
+    const index = useRef<number>(0);
     const imageRef = useRef<HTMLImageElement>(null);
     
     useEffect(() => {
@@ -44,8 +47,11 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
 
         document.addEventListener('keydown', handleKeyDown);
 
+        const hintsTimer = setTimeout(() => setShowHints(false), HINTS_DELAY_MS);
+
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
+            clearTimeout(hintsTimer);
         }
     }, [images.length]);
 
@@ -71,9 +77,9 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                 relative
             `}
         >
-            <img src={menuIcons.close_menu_icon.content[currentTheme]}
-                id='close-button'
-                alt={menuIcons.close_menu_icon.alt}
+            <button
+                type="button"
+                aria-label="Close gallery"
                 className=
                 {`
                     absolute
@@ -84,7 +90,11 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     cursor-pointer
                 `}
                 onClick={untoggler}
-            />
+            >
+                <img src={menuIcons.close_menu_icon.content[currentTheme]}
+                    alt={menuIcons.close_menu_icon.alt}
+                />
+            </button>
 
             <div id="gallery-focused-image-container"
                 className=
@@ -129,40 +139,18 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
 
-                {/* Zoom controls */}
-                <div className="absolute bottom-[15%] right-4 flex flex-col gap-2 bg-(--color-secondary) bg-opacity-90 rounded-lg p-2 shadow-lg">
-                    <button
-                        onClick={() => setZoom((prev) => Math.min(prev + 0.25, 3))}
-                        className="px-3 py-1 text-(--color-tertiary) hover:scale-110 transition-transform"
-                        aria-label="Zoom in"
-                    >
-                        +
-                    </button>
-                    <span className="px-2 text-xs text-(--color-quaternary)">
-                        {Math.round(zoom * 100)}%
-                    </span>
-                    <button
-                        onClick={() => setZoom((prev) => Math.max(prev - 0.25, 1))}
-                        className="px-3 py-1 text-(--color-tertiary) hover:scale-110 transition-transform"
-                        aria-label="Zoom out"
-                    >
-                        −
-                    </button>
-                    <button
-                        onClick={() => {
-                            setZoom(1);
-                            setPanOffset({ x: 0, y: 0 });
-                        }}
-                        className="px-2 py-1 text-xs text-(--color-tertiary) hover:scale-110 transition-transform"
-                        aria-label="Reset zoom"
-                    >
-                        Reset
-                    </button>
-                </div>
-
-                {/* Keyboard shortcuts hint */}
-                <div className="absolute top-4 left-4 bg-(--color-secondary) bg-opacity-90 rounded-lg px-3 py-2 text-xs text-(--color-quaternary) shadow-lg">
-                    <p>← → Navigate | +/- Zoom | 0 Reset | Esc Close</p>
+                <div className={`
+                    absolute 
+                    top-0 
+                    left-0
+                    bg-(--color-secondary) bg-opacity-90
+                    rounded-lg px-3 py-2
+                    text-xs text-(--color-quaternary)
+                    shadow-lg
+                    transition-opacity duration-500
+                    ${showHints ? 'opacity-100 border border-(--color-tertiary)' : 'opacity-0 pointer-events-none'}
+                `}>
+                    <p>{galleryControls.map((c) => `${c.binding} ${c.label}`).join(' | ')}</p>
                 </div>
             </div>
 
@@ -225,14 +213,16 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                         className=
                         {`
                             absolute
-                            block
-                            bg-(--color-tertiary)
-                            h-[4px]
-                            border-none
-                            w-1/5
                             bottom-0
-                            shadow-lg
-                            blur-[1px]
+                            left-0
+                            right-0
+                            h-0.5
+                            border-none
+                            bg-linear-to-r
+                            from-(--color-tertiary)/0
+                            via-(--color-tertiary)
+                            to-(--color-tertiary)/0
+                            shadow-(--glow-md)
                         `}
                     />
                 </div>
@@ -243,7 +233,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     ${styles.sizeFull}
                     ${getActiveBreakpoint('number') as number < 2 ? styles.flexCol : "hidden"}
                     space-y-[5%]
-                    pt-[25px]
+                    pt-6.25
                 `}
             >
                 {images.map((image, idx) => (

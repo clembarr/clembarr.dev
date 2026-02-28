@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { BlogPost } from '../../assets/dataTypes';
 import { LangContext } from '../language';
 import { formatBlogDate, generateBlogUrl } from '../../utils/markdown';
-import ShareButton from '../share/ShareButton';
+
 import TableOfContents from './TableOfContents';
 import styles from '../../style';
 
@@ -34,7 +34,6 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
   const title = post.metadata.title[currentLang] || post.metadata.title['0'];
   const content = post.content[currentLang] || post.content['0'];
   const toc = post.tableOfContents[currentLang] || post.tableOfContents['0'];
-  const shareUrl = `${window.location.origin}${generateBlogUrl(post.slug)}`;
 
   // Add IDs to headings in content for TOC navigation
   useEffect(() => {
@@ -148,15 +147,6 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
           </div>
         )}
 
-        {/* Share Button */}
-        <div className="mt-6">
-          <ShareButton
-            title={title}
-            text={post.metadata.description[currentLang] || post.metadata.description['0']}
-            url={shareUrl}
-            className="inline-flex"
-          />
-        </div>
       </header>
 
       {/* Article Content with TOC Sidebar */}

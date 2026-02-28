@@ -64,6 +64,7 @@ const Layout = ({children}: {children: ReactNode}) => {
                     bg-(--color-layout-bg)
                     relative
                     z-10
+                    pb-20
                 `}
                 style={{
                     minHeight: "calc(100vh - 120px)",

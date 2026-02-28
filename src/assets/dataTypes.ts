@@ -297,6 +297,30 @@ export interface FooterColumn {
   content: Hyperlink[] | CreditMention[] | NavbarPattern[];
 }
 
+/** Identifiers for gallery viewer actions. */
+export enum GalleryAction {
+  NAVIGATE_NEXT = "NAVIGATE_NEXT",
+  NAVIGATE_PREV = "NAVIGATE_PREV",
+  ZOOM_IN = "ZOOM_IN",
+  ZOOM_OUT = "ZOOM_OUT",
+  RESET = "RESET",
+  CLOSE = "CLOSE",
+}
+
+/**
+ * A keyboard/UI control for the gallery viewer.
+ * @param action - the action this control triggers
+ * @param label - human-readable name displayed in the hints
+ * @param binding - keyboard shortcut description for display (e.g. "← →", "+/-")
+ * @param keys - actual KeyboardEvent.key values that trigger this action
+ */
+export interface GalleryControl {
+  action: GalleryAction;
+  label: string;
+  binding: string;
+  keys: string[];
+}
+
 /** Blog post categories supported by the app. */
 export enum BlogCategory {
   RESEARCH = "RESEARCH",

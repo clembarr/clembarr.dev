@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef, useCallback } from "react";
 import { projects } from "../../assets/contents";
 import styles from "../../style"
 import ProjectPreview from "../cards/ProjectPreview";
@@ -64,14 +64,39 @@ const ProjectsListing = () => {
         );
     }, [toMatch]);
 
+    const retexContainerRef = useRef<HTMLDivElement>(null);
+
+    /** Traps focus inside the retex dialog when open, restores it when closed. */
+    const handleFocusTrap = useCallback((e: KeyboardEvent) => {
+        if (e.key !== 'Tab' || !retexContainerRef.current) return;
+        const focusable = retexContainerRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }, []);
+
     useEffect(() => {
         if (displayedRetexTitle != undefined) {
             document.body.style.overflow = "hidden";
+            document.addEventListener('keydown', handleFocusTrap);
+            /** Auto-focus the dialog so screen readers announce it. */
+            setTimeout(() => retexContainerRef.current?.focus(), 50);
         }
         else {
             document.body.style.overflow = "scroll";
+            document.removeEventListener('keydown', handleFocusTrap);
         }
-    }, [displayedRetexTitle]);
+        return () => document.removeEventListener('keydown', handleFocusTrap);
+    }, [displayedRetexTitle, handleFocusTrap]);
 
     useEffect(() => {
         setDisplayedProjects(displayedProjects);
@@ -111,6 +136,11 @@ const ProjectsListing = () => {
         </div>
         
         <div id='retex-container'
+            ref={retexContainerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Project details"
+            tabIndex={-1}
             className=
             {`
                 ${displayedRetexTitle === undefined ? "hidden" : "block"}

@@ -2,7 +2,7 @@ import { projects } from "../../assets/contents";
 import styles from '../../style';
 import DOMPurify from 'dompurify';
 import { adjustFontSize, getActiveBreakpoint, isOverflowing } from '../../utils';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useCallback, useEffect, useRef, useState } from 'react';
 import { LangContext } from '../language';
 import { coreImages, menuIcons } from '../../assets';
 import { RetexContext } from './RetexDisplayEngine'
@@ -10,7 +10,6 @@ import { placeholderMessages } from '../../assets/constants';
 import RetexHeader from './RetexHeader';
 import RetexGalleryViewer from './RetexGalleryViewer';
 import { ThemeContext } from "../theme/ThemeEngine";
-import { ShareButton } from '../share';
 
 const RetexViewer = () => {
     const { currentLang } = useContext(LangContext);
@@ -23,59 +22,13 @@ const RetexViewer = () => {
     const galleryPreview = useRef<HTMLDivElement>(null);
     const specsContainer = useRef<HTMLSpanElement>(null);
     const notionsContainer = useRef<HTMLSpanElement>(null);
-    const notionsList = useRef<HTMLUListElement>(null);
 
-    useEffect(() => {
-        setToggleGallery(false);
+    /** Maximum number of notions to display before truncating to prevent overflow. */
+    const [maxNotions, setMaxNotions] = useState<number>(Infinity);
 
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'Escape') {
-                if (galleryToggleState.current) {
-                    setTimeout(() => {
-                        setToggleGallery(false);
-                    }, 50);
-                } else {
-                    setDisplayedRetex(undefined);
-                }
-            }
-        });
+    const isMobile = (getActiveBreakpoint('number') as number) < 2;
 
-        document.addEventListener('click', (e) => {
-            if (e.target === document.getElementById(`retex-${displayedRetexTitle}`)) {
-                setDisplayedRetex(undefined);
-            }
-        });
-
-        window.addEventListener('resize', handleTextOverflow);
-
-        return () => {
-            document.removeEventListener('click', () => {});
-            document.removeEventListener('keydown', () => {});
-            window.removeEventListener('resize', handleTextOverflow);
-        }
-    }, [displayedRetexTitle]);
-
-    useEffect(() => {
-        galleryToggleState.current = toggleGallery;
-    }, [toggleGallery]);
-
-    useEffect(() => {
-        handleTextOverflow();
-    }, [displayedRetexTitle, toggleGallery, currentLang]);
-
-    useEffect(() => {
-        const button = galleryButton.current;
-        const buttonContainer = galleryPreview.current;
-        if (!button || !buttonContainer) return;
-
-        //Center absolute button in its parent container
-        button.style.top = `${(buttonContainer.clientHeight - button.clientHeight) / 2 -2}px`;
-        button.style.left = `${(buttonContainer.clientWidth - button.clientWidth) / 2}px`;
-    }, [currentLang, displayedRetexTitle, toggleGallery]);
-
-    const handleTextOverflow = () => {
-        console.log(isOverflowing(notionsContainer.current!), isOverflowing(specsContainer.current!));
-
+    const handleTextOverflow = useCallback(() => {
         if (specsContainer.current) {
             if (isOverflowing(specsContainer.current)) {adjustFontSize(specsContainer.current, "min");}
             else {adjustFontSize(specsContainer.current, "max");}
@@ -94,14 +47,69 @@ const RetexViewer = () => {
             }
         }
 
-        if (notionsContainer.current && notionsList.current) {
-            /** If the content is still overflowing, remove the last notion */
-            while (isOverflowing(notionsContainer.current)) {
-                notionsList.current.removeChild(notionsList.current.lastChild as Node);
-                if (notionsList.current.childElementCount === 0) break;
-            }
+        /** If the notions container is still overflowing, reduce the displayed count
+         *  via state so React handles the DOM — no direct removeChild mutations. */
+        if (notionsContainer.current) {
+            setMaxNotions((prev) => {
+                if (notionsContainer.current && isOverflowing(notionsContainer.current) && prev > 1) {
+                    return prev - 1;
+                }
+                return prev;
+            });
         }
-    }
+    }, []);
+
+    useEffect(() => {
+        setToggleGallery(false);
+        setMaxNotions(Infinity);
+
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                if (galleryToggleState.current) {
+                    setTimeout(() => {
+                        setToggleGallery(false);
+                    }, 50);
+                } else {
+                    setDisplayedRetex(undefined);
+                }
+            }
+        };
+
+        const handleBackdropClick = (e: MouseEvent) => {
+            if (e.target === document.getElementById(`retex-${displayedRetexTitle}`)) {
+                setDisplayedRetex(undefined);
+            }
+        };
+
+        document.addEventListener('keyup', handleKeyUp);
+        document.addEventListener('click', handleBackdropClick);
+        window.addEventListener('resize', handleTextOverflow);
+
+        return () => {
+            document.removeEventListener('keyup', handleKeyUp);
+            document.removeEventListener('click', handleBackdropClick);
+            window.removeEventListener('resize', handleTextOverflow);
+        }
+    }, [displayedRetexTitle, setDisplayedRetex, handleTextOverflow]);
+
+    useEffect(() => {
+        galleryToggleState.current = toggleGallery;
+    }, [toggleGallery]);
+
+    useEffect(() => {
+        setMaxNotions(Infinity);
+        handleTextOverflow();
+    }, [displayedRetexTitle, toggleGallery, currentLang, handleTextOverflow]);
+
+    useEffect(() => {
+        const button = galleryButton.current;
+        const buttonContainer = galleryPreview.current;
+        if (!button || !buttonContainer) return;
+
+        //Center absolute button in its parent container
+        button.style.top = `${(buttonContainer.clientHeight - button.clientHeight) / 2 -2}px`;
+        button.style.left = `${(buttonContainer.clientWidth - button.clientWidth) / 2}px`;
+    }, [currentLang, displayedRetexTitle, toggleGallery]);
 
     const relatedProject = projects.find((project) => {
         return (project.title[currentLang] === displayedRetexTitle
@@ -110,25 +118,22 @@ const RetexViewer = () => {
     if (!displayedRetexTitle) return;
     if (!relatedProject) {console.warn(`No project found for '${displayedRetexTitle}'.`); return;}
 
-    // Generate shareable URL
-    const projectSlug = relatedProject.title[0].toLowerCase().replace(/\s+/g, '-');
-    const shareUrl = `${window.location.origin}/projects/${projectSlug}`;
-    const shareTitle = relatedProject.title[currentLang] || relatedProject.title[0];
-    const shareText = relatedProject.description[currentLang] || relatedProject.description['en'];
+    /** Notions list capped by maxNotions to avoid overflow without DOM mutation. */
+    const displayedNotions = relatedProject.notions[currentLang].slice(0, maxNotions);
 
     return (
         <div id={`retex-${displayedRetexTitle}`}
             className=
             {`
-                ${getActiveBreakpoint('number') as number < 2 ? "" : styles.sizeFull}
-                ${getActiveBreakpoint('number') as number < 2 ? styles.flexCol : styles.flexRow}
+                ${isMobile ? "" : styles.sizeFull}
+                ${isMobile ? styles.flexCol : styles.flexRow}
                 p-[6%]
                 relative
                 md:overflow-hidden overflow-scroll
             `}
-        > 
+        >
             <RetexHeader {...relatedProject} />
-            
+
             <div id='retex-content'
                 className=
                 {`
@@ -150,31 +155,32 @@ const RetexViewer = () => {
                     space-y-0
                 `}
             >
-                {toggleGallery && relatedProject.img && relatedProject.img.length > 0 
+                {toggleGallery && relatedProject.img && relatedProject.img.length > 0
                 ? <RetexGalleryViewer images={relatedProject.img} untoggler={() => setToggleGallery(false)}/>
                 : <>
-                    <div className="absolute top-[2%] right-[1%] z-23 flex items-center gap-3">
-                        {/* Share Button */}
-                        <ShareButton
-                            title={shareTitle}
-                            text={shareText}
-                            url={shareUrl}
-                            className="text-xs"
-                        />
-
-                        {/* Close Button */}
+                    <button
+                        type="button"
+                        aria-label="Close"
+                        onClick={() => setDisplayedRetex(undefined)}
+                        className={`
+                            absolute
+                            top-[2%]
+                            right-[1%]
+                            z-23
+                            ${isMobile ? "hidden" : "flex"}
+                            items-center
+                            justify-center
+                            w-8 h-8
+                            rounded-full
+                            cursor-pointer
+                            ${styles.defaultTransition}
+                        `}
+                    >
                         <img src={menuIcons.close_menu_icon.content[currentTheme]}
-                            id='close-button'
                             alt={menuIcons.close_menu_icon.alt}
-                            className=
-                            {`
-                                ${getActiveBreakpoint('number') as number < 2 ? "hidden" : ""}
-                                ${styles.sizeFit}
-                                cursor-pointer
-                            `}
-                            onClick={() => setDisplayedRetex(undefined)}
+                            className={`${styles.sizeFull}`}
                         />
-                    </div>
+                    </button>
 
                     <span id='specs'
                         ref={specsContainer}
@@ -190,23 +196,22 @@ const RetexViewer = () => {
                             {`
                                 ${styles.sizeFull}
                                 text-wrap
-                                ${getActiveBreakpoint('number') as number < 2 ? "text-xs" : ""}
+                                ${isMobile ? "text-xs" : ""}
                             `}
                             dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(relatedProject.specs[currentLang])}}
                         />
                     </span>
-                    
+
                     <div id='retex-bottom'
                         className=
                         {`
                             w-full
-                            md:h-fit h-full 
+                            md:h-fit h-full
                             md:max-h-[40%]
-                            ${getActiveBreakpoint('number') as number < 2 ? styles.flexCol : styles.flexRow}
+                            ${isMobile ? styles.flexCol : styles.flexRow}
                             ${styles.contentCenter}
                             text-wrap
                             md:space-x-[3%] space-x-0
-                            md:space-y-0 space-y-[30px]
                         `}
                     >
                         <span id='notions'
@@ -220,7 +225,7 @@ const RetexViewer = () => {
                                 relative
                             `}
                         >
-                            <ul ref={notionsList}
+                            <ul
                                 className=
                                 {`
                                     ${styles.sizeFull}
@@ -229,18 +234,17 @@ const RetexViewer = () => {
                                     list-disc
                                     list-inside
                                     space-y-[5%]
-                                    ${getActiveBreakpoint('number') as number < 2 ? "text-2xs" : ""}
+                                    ${isMobile ? "text-2xs" : ""}
                                 `}
                             >
-                                {relatedProject.notions[currentLang].map((notion, index) => (
+                                {displayedNotions.map((notion, index) => (
                                     <li key={`notion-${index}`}
-                                        className={``}
                                         dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(notion)}}
                                     />
                                 ))}
                             </ul>
                         </span>
-                        
+
                         <div id='retex-imgs-container'
                             className=
                             {`
@@ -256,7 +260,7 @@ const RetexViewer = () => {
                             <span id='retex-gallery-preview'
                                 ref={galleryPreview}
                                 className=
-                                {`  
+                                {`
                                     ${styles.sizeFull}
                                     grid
                                     grid-cols-2
@@ -351,13 +355,13 @@ const RetexViewer = () => {
                         text-xs
                     `}
                 >
-                    {relatedProject.additionalRessources ? 
+                    {relatedProject.additionalRessources ?
                         relatedProject.additionalRessources.map((resource, index) => (
                             <li key={`retex-resource-${index}`}
                                 className=
                                 {`
                                     ${styles.sizeFull}
-                                    ${getActiveBreakpoint('number') as number < 2 ? styles.flexRow : "hidden"}
+                                    ${isMobile ? styles.flexRow : "hidden"}
                                     ${styles.contentStartX}
                                     space-x-[3%]
                                     ${currentTheme === 'dark' ? 'text-(--color-tertiary)' : 'text-(--color-primary)'}
@@ -365,8 +369,9 @@ const RetexViewer = () => {
                                     duration-400
                                     ease-in-out
                                 `}
-                            >   
+                            >
                                 <a target='_blank'
+                                    rel="noopener noreferrer"
                                     href={resource.link}
                                 > → {resource.content[currentLang]} </a>
                             </li>

@@ -20,6 +20,8 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
     const { currentTheme } = useContext(ThemeContext);
     const { setDisplayedRetex } = useContext(RetexContext);
 
+    const isMobile = (getActiveBreakpoint('number') as number) < 2;
+
     return (
         <header id='retex-header'
             className=
@@ -31,13 +33,13 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                 overflow-hidden
             `}
         >
-            <img src={menuIcons.close_menu_icon.content[currentTheme]}
-                id='close-button'
-                alt={menuIcons.close_menu_icon.alt}
+            <button
+                type="button"
+                aria-label="Close"
                 className=
                 {`
                     absolute
-                    ${getActiveBreakpoint('number') as number < 2 ? "" : "hidden"}
+                    ${isMobile ? "" : "hidden"}
                     top-[30px]
                     right-[30px]
                     z-23
@@ -45,7 +47,11 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                     cursor-pointer
                 `}
                 onClick={() => setDisplayedRetex(undefined)}
-            />
+            >
+                <img src={menuIcons.close_menu_icon.content[currentTheme]}
+                    alt={menuIcons.close_menu_icon.alt}
+                />
+            </button>
 
             <div id='retex-header-main'
                 className=
@@ -62,14 +68,14 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                         font-primary-bold
                         md:text-3xl text-xl
                         tracking-wide
-                        md:py-[6%] 
+                        md:py-[6%]
                         md:pt-[6%]
                         px-[10%]
                         border-dashed
                         md:space-y-[6%] space-y-[2%]
                         md:mb-[3%]
                     `}
-                > 
+                >
                     <p className=
                         {`
                             ${styles.flexWrap}
@@ -93,18 +99,18 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                             font-primary-regular
                             text-[60%]
                         `}
-                    > 
+                    >
                     {relatedProject.date.toLocaleDateString(
-                        currentLang === 'fr' ? 'fr' : 'en', 
+                        currentLang === 'fr' ? 'fr' : 'en',
                         {month: 'numeric', year: 'numeric'}
-                    )} 
+                    )}
                     </span>
                 </h1>
 
                 <div id='retex-skills'
                     className=
                     {`
-                        ${getActiveBreakpoint('number') as number < 2 ? styles.flexRow : styles.flexCol}
+                        ${isMobile ? styles.flexRow : styles.flexCol}
                         ${styles.sizeFull}
                         ${styles.contentStartX}
                         px-[10%]
@@ -119,12 +125,12 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                         <span key={`retex-skill-${index}`}
                             className=
                             {`
-                                ${getActiveBreakpoint('number') as number < 2 ? styles.flexCol : styles.flexRow}
+                                ${isMobile ? styles.flexCol : styles.flexRow}
                                 ${styles.sizeFull}
-                                ${getActiveBreakpoint('number') as number < 2 ? styles.contentStartY : styles.contentStartX}
+                                ${isMobile ? styles.contentStartY : styles.contentStartX}
                                 space-x-[8%]
                             `}
-                        >   
+                        >
                             <img src={tool.icon.content[currentTheme]}
                                 alt={tool.icon.alt}
                                 className=
@@ -137,13 +143,13 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                                 `}
                             />
 
-                            <label className=
+                            <span className=
                                 {`
-                                    ${getActiveBreakpoint('number') as number < 2 ? "hidden" : ""}
+                                    ${isMobile ? "hidden" : ""}
                                     font-primary-regular
                                     2xl:text-lg md:text-sm
                                 `}
-                            > {tool.label} </label>
+                            > {tool.label} </span>
                         </span>
                     ))}
                 </div>
@@ -152,7 +158,7 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
             <div id='retex-header-additional'
                 className=
                 {`
-                    ${getActiveBreakpoint('number') as number < 2 ? "hidden" : styles.flexCol}
+                    ${isMobile ? "hidden" : styles.flexCol}
                 `}
             >
                 <ul id='retex-header-additional-ressources'
@@ -168,7 +174,7 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                         space-y-[3%]
                     `}
                 >
-                    {relatedProject.additionalRessources ? 
+                    {relatedProject.additionalRessources ?
                         relatedProject.additionalRessources.map((resource, index) => (
                             <li key={`retex-resource-${index}`}
                                 className=
@@ -177,16 +183,16 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                                     ${styles.flexRow}
                                     ${styles.contentStartX}
                                     space-x-[3%]
-                                    ${currentTheme === 'dark' ? 'text-(--color-tertiary)' : 'text-(--color-primary)'}
-                                    hover:text-white
+                                    ${currentTheme === 'dark' ? 'text-(--color-tertiary) hover:text-white' 
+                                        : 'text-(--color-quinary) hover:text-(--color-tertiary)'}
                                     hover:cursor-pointer
                                     hover:translate-x-[2%]
-                                    transition-all
-                                    duration-400
-                                    ease-in-out
+                                    font-bold
+                                    ${styles.defaultTransition}
                                 `}
-                            >   
+                            >
                                 <a target='_blank'
+                                    rel="noopener noreferrer"
                                     href={resource.link}
                                 > → {resource.content[currentLang]} </a>
                             </li>
