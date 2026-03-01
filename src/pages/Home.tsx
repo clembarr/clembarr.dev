@@ -3,13 +3,21 @@ import styles from "../style";
 import { Hero, About, Contact } from "../components/sections";
 import { ScrollReveal, PageTransition } from "../components/animations";
 import { SuspenseFallback } from "../components";
+import { MetaTags, StructuredData, personSchema, websiteSchema } from "../components/seo";
 
 const ProjectsSlider = lazy(() => import("../components/sections/ProjectsSlider"));
 
 const Home = () => {
   return (
     <PageTransition>
-      
+      <MetaTags
+        title="Clément Barrière - Portfolio"
+        description="Portfolio de Clément Barrière - Développeur logiciel & chercheur. Projets, compétences et parcours."
+        keywords={['portfolio', 'développeur', 'software developer', 'researcher', 'Clément Barrière']}
+        ogUrl="https://clembarr.dev"
+        canonical="https://clembarr.dev"
+      />
+      <StructuredData schema={[personSchema, websiteSchema]} />
     <div id='home-container' 
       className=
       {`

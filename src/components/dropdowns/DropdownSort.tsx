@@ -2,16 +2,17 @@ import { useContext, useEffect, useState } from 'react'
 import Dropdown from './Dropdown'
 import styles from '../../style';
 import { SearchContext } from '../search';
-import { placeholderMessages, sortOptions } from '../../assets/constants';
+import { placeholderMessages } from '../../assets/constants';
 import { LangContext } from '../language';
-import { SortOption } from '../../assets/dataTypes';
+import { FilterOption } from '../../assets/dataTypes';
 import { getActiveBreakpoint } from '../../utils';
 
 type DropdownSortProps = {
-    alreadyDisplayedItems?: string[]
+    alreadyDisplayedItems?: string[];
+    options: FilterOption[];
 }
 
-const DropdownSort = ({alreadyDisplayedItems}: DropdownSortProps) => {
+const DropdownSort = ({alreadyDisplayedItems, options}: DropdownSortProps) => {
     const { toMatch, updateSearch, setSearchInput } = useContext(SearchContext);
     const { currentLang } = useContext(LangContext);
     const [toggleMenu, setToggleMenu] = useState(false);
@@ -19,7 +20,7 @@ const DropdownSort = ({alreadyDisplayedItems}: DropdownSortProps) => {
         getActiveBreakpoint('number') as number < 2 ? "Filters"
         : placeholderMessages.find((message) => message.context === 'dropdownSort')!.content[currentLang]
     );
-    const [selectedItem, setSelectedItem] = useState<SortOption>();
+    const [selectedItem, setSelectedItem] = useState<FilterOption>();
     const [placeholder, setPlaceholder] = useState(dropdownPlaceholder);
 
     useEffect(() => {
@@ -42,7 +43,7 @@ const DropdownSort = ({alreadyDisplayedItems}: DropdownSortProps) => {
     }, [toMatch, currentLang])
 
     const displayedSortOptions = () => (
-        sortOptions.filter((option) => !alreadyDisplayedItems?.includes(option.context))
+        options.filter((option) => !alreadyDisplayedItems?.includes(option.context))
         .map((option) => {
             return (
                 <li key={`option-${option.context}-item`} 

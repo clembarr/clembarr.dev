@@ -1,4 +1,4 @@
-import { Hyperlink, NavbarPattern } from "./assets/dataTypes";
+import { Hyperlink, NavbarPattern, BlogPost } from "./assets/dataTypes";
 import { navLinks } from "./assets/constants";
 
 /**
@@ -31,22 +31,24 @@ export const shuffle = (array: any[]) => {
  * @returns the link to highlight in the navbar, to lowercase
  */
 export const getCurrentNavigation = () => {
-    let currentRoute: NavbarPattern = navLinks.find(
-        (nav) => (
-            nav.route.includes(window.location.pathname.split('/')[1])
-        )
-    )!;
+    const segment = window.location.pathname.split('/')[1];
+    const currentRoute = navLinks.find(
+        (nav) => nav.route.includes(segment)
+    ) ?? navLinks.find((nav) => nav.route === '')!;
 
-    let correspondingNavigation: Hyperlink = currentRoute.links.find(
+    const correspondingNavigation = currentRoute.links.find(
         (navLink) => {
             if (window.location.hash !== "") {
                 return window.location.hash.toLowerCase().includes(navLink.link.split('/')[1].toLowerCase());
 
             } else {
-                return window.location.pathname.toLowerCase() === navLink.link.toLowerCase();
+                const pathname = window.location.pathname.toLowerCase();
+                const link = navLink.link.toLowerCase();
+                return pathname === link
+                    || (link !== "/" && pathname.startsWith(link + "/"));
             }
         }
-    )!;
+    );
 
     if (correspondingNavigation) {
         return (currentRoute.links.find((nav) => nav.link === correspondingNavigation.link)!).link.toLowerCase();
@@ -401,3 +403,63 @@ export const uniformizeFontSize = (container1: HTMLElement, container2: HTMLElem
         container2.style.fontSize = `${newSize}px`;
     }
 }
+
+/**
+ * @function formatBlogDate Format a date for blog display using locale-aware formatting
+ * @param date - Date object to format
+ * @param lang - language code (e.g. "fr", "en", or "0" for universal/English)
+ * @returns formatted date string (e.g. "January 15, 2025" or "15 janvier 2025")
+ */
+export const formatBlogDate = (date: Date, lang: string): string => {
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    };
+
+    return new Intl.DateTimeFormat(lang === '0' ? 'en-US' : lang === 'en' ? 'en-US' : 'fr-FR', options).format(date);
+};
+
+/**
+ * @function getRelatedPosts Get related posts based on category, tags and recency.
+ * Scores each candidate post and returns the top ones sorted by relevance.
+ * @param post - the current blog post
+ * @param allPosts - array of all blog posts
+ * @param limit - maximum number of related posts to return
+ * @returns array of related BlogPost objects, sorted by relevance score (descending)
+ */
+export const getRelatedPosts = (
+    post: BlogPost,
+    allPosts: BlogPost[],
+    limit: number = 3
+): BlogPost[] => {
+    return allPosts
+        .filter((p) => p.slug !== post.slug)
+        .map((p) => {
+            let score = 0;
+
+            // Same category: +10 points
+            if (p.category === post.category) {
+                score += 10;
+            }
+
+            // Shared tags: +2 points per tag (flatten all lang keys)
+            const postTags = Object.values(post.tags).flat();
+            const candidateTags = Object.values(p.tags).flat();
+            const sharedTags = candidateTags.filter((tag) => postTags.includes(tag));
+            score += sharedTags.length * 2;
+
+            // Recency bonus (posts within 90 days): +1-5 points
+            const daysDiff = Math.abs(
+                (p.date.getTime() - post.date.getTime()) / (1000 * 60 * 60 * 24)
+            );
+            if (daysDiff < 90) {
+                score += Math.max(1, 5 - Math.floor(daysDiff / 18));
+            }
+
+            return { post: p, score };
+        })
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit)
+        .map((item) => item.post);
+};

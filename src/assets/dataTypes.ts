@@ -66,9 +66,23 @@ export enum AvailableSortOptions {
   WEB = "WEB",
   FP = "FP",
 }
-export interface SortOption extends Omit<Message, "context"> {
-  context: AvailableSortOptions;
+
+/**
+ * Generic filter option used by Sortingbar and DropdownSort.
+ * @param context - string identifier for the filter (e.g. "ALL", "NEWEST", a BlogCategory value, etc.)
+ * @param content - multilingual display label
+ * @param abreviation - optional abbreviated label for pill display
+ */
+export interface FilterOption extends Omit<Message, "context"> {
+  context: string;
   abreviation?: Message;
+}
+
+/**
+ * Project-specific sort option with a narrower context type.
+ */
+export interface SortOption extends FilterOption {
+  context: AvailableSortOptions;
 }
 
 /**
@@ -343,41 +357,22 @@ export interface TableOfContentsItem {
 }
 
 /**
- * Blog post metadata from frontmatter.
- * @param title - title of the blog post (multilingual)
- * @param description - short description (multilingual)
- * @param date - publication date
- * @param category - category of the post
- * @param tags - list of tags
- * @param author - author of the post
+ * Complete blog post structure.
+ * @param slug - URL identifier
  * @param coverImage - optional cover image URL
  * @param readingTime - estimated reading time in minutes
- * @param published - whether the post is published
+ * @param category - category of the post
+ * @param paragraphs - list of content paragraphs,
+ *    * context key from extended Message interface is used for paragraph title,
+ *    * images have to be indicated by `[[image x]]` anywher in the content, x being the image 
+ *        index in post images list. This pattern will be replaced by the image at rendering.
+ * @param tableOfContents - table of content if wanted
  */
-export interface BlogMetadata {
-  title: {[lang: string]: string};
-  description: {[lang: string]: string};
-  date: Date;
-  category: BlogCategory;
-  tags: string[];
-  author: Author;
-  coverImage?: string;
-  readingTime: number;
-  published: boolean;
-}
-
-/**
- * Complete blog post structure.
- * @param slug - URL-friendly identifier
- * @param metadata - frontmatter metadata
- * @param content - HTML content of the post (multilingual)
- * @param rawContent - raw Markdown content (multilingual)
- * @param tableOfContents - auto-generated table of contents (multilingual)
- */
-export interface BlogPost {
+export interface BlogPost extends Project {
   slug: string;
-  metadata: BlogMetadata;
-  content: {[lang: string]: string};
-  rawContent: {[lang: string]: string};
-  tableOfContents: {[lang: string]: TableOfContentsItem[]};
+  coverImage?: string;
+  readingTime?:number;
+  category: BlogCategory;
+  paragraphs: Message[];
+  tableOfContents?: {[lang: string]: TableOfContentsItem[]};
 }

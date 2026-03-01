@@ -14,7 +14,7 @@ type ProjectCardProps = {
 }
 
 /**
- * @description Modern ProjectCard with theme-aware styling and 3D tilt effect
+ * @description Project card for the home page's slider
  */
 const ProjectCard = ({project, additionalStyles, onanimationend}: ProjectCardProps) => {
   const { currentLang } = useContext(LangContext);

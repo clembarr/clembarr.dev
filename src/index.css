@@ -4,6 +4,7 @@ layer(base);
 layer(base);
 
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 @theme {
   --font-family-montserrat: "Montserrat", sans-serif;

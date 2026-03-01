@@ -3,28 +3,31 @@ import styles from "../../style"
 import { SearchContext } from "./SearchEngine";
 import { DropdownSort } from "../dropdowns";
 import { getActiveBreakpoint } from "../../utils";
-import { sortOptions } from "../../assets/constants";
 import { menuIcons } from "../../assets/menu_icons";
 import { LangContext } from "../language";
 import { ThemeContext } from "../theme/ThemeEngine";
-import { AvailableSortOptions } from "../../assets/dataTypes";
+import { FilterOption } from "../../assets/dataTypes";
 
 /** Options merged into the Date pill and excluded from the regular pills loop. */
-const DATE_OPTIONS = [AvailableSortOptions.NEWEST, AvailableSortOptions.OLDEST];
+const DATE_OPTIONS = ["NEWEST", "OLDEST"];
 
 /** Options excluded from the regular pills loop (ALL is its own pill, date options merged). */
-const EXCLUDED_FROM_PILLS = [AvailableSortOptions.ALL, ...DATE_OPTIONS];
+const EXCLUDED_FROM_PILLS = ["ALL", ...DATE_OPTIONS];
 
-/** Maximum number of regular pills shown on desktop (excluding ALL and Date). */
-const MAX_PILLS = 4;
+type SortingBarProps = {
+    options: FilterOption[];
+    maxPills?: number;
+}
 
 /**
- * @description Sorting bar for projects filtering. Always displays an ALL pill
+ * @description Sorting bar for filtering. Always displays an ALL pill
  * and a Date pill (with a chevron cycling newest/oldest). Regular filter pills
  * follow, using abbreviations when available. A dropdown shows remaining options.
  * On mobile, only the dropdown is shown.
+ * @param options - the filter options to display as pills and in the dropdown
+ * @param maxPills - maximum number of regular pills shown on desktop (default: 4)
  */
-const SortingBar = () => {
+const SortingBar = ({ options, maxPills = 4 }: SortingBarProps) => {
     const { toMatch, updateSearch, setSearchInput } = useContext(SearchContext);
     const { currentLang } = useContext(LangContext);
     const { currentTheme } = useContext(ThemeContext);
@@ -34,20 +37,20 @@ const SortingBar = () => {
 
     /** The current state of the date pill: null (inactive), "NEWEST" or "OLDEST". */
     const dateState: string | null =
-        toMatch[0] === AvailableSortOptions.NEWEST ? AvailableSortOptions.NEWEST
-        : toMatch[0] === AvailableSortOptions.OLDEST ? AvailableSortOptions.OLDEST
+        toMatch[0] === "NEWEST" ? "NEWEST"
+        : toMatch[0] === "OLDEST" ? "OLDEST"
         : null;
 
-    /** Regular pills: all sortOptions except ALL and date-related ones. */
-    const regularPills = sortOptions.filter(
-        (option) => !EXCLUDED_FROM_PILLS.includes(option.context as AvailableSortOptions)
+    /** Regular pills: all options except ALL and date-related ones. */
+    const regularPills = options.filter(
+        (option) => !EXCLUDED_FROM_PILLS.includes(option.context)
     );
 
     /** Items already displayed as pills, to exclude from the dropdown. */
     const alreadyDisplayedItems = [
-        AvailableSortOptions.ALL,
+        "ALL",
         ...DATE_OPTIONS,
-        ...(!isMobile ? regularPills.slice(0, MAX_PILLS).map((o) => o.context) : []),
+        ...(!isMobile ? regularPills.slice(0, maxPills).map((o) => o.context) : []),
     ];
 
     useEffect(() => {
@@ -70,10 +73,10 @@ const SortingBar = () => {
      */
     const handleDateClick = () => {
         setSearchInput("");
-        if (dateState === null || dateState === AvailableSortOptions.OLDEST) {
-            updateSearch([AvailableSortOptions.NEWEST]);
+        if (dateState === null || dateState === "OLDEST") {
+            updateSearch(["NEWEST"]);
         } else {
-            updateSearch([AvailableSortOptions.OLDEST]);
+            updateSearch(["OLDEST"]);
         }
     };
 
@@ -90,7 +93,7 @@ const SortingBar = () => {
      * @param option the sort option to get the label for
      * @returns the uppercased label string
      */
-    const getPillLabel = (option: typeof sortOptions[number]) => {
+    const getPillLabel = (option: FilterOption) => {
         const label = option.abreviation
             ? (option.abreviation.content[currentLang] || option.abreviation.content[0])
             : option.content[currentLang];
@@ -127,7 +130,7 @@ const SortingBar = () => {
         hover:bg-(--color-tertiary)/5
     `;
 
-    const allOption = sortOptions.find((o) => o.context === AvailableSortOptions.ALL)!;
+    const allOption = options.find((o) => o.context === "ALL")!;
 
     return (
         <div id="sorting-bar-container"
@@ -142,10 +145,10 @@ const SortingBar = () => {
             {!isMobile && (
                 <>
                     <button
-                        onClick={() => { setSearchInput(""); updateSearch([AvailableSortOptions.ALL]); }}
+                        onClick={() => { setSearchInput(""); updateSearch(["ALL"]); }}
                         className={`
                             ${pillBase}
-                            ${isActive(AvailableSortOptions.ALL) ? pillActive : pillInactive}
+                            ${isActive("ALL") ? pillActive : pillInactive}
                         `}
                     > {allOption.content[currentLang].toUpperCase()} </button>
 
@@ -167,13 +170,13 @@ const SortingBar = () => {
                                     w-4
                                     ml-1    
                                     ${styles.easeOutTransition}
-                                    ${dateState === AvailableSortOptions.OLDEST ? 'rotate-180' : 'rotate-0'}
+                                    ${dateState === "OLDEST" ? 'rotate-180' : 'rotate-0'}
                                 `}
                             />
                         )}
                     </button>
 
-                    {regularPills.slice(0, MAX_PILLS).map((option, index) => (
+                    {regularPills.slice(0, maxPills).map((option, index) => (
                         <button key={index}
                             onClick={() => { setSearchInput(""); updateSearch([option.context]); }}
                             data-tooltip={option.abreviation ? option.content[currentLang] : undefined}
@@ -196,7 +199,7 @@ const SortingBar = () => {
                     ml-6
                 `}
             >
-                <DropdownSort alreadyDisplayedItems={alreadyDisplayedItems} />
+                <DropdownSort alreadyDisplayedItems={alreadyDisplayedItems} options={options} />
             </div>
         </div>
     )

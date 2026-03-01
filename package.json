@@ -18,20 +18,16 @@
     "@emailjs/browser": "^4.4.1",
     "@react-three/drei": "9.96.1",
     "@react-three/fiber": "8.15.19",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/three": "0.158.0",
     "date-fns": "^4.1.0",
     "dompurify": "^3.2.3",
     "framer-motion": "^12.23.26",
-    "gray-matter": "^4.0.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router": "^7.1.1",
-    "rehype-highlight": "^7.0.2",
     "remark": "^15.0.1",
-    "remark-html": "^16.0.1",
-    "remark-parse": "^11.0.0",
-    "three": "0.158.0",
-    "unified": "^11.0.5"
+    "three": "0.158.0"
   },
   "devDependencies": {
     "@eslint/js": "9.16.0",

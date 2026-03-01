@@ -4,11 +4,16 @@ import { SearchContext } from "./SearchEngine"
 import { placeholderMessages } from "../../assets/constants";
 import { LangContext } from "../language";
 
+type SearchbarProps = {
+    placeholderContext?: string;
+}
+
 /**
  * @description Search bar with controlled input, debounced real-time search
  * (300 ms), immediate search on Enter, and a reset button (×).
+ * @param placeholderContext - context key used to look up the placeholder message (default: "search")
  */
-const Searchbar = () => {
+const Searchbar = ({ placeholderContext = "search" }: SearchbarProps) => {
     const { searchInput, setSearchInput, updateSearch } = useContext(SearchContext);
     const { currentLang } = useContext(LangContext);
 
@@ -57,7 +62,7 @@ const Searchbar = () => {
         >
             <input type='search'
                 value={searchInput}
-                placeholder={placeholderMessages.find((message) => message.context === 'search')!.content[currentLang]}
+                placeholder={placeholderMessages.find((message) => message.context === placeholderContext)!.content[currentLang]}
                 className=
                 {`
                     px-[3%]

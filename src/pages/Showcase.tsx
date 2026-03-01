@@ -19,6 +19,7 @@ import {
   MathSpiral,
 } from '../components/showcase';
 import styles from '../style';
+import { MetaTags, StructuredData, websiteSchema } from '../components/seo';
 
 /**
  * @description Showcase page presenting innovative visualization components.
@@ -173,6 +174,14 @@ const Showcase = () => {
 
   return (
     <PageTransition>
+      <MetaTags
+        title="Showcase - Clément Barrière"
+        description="Composants de visualisation créatifs et innovants : orbites, timelines, grilles hexagonales et plus."
+        keywords={['showcase', 'visualisation', 'components', 'creative', 'framer motion']}
+        ogUrl="https://clembarr.dev/showcase"
+        canonical="https://clembarr.dev/showcase"
+      />
+      <StructuredData schema={websiteSchema} />
       <div className={`${styles.page} ${styles.flexCol}`}>
         {/* Hero Section */}
         <section

@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { TableOfContentsItem } from '../../assets/dataTypes';
+import { placeholderMessages } from '../../assets/constants';
+import { LangContext } from '../language';
 import styles from '../../style';
 
 type TableOfContentsProps = {
@@ -22,7 +24,12 @@ type TableOfContentsProps = {
  */
 const TableOfContents = ({ items, className = '' }: TableOfContentsProps) => {
   const [activeId, setActiveId] = useState<string>('');
+  const { currentLang } = useContext(LangContext);
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /** @function ph Shorthand to look up a message by context in placeholderMessages. */
+  const ph = (context: string) =>
+    placeholderMessages.find((m) => m.context === context)!.content[currentLang];
 
   useEffect(() => {
     // Intersection Observer to track which heading is currently visible
@@ -114,7 +121,7 @@ const TableOfContents = ({ items, className = '' }: TableOfContentsProps) => {
             border-(--color-quinary)
           `}
         >
-          Table of Contents
+          {ph("blogTableOfContents")}
         </h2>
 
         <ul className="space-y-2">
@@ -161,7 +168,7 @@ const TableOfContents = ({ items, className = '' }: TableOfContentsProps) => {
         {/* Progress Indicator */}
         <div className="mt-6 pt-4 border-t border-(--color-quinary)">
           <div className="flex items-center justify-between text-3xs text-(--color-quaternary) opacity-60">
-            <span>Scroll Progress</span>
+            <span>{ph("blogScrollProgress")}</span>
             <span>
               {items.findIndex((item) => item.id === activeId) + 1} / {items.length}
             </span>

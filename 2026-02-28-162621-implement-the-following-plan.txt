@@ -1,0 +1,1337 @@
+
+ ▐▛███▜▌   Claude Code v2.1.62
+▝▜█████▛▘  Sonnet 4.6 · Claude Pro
+  ▘▘ ▝▝    ~/Documents/Prog/clembarr.dev
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ Plan to implement                                                            │
+│                                                                              │
+│ Migration du blog : pipeline Markdown → pipeline TS                          │
+│                                                                              │
+│ Contexte                                                                     │
+│                                                                              │
+│ BlogPost a été refactorisé par l'utilisateur dans dataTypes.ts : il hérite   │
+│ de Project (title, description, tags, img, date) et utilise paragraphs:      │
+│ Message[] pour le contenu. BlogMetadata est supprimé. Toute la pipeline      │
+│ Markdown (gray-matter, remark, rehype, blogLoader, markdown.ts) doit être    │
+│ remplacée par des fichiers TS dans src/assets/blog/, comme les projets dans  │
+│ src/assets/projects/.                                                        │
+│                                                                              │
+│ Nouvelle interface                                                           │
+│                                                                              │
+│ export interface BlogPost extends Project {                                  │
+│   slug: string;                                                              │
+│   coverImage?: string;                                                       │
+│   readingTime?: number;                                                      │
+│   category: BlogCategory;                                                    │
+│   paragraphs: Message[];       // context = titre paragraphe, [[image x]]    │
+│ dans content                                                                 │
+│   tableOfContents?: {[lang: string]: TableOfContentsItem[]};                 │
+│ }                                                                            │
+│                                                                              │
+│ ---                                                                          │
+│ Fichiers à créer                                                             │
+│                                                                              │
+│ ┌─────────────────────────────────────┬────────────────────────────────────┐ │
+│ │               Fichier               │            Description             │ │
+│ ├─────────────────────────────────────┼────────────────────────────────────┤ │
+│ │ src/assets/blog/mcts-pathfinding.ts │ Article MCTS migré du .md vers un  │ │
+│ │                                     │ objet TS                           │ │
+│ ├─────────────────────────────────────┼────────────────────────────────────┤ │
+│ │ src/assets/blog/index.ts            │ Barrel export (même pattern que    │ │
+│ │                                     │ projects/index.ts)                 │ │
+│ └─────────────────────────────────────┴────────────────────────────────────┘ │
+│                                                                              │
+│ Fichiers à modifier                                                          │
+│                                                                              │
+│ Fichier: src/utils.ts                                                        │
+│ Nature du changement: Ajouter formatBlogDate() et getRelatedPosts()          │
+│ synchrone                                                                    │
+│   (déplacés depuis markdown.ts)                                              │
+│ ────────────────────────────────────────                                     │
+│ Fichier: src/components/blog/BlogCard.tsx                                    │
+│ Nature du changement: post.metadata.X → post.X, author depuis constants.ts   │
+│ ────────────────────────────────────────                                     │
+│ Fichier: src/components/blog/ArticleLayout.tsx                               │
+│ Nature du changement: Refactoring complet : rendu post.paragraphs[] au lieu  │
+│ de                                                                           │
+│   dangerouslySetInnerHTML, pattern [[image x]], strings externalisées        │
+│ ────────────────────────────────────────                                     │
+│ Fichier: src/components/blog/TableOfContents.tsx                             │
+│ Nature du changement: Externaliser "Table of Contents" / "Scroll Progress"   │
+│ dans                                                                         │
+│   placeholderMessages                                                        │
+│ ────────────────────────────────────────                                     │
+│ Fichier: src/components/sections/BlogListing.tsx                             │
+│ Nature du changement: post.metadata.X → post.X, supprimer filtre published   │
+│ ────────────────────────────────────────                                     │
+│ Fichier: src/pages/Blog.tsx                                                  │
+│ Nature du changement: Import synchrone de blogPosts depuis barrel, supprimer │
+│                                                                              │
+│   async/loading                                                              │
+│ ────────────────────────────────────────                                     │
+│ Fichier: src/pages/BlogPost.tsx                                              │
+│ Nature du changement: Lookup synchrone blogPosts.find(), supprimer async,    │
+│   adapter accès                                                              │
+│ ────────────────────────────────────────                                     │
+│ Fichier: src/assets/constants.ts                                             │
+│ Nature du changement: Ajouter messages : "blogRelatedArticles",              │
+│ "blogReadMore",                                                              │
+│   "blogBackToBlog", "blogMinRead", "blogTableOfContents",                    │
+│ "blogScrollProgress"                                                         │
+│                                                                              │
+│ Fichiers à supprimer                                                         │
+│                                                                              │
+│ ┌───────────────────────────────────────────────────┬──────────────────────┐ │
+│ │                      Fichier                      │        Raison        │ │
+│ ├───────────────────────────────────────────────────┼──────────────────────┤ │
+│ │                                                   │ Pipeline Markdown    │ │
+│ │ src/utils/markdown.ts                             │ entière (après       │ │
+│ │                                                   │ déplacement de       │ │
+│ │                                                   │ formatBlogDate)      │ │
+│ ├───────────────────────────────────────────────────┼──────────────────────┤ │
+│ │                                                   │ Chargement async     │ │
+│ │ src/utils/blogLoader.ts                           │ remplacé par import  │ │
+│ │                                                   │ TS                   │ │
+│ ├───────────────────────────────────────────────────┼──────────────────────┤ │
+│ │ src/content/blog/implementing-mcts-pathfinding.md │ Migré en TS          │ │
+│ ├───────────────────────────────────────────────────┼──────────────────────┤ │
+│ │ src/content/blog/ (dossier)                       │ Plus utilisé         │ │
+│ └───────────────────────────────────────────────────┴──────────────────────┘ │
+│                                                                              │
+│ Dépendances npm à supprimer                                                  │
+│                                                                              │
+│ gray-matter unified remark-parse remark-rehype rehype-highlight              │
+│ rehype-stringify                                                             │
+│                                                                              │
+│ ---                                                                          │
+│ Plan détaillé                                                                │
+│                                                                              │
+│ 1. src/assets/blog/mcts-pathfinding.ts                                       │
+│                                                                              │
+│ Pattern identique à src/assets/projects/gpgtool.ts :                         │
+│ - Import BlogPost, BlogCategory, UNIVERSAL_LANG                              │
+│ - Un Message par section du markdown (context = titre, content = corps       │
+│ multilingue)                                                                 │
+│ - readingTime: 7 (calculé : ~1400 mots / 200)                                │
+│ - img: [] (pas de cover pour l'instant)                                      │
+│ - tags au format {[lang]: string[]} comme les projets                        │
+│                                                                              │
+│ 2. src/assets/blog/index.ts                                                  │
+│                                                                              │
+│ import { BlogPost } from '../dataTypes';                                     │
+│ import { mctsPathfinding } from './mcts-pathfinding';                        │
+│                                                                              │
+│ export const blogPosts: BlogPost[] = [ mctsPathfinding ];                    │
+│ export { mctsPathfinding };                                                  │
+│ // EMPTY BLOG POST TEMPLATE: ...                                             │
+│                                                                              │
+│ 3. src/utils.ts — utilitaires déplacés                                       │
+│                                                                              │
+│ Depuis markdown.ts, garder :                                                 │
+│ - formatBlogDate(date: Date, lang: string): string — utilisé par BlogCard +  │
+│ ArticleLayout                                                                │
+│ - getRelatedPosts(post, allPosts, limit) — version synchrone de              │
+│ blogLoader.ts:getRelatedPosts                                                │
+│                                                                              │
+│ generateBlogUrl est un simple `/blog/${slug}` — inline plutôt que fonction.  │
+│ slugify et calculateReadingTime → supprimés (readingTime calculé             │
+│ manuellement dans le TS).                                                    │
+│                                                                              │
+│ 4. BlogCard.tsx                                                              │
+│                                                                              │
+│ Adapter les accès à la nouvelle interface :                                  │
+│ - post.metadata.title[lang] → post.title[lang]                               │
+│ - post.metadata.description[lang] → post.description[lang]                   │
+│ - post.metadata.coverImage → post.coverImage                                 │
+│ - post.metadata.category → post.category                                     │
+│ - post.metadata.date → post.date                                             │
+│ - post.metadata.tags (string[]) → post.tags[UNIVERSAL_LANG] ou concaténer    │
+│ les clés                                                                     │
+│ - post.metadata.readingTime → post.readingTime                               │
+│ - post.metadata.author.firstName/lastName → author.firstName/lastName        │
+│ (import author depuis constants)                                             │
+│ - formatBlogDate import depuis ../../utils au lieu de ../../utils/markdown   │
+│ - generateBlogUrl(post.slug) → inline `/blog/${post.slug}`                   │
+│ - "min read" → placeholderMessages["blogMinRead"]                            │
+│                                                                              │
+│ 5. ArticleLayout.tsx — refactoring majeur                                    │
+│                                                                              │
+│ Remplacement de dangerouslySetInnerHTML={{ __html: content }} par un rendu   │
+│ JSX des paragraphs :                                                         │
+│ - Boucle sur post.paragraphs : titre p.context comme <h2>, corps             │
+│ p.content[currentLang] comme <div> (avec DOMPurify)                          │
+│ - Pattern [[image x]] → split le content, remplacer par <img                 │
+│ src={post.img[x]} />                                                         │
+│ - post.content[lang] → supprimé                                              │
+│ - post.tableOfContents[lang] → post.tableOfContents?.[lang]                  │
+│ - post.metadata.* → accès direct                                             │
+│ - "Related Articles" → placeholderMessages["blogRelatedArticles"]            │
+│ - "Read more →" → placeholderMessages["blogReadMore"]                        │
+│ - "Back to Blog" → placeholderMessages["blogBackToBlog"]                     │
+│                                                                              │
+│ 6. TableOfContents.tsx                                                       │
+│                                                                              │
+│ - "Table of Contents" → placeholderMessages["blogTableOfContents"]           │
+│ - "Scroll Progress" → placeholderMessages["blogScrollProgress"]              │
+│ - Ajouter import LangContext + placeholderMessages                           │
+│                                                                              │
+│ 7. BlogListing.tsx                                                           │
+│                                                                              │
+│ - post.metadata.published → supprimer le filtre (tout post dans le barrel    │
+│ est publié)                                                                  │
+│ - post.metadata.category → post.category                                     │
+│ - post.metadata.date → post.date                                             │
+│ - post.metadata.title → post.title                                           │
+│ - post.metadata.description → post.description                               │
+│                                                                              │
+│ 8. Blog.tsx                                                                  │
+│                                                                              │
+│ - import { blogPosts } from '../assets/blog' au lieu de loadBlogPosts        │
+│ - Supprimer useState<BlogPost[]>, loading, useEffect(fetchPosts)             │
+│ - Passer blogPosts directement à <BlogListing>                               │
+│ - Supprimer le bloc loading conditionnel                                     │
+│                                                                              │
+│ 9. BlogPost.tsx                                                              │
+│                                                                              │
+│ - import { blogPosts } from '../assets/blog'                                 │
+│ - blogPosts.find(p => p.slug === slug) au lieu de await getBlogPost(slug)    │
+│ - getRelatedPosts() synchrone depuis utils.ts avec blogPosts                 │
+│ - Supprimer loading / useEffect async                                        │
+│ - post.metadata.* → accès direct                                             │
+│ - post.metadata.tags → Object.values(post.tags).flat()                       │
+│                                                                              │
+│ 10. constants.ts — messages manquants                                        │
+│                                                                              │
+│ { context: "blogRelatedArticles", content: { fr: "Articles similaires", en:  │
+│ "Related Articles" } },                                                      │
+│ { context: "blogReadMore",        content: { fr: "Lire la suite →", en:      │
+│ "Read more →" } },                                                           │
+│ { context: "blogBackToBlog",      content: { fr: "← Retour au blog", en: "←  │
+│ Back to Blog" } },                                                           │
+│ { context: "blogMinRead",         content: { fr: "min de lecture", en: "min  │
+│ read" } },                                                                   │
+│ { context: "blogTableOfContents", content: { fr: "Table des matières", en:   │
+│ "Table of Contents" } },                                                     │
+│ { context: "blogScrollProgress",  content: { fr: "Progression", en: "Scroll  │
+│ Progress" } },                                                               │
+│                                                                              │
+│ 11. Supprimer fichiers et dépendances                                        │
+│                                                                              │
+│ rm src/utils/markdown.ts src/utils/blogLoader.ts                             │
+│ rm -rf src/content/blog/                                                     │
+│ npm uninstall gray-matter unified remark-parse remark-rehype                 │
+│ rehype-highlight rehype-stringify                                            │
+│                                                                              │
+│ ---                                                                          │
+│ Séquence d'implémentation                                                    │
+│                                                                              │
+│ 1. constants.ts — ajouter les 6 nouveaux messages                            │
+│ 2. src/assets/blog/mcts-pathfinding.ts — article TS                          │
+│ 3. src/assets/blog/index.ts — barrel                                         │
+│ 4. src/utils.ts — formatBlogDate + getRelatedPosts synchrone                 │
+│ 5. BlogCard.tsx — adapter interface                                          │
+│ 6. TableOfContents.tsx — externaliser strings                                │
+│ 7. ArticleLayout.tsx — refactoring rendu paragraphs                          │
+│ 8. BlogListing.tsx — adapter interface                                       │
+│ 9. Blog.tsx — chargement synchrone                                           │
+│ 10. BlogPost.tsx — lookup synchrone                                          │
+│ 11. Supprimer markdown.ts, blogLoader.ts, src/content/blog/                  │
+│ 12. npm uninstall dépendances Markdown                                       │
+│ 13. npx tsc --noEmit + npx vite build                                        │
+│                                                                              │
+│ Vérification                                                                 │
+│                                                                              │
+│ - npx tsc --noEmit — 0 erreurs                                               │
+│ - npx vite build — build OK                                                  │
+│ - /blog affiche l'article MCTS avec Searchbar + Sortingbar mutualisés        │
+│ - /blog/implementing-mcts-pathfinding affiche l'article complet avec         │
+│ paragraphs rendus en JSX + TOC                                               │
+│ - Changement de langue → contenu multilingue                                 │
+│ - Filtres/recherche fonctionnels                                             │
+│ - Plus aucune dépendance Markdown dans package.json                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+● I'll start by reading all the files I need to understand the current state of
+  the codebase.
+
+● Read 5 files (ctrl+o to expand)
+
+● Now let me read the remaining files I need to modify.
+
+● Read 7 files (ctrl+o to expand)
+
+● Now let me read the markdown blog post content and the i18n file, plus one
+  project file to see the pattern.
+
+● Searched for 2 patterns, read 4 files (ctrl+o to expand)
+
+● Now let me read the SEO components to understand the generateBlogPostSchema
+  import.
+
+● Read 2 files (ctrl+o to expand)
+
+● I have all the context I need. Let me now create task tracking and start
+  implementing step by step.
+
+● Step 1: Add blog messages to constants.ts
+
+● Update(src/assets/constants.ts)
+  ⎿  Added 49 lines, removed 1 line
+      1023        fr: "Réflexions sur le développement logiciel, la reche
+            rche, les algorithmes et la technologie.",
+      1024        en: "Thoughts on software development, research, algori
+            thms, and technology.",
+      1025      },
+      1026 -  }                                                          
+      1026 +  },                                                         
+      1027 +  {                                                          
+      1028 +    context: "blogRelatedArticles",                          
+      1029 +    content:                                                 
+      1030 +    {                                                        
+      1031 +      fr: "Articles similaires",                             
+      1032 +      en: "Related Articles",                                
+      1033 +    },                                                       
+      1034 +  },                                                         
+      1035 +  {                                                          
+      1036 +    context: "blogReadMore",                                 
+      1037 +    content:                                                 
+      1038 +    {                                                        
+      1039 +      fr: "Lire la suite →",                                 
+      1040 +      en: "Read more →",                                     
+      1041 +    },                                                       
+      1042 +  },                                                         
+      1043 +  {                                                          
+      1044 +    context: "blogBackToBlog",                               
+      1045 +    content:                                                 
+      1046 +    {                                                        
+      1047 +      fr: "← Retour au blog",                                
+      1048 +      en: "← Back to Blog",                                  
+      1049 +    },                                                       
+      1050 +  },                                                         
+      1051 +  {                                                          
+      1052 +    context: "blogMinRead",                                  
+      1053 +    content:                                                 
+      1054 +    {                                                        
+      1055 +      fr: "min de lecture",                                  
+      1056 +      en: "min read",                                        
+      1057 +    },                                                       
+      1058 +  },                                                         
+      1059 +  {                                                          
+      1060 +    context: "blogTableOfContents",                          
+      1061 +    content:                                                 
+      1062 +    {                                                        
+      1063 +      fr: "Table des matières",                              
+      1064 +      en: "Table of Contents",                               
+      1065 +    },                                                       
+      1066 +  },                                                         
+      1067 +  {                                                          
+      1068 +    context: "blogScrollProgress",                           
+      1069 +    content:                                                 
+      1070 +    {                                                        
+      1071 +      fr: "Progression",                                     
+      1072 +      en: "Scroll Progress",                                 
+      1073 +    },                                                       
+      1074 +  },                                                         
+      1075  ]
+      1076  
+      1077  /**
+
+● Step 2: Create the MCTS blog article in TypeScript
+
+● Read 1 file (ctrl+o to expand)
+
+● Bash(mkdir -p /home/depinfo/Documents/Prog/clembarr.dev/src/assets/blog)
+  ⎿  Done
+
+● Write(src/assets/blog/mcts-pathfinding.ts)
+  ⎿  Wrote 122 lines to src/assets/blog/mcts-pathfinding.ts
+       1 /**
+       2  * @fileoverview MCTS Pathfinding blog post definition
+       3  * Exploring Monte Carlo Tree Search algorithms for dynamic path
+         finding
+       4  */
+       5 
+       6 import { BlogPost, BlogCategory } from '../dataTypes';
+       7 import { UNIVERSAL_LANG } from '../i18n';
+       8 
+       9 export const mctsPathfinding: BlogPost = {
+      10   slug: "implementing-mcts-pathfinding",
+     … +112 lines (ctrl+o to expand)
+
+● Step 3: Create blog barrel index.ts
+
+● Write(src/assets/blog/index.ts)
+  ⎿  Wrote 55 lines to src/assets/blog/index.ts
+       1 /**
+       2  * @fileoverview Blog posts barrel export
+       3  * Centralizes all blog post definitions for synchronous access
+       4  */
+       5 
+       6 import { BlogPost } from '../dataTypes';
+       7 import { mctsPathfinding } from './mcts-pathfinding';
+       8 
+       9 /**
+      10  * All blog posts - ordered by date (most recent first)
+     … +45 lines (ctrl+o to expand)
+
+● Step 4: Add formatBlogDate and getRelatedPosts to utils.ts
+
+● Update(src/utils.ts)
+  ⎿  Added 1 line, removed 1 line
+      1 -import { Hyperlink, NavbarPattern } from "./assets/dataTypes";  
+      1 +import { Hyperlink, NavbarPattern, BlogPost } from "./assets/dat
+        +aTypes";                                                        
+      2  import { navLinks } from "./assets/constants";
+      3  
+      4  /**
+
+● Now append the two functions at the end of utils.ts:
+
+● Update(src/utils.ts)
+  ⎿  Added 61 lines, removed 1 line
+      399          container1.style.fontSize = `${newSize}px`;
+      400          container2.style.fontSize = `${newSize}px`;
+      401      }
+      402 -}                                                             
+      402   No newline at end of file
+      403 +}                                                             
+      404 +                                                              
+      405 +/**                                                           
+      406 + * @function formatBlogDate Format a date for blog display usi
+          +ng locale-aware formatting                                    
+      407 + * @param date - Date object to format                        
+      408 + * @param lang - language code (e.g. "fr", "en", or "0" for un
+          +iversal/English)                                              
+      409 + * @returns formatted date string (e.g. "January 15, 2025" or 
+          +"15 janvier 2025")                                            
+      410 + */                                                           
+      411 +export const formatBlogDate = (date: Date, lang: string): stri
+          +ng => {                                                       
+      412 +    const options: Intl.DateTimeFormatOptions = {             
+      413 +        year: 'numeric',                                      
+      414 +        month: 'long',                                        
+      415 +        day: 'numeric',                                       
+      416 +    };                                                        
+      417 +                                                              
+      418 +    return new Intl.DateTimeFormat(lang === '0' ? 'en-US' : la
+          +ng === 'en' ? 'en-US' : 'fr-FR', options).format(date);       
+      419 +};                                                            
+      420 +                                                              
+      421 +/**                                                           
+      422 + * @function getRelatedPosts Get related posts based on catego
+          +ry, tags and recency.                                         
+      423 + * Scores each candidate post and returns the top ones sorted 
+          +by relevance.                                                 
+      424 + * @param post - the current blog post                        
+      425 + * @param allPosts - array of all blog posts                  
+      426 + * @param limit - maximum number of related posts to return   
+      427 + * @returns array of related BlogPost objects, sorted by relev
+          +ance score (descending)                                       
+      428 + */                                                           
+      429 +export const getRelatedPosts = (                              
+      430 +    post: BlogPost,                                           
+      431 +    allPosts: BlogPost[],                                     
+      432 +    limit: number = 3                                         
+      433 +): BlogPost[] => {                                            
+      434 +    return allPosts                                           
+      435 +        .filter((p) => p.slug !== post.slug)                  
+      436 +        .map((p) => {                                         
+      437 +            let score = 0;                                    
+      438 +                                                              
+      439 +            // Same category: +10 points                      
+      440 +            if (p.category === post.category) {               
+      441 +                score += 10;                                  
+      442 +            }                                                 
+      443 +                                                              
+      444 +            // Shared tags: +2 points per tag (flatten all lan
+          +g keys)                                                       
+      445 +            const postTags = Object.values(post.tags).flat(); 
+      446 +            const candidateTags = Object.values(p.tags).flat()
+          +;                                                             
+      447 +            const sharedTags = candidateTags.filter((tag) => p
+          +ostTags.includes(tag));                                       
+      448 +            score += sharedTags.length * 2;                   
+      449 +                                                              
+      450 +            // Recency bonus (posts within 90 days): +1-5 poin
+          +ts                                                            
+      451 +            const daysDiff = Math.abs(                        
+      452 +                (p.date.getTime() - post.date.getTime()) / (10
+          +00 * 60 * 60 * 24)                                            
+      453 +            );                                                
+      454 +            if (daysDiff < 90) {                              
+      455 +                score += Math.max(1, 5 - Math.floor(daysDiff /
+          + 18));                                                        
+      456 +            }                                                 
+      457 +                                                              
+      458 +            return { post: p, score };                        
+      459 +        })                                                    
+      460 +        .sort((a, b) => b.score - a.score)                    
+      461 +        .slice(0, limit)                                      
+      462 +        .map((item) => item.post);                            
+      463 +};                                                            
+      464   No newline at end of file
+
+● Step 5: Update blog components
+
+  First, BlogCard.tsx:
+
+● Write(src/components/blog/BlogCard.tsx)
+  ⎿  Added 20 lines, removed 16 lines
+       2  import { Link } from 'react-router';
+       3  import { motion } from 'framer-motion';
+       4  import { BlogPost } from '../../assets/dataTypes';
+       5 +import { UNIVERSAL_LANG } from '../../assets/i18n';            
+       6  import { LangContext } from '../language';
+       6 -import { formatBlogDate, generateBlogUrl } from '../../utils/ma
+         -rkdown';                                                       
+       7 +import { author, placeholderMessages } from '../../assets/const
+         +ants';                                                         
+       8 +import { formatBlogDate } from '../../utils';                  
+       9  import styles from '../../style';
+      10  
+      11  type BlogCardProps = {
+     ...
+      30    const { currentLang } = useContext(LangContext);
+      31    const prefersReducedMotion = window.matchMedia('(prefers-redu
+          ced-motion: reduce)').matches;
+      32  
+      31 -  const title = post.metadata.title[currentLang] || post.metada
+         -ta.title['0'];                                                 
+      32 -  const description = post.metadata.description[currentLang] ||
+         - post.metadata.description['0'];                               
+      33 -  const blogUrl = generateBlogUrl(post.slug);                  
+      33 +  const title = post.title[currentLang] || post.title[UNIVERSAL
+         +_LANG];                                                        
+      34 +  const description = post.description[currentLang] || post.des
+         +cription[UNIVERSAL_LANG];                                      
+      35 +  const blogUrl = `/blog/${post.slug}`;                        
+      36 +  const tags = post.tags[currentLang] || post.tags[UNIVERSAL_LA
+         +NG] || [];                                                     
+      37 +  const minRead = placeholderMessages.find((m) => m.context ===
+         + "blogMinRead")!.content[currentLang];                         
+      38  
+      39    // Category colors
+      40    const getCategoryColor = () => {
+      37 -    switch (post.metadata.category) {                          
+      41 +    switch (post.category) {                                   
+      42        case 'RESEARCH':
+      43          return 'bg-(--color-tertiary)';
+      44        case 'DEVELOPMENT':
+     ...
+      84            `}
+      85          >
+      86            {/* Cover Image */}
+      83 -          {post.metadata.coverImage && (                       
+      87 +          {post.coverImage && (                                
+      88              <div className="w-full h-48 overflow-hidden">
+      89                <img
+      86 -                src={post.metadata.coverImage}                 
+      90 +                src={post.coverImage}                          
+      91                  alt={title}
+      92                  className="w-full h-full object-cover"
+      93                  loading="lazy"
+     ...
+      112                    tracking-wider
+      113                  `}
+      114                >
+      111 -                {post.metadata.category}                      
+      115 +                {post.category}                               
+      116                </span>
+      117                <time
+      114 -                dateTime={post.metadata.date.toISOString()}   
+      118 +                dateTime={post.date.toISOString()}            
+      119                  className="text-2xs text-(--color-quaternary) 
+           opacity-70"
+      120                >
+      117 -                {formatBlogDate(post.metadata.date, currentLan
+          -g)}                                                           
+      121 +                {formatBlogDate(post.date, currentLang)}      
+      122                </time>
+      123              </div>
+      124  
+     ...
+      148              </p>
+      149  
+      150              {/* Tags */}
+      147 -            {post.metadata.tags.length > 0 && (               
+      151 +            {tags.length > 0 && (                             
+      152                <div className="flex flex-wrap gap-2">
+      149 -                {post.metadata.tags.slice(0, 3).map((tag, i) =
+          -> (                                                           
+      153 +                {tags.slice(0, 3).map((tag, i) => (           
+      154                    <span
+      155                      key={i}
+      156                      className="
+     ...
+      166                      #{tag}
+      167                    </span>
+      168                  ))}
+      165 -                {post.metadata.tags.length > 3 && (           
+      169 +                {tags.length > 3 && (                         
+      170                    <span className="text-3xs text-(--color-quat
+           ernary) opacity-50">
+      167 -                    +{post.metadata.tags.length - 3}          
+      171 +                    +{tags.length - 3}                        
+      172                    </span>
+      173                  )}
+      174                </div>
+     ...
+      187                "
+      188              >
+      189                <span className="text-2xs text-(--color-quaterna
+           ry)">
+      186 -                {post.metadata.author.firstName} {post.metadat
+          -a.author.lastName}                                            
+      190 +                {author.firstName} {author.lastName}          
+      191                </span>
+      192                <span className="text-2xs text-(--color-quaterna
+           ry)">
+      189 -                {post.metadata.readingTime} min read          
+      193 +                {post.readingTime} {minRead}                  
+      194                </span>
+      195              </div>
+      196            </div>
+
+● Now TableOfContents.tsx:
+
+● Write(src/components/blog/TableOfContents.tsx)
+  ⎿  Added 10 lines, removed 3 lines
+      1 -import { useEffect, useState } from 'react';                    
+      1 +import { useContext, useEffect, useState } from 'react';        
+      2  import { motion } from 'framer-motion';
+      3  import { TableOfContentsItem } from '../../assets/dataTypes';
+      4 +import { placeholderMessages } from '../../assets/constants';   
+      5 +import { LangContext } from '../language';                      
+      6  import styles from '../../style';
+      7  
+      8  type TableOfContentsProps = {
+     ...
+      24   */
+      25  const TableOfContents = ({ items, className = '' }: TableOfCont
+          entsProps) => {
+      26    const [activeId, setActiveId] = useState<string>('');
+      27 +  const { currentLang } = useContext(LangContext);             
+      28    const prefersReducedMotion = window.matchMedia('(prefers-redu
+          ced-motion: reduce)').matches;
+      29  
+      30 +  /** @function ph Shorthand to look up a message by context in
+         + placeholderMessages. */                                       
+      31 +  const ph = (context: string) =>                              
+      32 +    placeholderMessages.find((m) => m.context === context)!.con
+         +tent[currentLang];                                             
+      33 +                                                               
+      34    useEffect(() => {
+      35      // Intersection Observer to track which heading is currentl
+          y visible
+      36      const observerCallback = (entries: IntersectionObserverEntr
+          y[]) => {
+     ...
+      121              border-(--color-quinary)
+      122            `}
+      123          >
+      117 -          Table of Contents                                   
+      124 +          {ph("blogTableOfContents")}                         
+      125          </h2>
+      126  
+      127          <ul className="space-y-2">
+     ...
+      168          {/* Progress Indicator */}
+      169          <div className="mt-6 pt-4 border-t border-(--color-qui
+           nary)">
+      170            <div className="flex items-center justify-between te
+           xt-3xs text-(--color-quaternary) opacity-60">
+      164 -            <span>Scroll Progress</span>                      
+      171 +            <span>{ph("blogScrollProgress")}</span>           
+      172              <span>
+      173                {items.findIndex((item) => item.id === activeId)
+            + 1} / {items.length}
+      174              </span>
+
+● Now ArticleLayout.tsx — the major refactoring:
+
+● Write(src/components/blog/ArticleLayout.tsx)
+  ⎿  Added 100 lines, removed 43 lines
+       1 -import { useContext, useEffect } from 'react';                 
+       1 +import { useContext } from 'react';                            
+       2  import { Link } from 'react-router';
+       3  import { motion } from 'framer-motion';
+       4 +import DOMPurify from 'dompurify';                             
+       5  import { BlogPost } from '../../assets/dataTypes';
+       6 +import { UNIVERSAL_LANG } from '../../assets/i18n';            
+       7 +import { author, placeholderMessages } from '../../assets/const
+         +ants';                                                         
+       8  import { LangContext } from '../language';
+       6 -import { formatBlogDate, generateBlogUrl } from '../../utils/ma
+         -rkdown';                                                       
+       9 +import { formatBlogDate } from '../../utils';                  
+      10  
+      11  import TableOfContents from './TableOfContents';
+      12  import styles from '../../style';
+     ...
+      18  
+      19  /**
+      20   * @component ArticleLayout
+      18 - * @description Layout wrapper for blog post articles          
+      21 + * @description Layout wrapper for blog post articles.         
+      22 + * Renders post.paragraphs[] as JSX instead of raw HTML via dan
+         +gerouslySetInnerHTML.                                          
+      23 + * Supports the [[image x]] pattern in content to inline images
+         + from post.img[].                                              
+      24   *
+      25   * Features:
+      26   * - Article metadata (author, date, reading time, category)
+      27   * - Cover image display
+      28   * - Table of contents sidebar
+      24 - * - Share button integration                                  
+      29   * - Related posts section
+      30   * - Print-friendly layout
+      27 - * - Syntax highlighting for code blocks                       
+      31   * - Responsive design
+      32   */
+      33  const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayo
+          utProps) => {
+      34    const { currentLang } = useContext(LangContext);
+      35    const prefersReducedMotion = window.matchMedia('(prefers-redu
+          ced-motion: reduce)').matches;
+      36  
+      34 -  const title = post.metadata.title[currentLang] || post.metada
+         -ta.title['0'];                                                 
+      35 -  const content = post.content[currentLang] || post.content['0'
+         -];                                                             
+      36 -  const toc = post.tableOfContents[currentLang] || post.tableOf
+         -Contents['0'];                                                 
+      37 +  const title = post.title[currentLang] || post.title[UNIVERSAL
+         +_LANG];                                                        
+      38 +  const toc = post.tableOfContents?.[currentLang] || post.table
+         +OfContents?.[UNIVERSAL_LANG] || [];                            
+      39 +  const tags = post.tags[currentLang] || post.tags[UNIVERSAL_LA
+         +NG] || [];                                                     
+      40 +  const minRead = placeholderMessages.find((m) => m.context ===
+         + "blogMinRead")!.content[currentLang];                         
+      41  
+      38 -  // Add IDs to headings in content for TOC navigation         
+      39 -  useEffect(() => {                                            
+      40 -    const articleElement = document.getElementById('article-con
+         -tent');                                                        
+      41 -    if (!articleElement) return;                               
+      42 +  /** @function ph Shorthand to look up a message by context in
+         + placeholderMessages. */                                       
+      43 +  const ph = (context: string) =>                              
+      44 +    placeholderMessages.find((m) => m.context === context)!.con
+         +tent[currentLang];                                             
+      45  
+      43 -    const headings = articleElement.querySelectorAll('h1, h2, h
+         -3, h4, h5, h6');                                               
+      44 -    headings.forEach((heading) => {                            
+      45 -      const text = heading.textContent || '';                  
+      46 -      const slug = text                                        
+      47 -        .toLowerCase()                                         
+      48 -        .normalize('NFD')                                      
+      49 -        .replace(/[\u0300-\u036f]/g, '')                       
+      50 -        .replace(/[^\w\s-]/g, '')                              
+      51 -        .replace(/\s+/g, '-')                                  
+      52 -        .replace(/-+/g, '-')                                   
+      53 -        .trim();                                               
+      54 -      heading.id = slug;                                       
+      46 +  /**                                                          
+      47 +   * @function renderParagraphContent Renders a paragraph's con
+         +tent string,                                                   
+      48 +   * splitting on [[image x]] patterns and inserting <img> elem
+         +ents from post.img[].                                          
+      49 +   * Remaining text segments are sanitized with DOMPurify.     
+      50 +   * @param content - the raw content string for the current la
+         +nguage                                                         
+      51 +   * @returns JSX elements array                               
+      52 +   */                                                          
+      53 +  const renderParagraphContent = (content: string) => {        
+      54 +    const parts = content.split(/(\[\[image\s+\d+\]\])/g);     
+      55 +    return parts.map((part, i) => {                            
+      56 +      const imageMatch = part.match(/\[\[image\s+(\d+)\]\]/);  
+      57 +      if (imageMatch) {                                        
+      58 +        const imgIndex = parseInt(imageMatch[1], 10);          
+      59 +        const imgSrc = post.img?.[imgIndex];                   
+      60 +        if (imgSrc) {                                          
+      61 +          return (                                             
+      62 +            <img                                               
+      63 +              key={i}                                          
+      64 +              src={imgSrc}                                     
+      65 +              alt={`${title} - illustration ${imgIndex}`}      
+      66 +              className="rounded-lg shadow-xl my-6 w-full"     
+      67 +              loading="lazy"                                   
+      68 +            />                                                 
+      69 +          );                                                   
+      70 +        }                                                      
+      71 +        return null;                                           
+      72 +      }                                                        
+      73 +      if (part.trim()) {                                       
+      74 +        return (                                               
+      75 +          <div                                                 
+      76 +            key={i}                                            
+      77 +            dangerouslySetInnerHTML={{ __html: DOMPurify.saniti
+         +ze(part) }}                                                    
+      78 +          />                                                   
+      79 +        );                                                     
+      80 +      }                                                        
+      81 +      return null;                                             
+      82      });
+      56 -  }, [content]);                                               
+      83 +  };                                                           
+      84  
+      85    return (
+      86      <motion.article
+     ...
+       95        {/* Article Header */}
+       96        <header className="mb-12">
+       97          {/* Cover Image */}
+       71 -        {post.metadata.coverImage && (                        
+       98 +        {post.coverImage && (                                 
+       99            <div className="w-full h-96 mb-8 rounded-lg overflow
+           -hidden shadow-2xl">
+      100              <img
+       74 -              src={post.metadata.coverImage}                  
+      101 +              src={post.coverImage}                           
+      102                alt={title}
+      103                className="w-full h-full object-cover"
+      104              />
+     ...
+      120                tracking-wider
+      121              "
+      122            >
+       96 -            {post.metadata.category}                          
+      123 +            {post.category}                                   
+      124            </span>
+      125          </div>
+      126  
+     ...
+      141          <div className="flex items-center flex-wrap gap-4 text
+           -2xs text-(--color-quaternary) opacity-70">
+      142            <div className="flex items-center gap-2">
+      143              <span className="font-secondary-semibold">
+      117 -              {post.metadata.author.firstName} {post.metadata.
+          -author.lastName}                                              
+      144 +              {author.firstName} {author.lastName}            
+      145              </span>
+      146            </div>
+      147            <span>•</span>
+      121 -          <time dateTime={post.metadata.date.toISOString()}>  
+      122 -            {formatBlogDate(post.metadata.date, currentLang)} 
+      148 +          <time dateTime={post.date.toISOString()}>           
+      149 +            {formatBlogDate(post.date, currentLang)}          
+      150            </time>
+      151            <span>•</span>
+      125 -          <span>{post.metadata.readingTime} min read</span>   
+      152 +          <span>{post.readingTime} {minRead}</span>           
+      153          </div>
+      154  
+      155          {/* Tags */}
+      129 -        {post.metadata.tags.length > 0 && (                   
+      156 +        {tags.length > 0 && (                                 
+      157            <div className="flex flex-wrap gap-2 mt-4">
+      131 -            {post.metadata.tags.map((tag, i) => (             
+      158 +            {tags.map((tag, i) => (                           
+      159                <span
+      160                  key={i}
+      161                  className="
+     ...
+      229                prose-img:rounded-lg
+      230                prose-img:shadow-xl
+      231              `}
+      205 -            dangerouslySetInnerHTML={{ __html: content }}     
+      206 -          />                                                  
+      232 +          >                                                   
+      233 +            {post.paragraphs.map((paragraph, idx) => {        
+      234 +              const paragraphContent = paragraph.content[curre
+          +ntLang] || paragraph.content[UNIVERSAL_LANG];                 
+      235 +              const headingId = paragraph.context             
+      236 +                ?.toLowerCase()                               
+      237 +                .normalize('NFD')                             
+      238 +                .replace(/[\u0300-\u036f]/g, '')              
+      239 +                .replace(/[^\w\s-]/g, '')                     
+      240 +                .replace(/\s+/g, '-')                         
+      241 +                .replace(/-+/g, '-')                          
+      242 +                .trim();                                      
+      243 +                                                              
+      244 +              return (                                        
+      245 +                <section key={idx} className="mb-8">          
+      246 +                  {paragraph.context && (                     
+      247 +                    <h2                                       
+      248 +                      id={headingId}                          
+      249 +                      className="                             
+      250 +                        font-primary-bold                     
+      251 +                        2xl:text-3xl xl:text-2xl lg:text-xl te
+          +xt-lg                                                         
+      252 +                        text-(--color-quaternary)             
+      253 +                        mt-8 mb-4                             
+      254 +                        tracking-wide                         
+      255 +                      "                                       
+      256 +                    >                                         
+      257 +                      {paragraph.context}                     
+      258 +                    </h2>                                     
+      259 +                  )}                                          
+      260 +                  {paragraphContent && renderParagraphContent(
+          +paragraphContent)}                                            
+      261 +                </section>                                    
+      262 +              );                                              
+      263 +            })}                                               
+      264 +          </div>                                              
+      265          </div>
+      266  
+      267          {/* Table of Contents Sidebar */}
+     ...
+      280                mb-8
+      281              `}
+      282            >
+      225 -            Related Articles                                  
+      283 +            {ph("blogRelatedArticles")}                       
+      284            </h2>
+      285            <div className="grid md:grid-cols-2 gap-6">
+      286              {relatedPosts.slice(0, 2).map((relatedPost, i) => 
+           (
+      287                <Link
+      288                  key={i}
+      231 -                to={generateBlogUrl(relatedPost.slug)}        
+      289 +                to={`/blog/${relatedPost.slug}`}              
+      290                  className="
+      291                    block
+      292                    p-6
+     ...
+      298                  "
+      299                >
+      300                  <h3 className="font-primary-semibold text-md t
+           ext-(--color-quaternary) mb-2">
+      243 -                  {relatedPost.metadata.title[currentLang] || 
+          -relatedPost.metadata.title['0']}                              
+      301 +                  {relatedPost.title[currentLang] || relatedPo
+          +st.title[UNIVERSAL_LANG]}                                     
+      302                  </h3>
+      303                  <p className="text-2xs text-(--color-quaternar
+           y) opacity-70 line-clamp-2">
+      246 -                  {relatedPost.metadata.description[currentLan
+          -g] || relatedPost.metadata.description['0']}                  
+      304 +                  {relatedPost.description[currentLang] || rel
+          +atedPost.description[UNIVERSAL_LANG]}                         
+      305                  </p>
+      306                  <span className="text-3xs text-(--color-tertia
+           ry) mt-2 inline-block">
+      249 -                  Read more →                                 
+      307 +                  {ph("blogReadMore")}                        
+      308                  </span>
+      309                </Link>
+      310              ))}
+     ...
+      327              font-secondary-semibold
+      328            "
+      329          >
+      272 -          <span>←</span>                                      
+      273 -          <span>Back to Blog</span>                           
+      330 +          <span>{ph("blogBackToBlog")}</span>                 
+      331          </Link>
+      332        </div>
+      333      </motion.article>
+
+● Now BlogListing.tsx — remove metadata nesting and published filter:
+
+● Write(src/components/sections/BlogListing.tsx)
+  ⎿  Added 10 lines, removed 9 lines
+      2  import { SearchContext } from "../search/SearchEngine";
+      3  import { LangContext } from "../language";
+      4  import { BlogPost, BlogCategory } from "../../assets/dataTypes";
+      5 +import { UNIVERSAL_LANG } from "../../assets/i18n";             
+      6  import { BlogCard } from "../blog";
+      7  import { blogSortingOptions, noDataMessages, placeholderMessages
+          } from "../../assets/constants";
+      8  import { ScrollReveal } from "../animations";
+     ...
+      24      const { currentLang } = useContext(LangContext);
+      25  
+      26      const filteredPosts = useMemo(() => {
+      26 -        let filtered = posts.filter((p) => p.metadata.published
+         -);                                                             
+      27 +        let filtered = [...posts];                             
+      28          const filter = toMatch[0];
+      29  
+      30          if (filter === "NEWEST") {
+      30 -            filtered.sort((a, b) => b.metadata.date.getTime() -
+         - a.metadata.date.getTime());                                   
+      31 +            filtered.sort((a, b) => b.date.getTime() - a.date.g
+         +etTime());                                                     
+      32          } else if (filter === "OLDEST") {
+      32 -            filtered.sort((a, b) => a.metadata.date.getTime() -
+         - b.metadata.date.getTime());                                   
+      33 +            filtered.sort((a, b) => a.date.getTime() - b.date.g
+         +etTime());                                                     
+      34          } else if (BLOG_CATEGORIES.includes(filter)) {
+      34 -            filtered = filtered.filter((p) => p.metadata.catego
+         -ry === filter);                                                
+      35 -            filtered.sort((a, b) => b.metadata.date.getTime() -
+         - a.metadata.date.getTime());                                   
+      35 +            filtered = filtered.filter((p) => p.category === fi
+         +lter);                                                         
+      36 +            filtered.sort((a, b) => b.date.getTime() - a.date.g
+         +etTime());                                                     
+      37          } else if (filter !== "ALL") {
+      38              /** Text search: check if any of the toMatch terms 
+          appear in title or description.
+      39               * Also check if the filter matches a blogSortingOp
+          tions label (pill/dropdown selection). */
+     ...
+      44  
+      45              if (!isOptionLabel) {
+      46                  filtered = filtered.filter((post) => {
+      46 -                    const title = (post.metadata.title[currentL
+         -ang] || post.metadata.title["0"] || "").toUpperCase();         
+      47 -                    const description = (post.metadata.descript
+         -ion[currentLang] || post.metadata.description["0"] || "").toUpp
+         -erCase();                                                      
+      47 +                    const title = (post.title[currentLang] || p
+         +ost.title[UNIVERSAL_LANG] || "").toUpperCase();                
+      48 +                    const description = (post.description[curre
+         +ntLang] || post.description[UNIVERSAL_LANG] || "").toUpperCase(
+         +);                                                             
+      49                      return toMatch.some((term) =>
+      50                          term.length > 1 && (title.includes(term
+          ) || description.includes(term))
+      51                      );
+      52                  });
+      53              }
+      53 -            filtered.sort((a, b) => b.metadata.date.getTime() -
+         - a.metadata.date.getTime());                                   
+      54 +            filtered.sort((a, b) => b.date.getTime() - a.date.g
+         +etTime());                                                     
+      55          } else {
+      55 -            filtered.sort((a, b) => b.metadata.date.getTime() -
+         - a.metadata.date.getTime());                                   
+      56 +            filtered.sort((a, b) => b.date.getTime() - a.date.g
+         +etTime());                                                     
+      57          }
+      58  
+      59          return filtered;
+
+● Step 6: Update Blog.tsx and BlogPost.tsx
+
+● Write(src/pages/Blog.tsx)
+  ⎿  Added 3 lines, removed 38 lines
+      1 -import { useState, useEffect, useContext } from 'react';        
+      1 +import { useContext } from 'react';                             
+      2  import { motion } from 'framer-motion';
+      3  import { PageTransition, ScrollReveal } from '../components/anim
+         ations';
+      4 -import { BlogPost } from '../assets/dataTypes';                 
+      4  import { blogSortingOptions, placeholderMessages } from '../asse
+         ts/constants';
+      6 -import { loadBlogPosts } from '../utils/blogLoader';            
+      5 +import { blogPosts } from '../assets/blog';                     
+      6  import { StructuredData, MetaTags, blogSchema } from '../compone
+         nts/seo';
+      7  import { SearchEngine, Searchbar, Sortingbar } from '../componen
+         ts/search';
+      8  import { BlogListing } from '../components/sections';
+     ...
+      13   * @component Blog
+      14   * @description Blog listing page with search and filtering, us
+          ing the mutualized
+      15   * SearchEngine, Searchbar, and Sortingbar components.
+      16 + * Blog posts are loaded synchronously from the TS barrel expor
+         +t.                                                             
+      17   */
+      18  const Blog = () => {
+      19    const { currentLang } = useContext(LangContext);
+      20 -  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);  
+      21 -  const [loading, setLoading] = useState<boolean>(true);       
+      20  
+      21    /** @function ph Shorthand to look up a message by context in
+           placeholderMessages. */
+      22    const ph = (context: string) =>
+     ...
+      24  
+      25    const prefersReducedMotion = window.matchMedia('(prefers-redu
+          ced-motion: reduce)').matches;
+      26  
+      29 -  useEffect(() => {                                            
+      30 -    const fetchPosts = async () => {                           
+      31 -      try {                                                    
+      32 -        const posts = await loadBlogPosts();                   
+      33 -        setBlogPosts(posts);                                   
+      34 -      } catch (error) {                                        
+      35 -        console.error('Error loading blog posts:', error);     
+      36 -      } finally {                                              
+      37 -        setLoading(false);                                     
+      38 -      }                                                        
+      39 -    };                                                         
+      40 -                                                               
+      41 -    fetchPosts();                                              
+      42 -  }, []);                                                      
+      43 -                                                               
+      44 -  if (loading) {                                               
+      45 -    return (                                                   
+      46 -      <PageTransition>                                         
+      47 -        <div                                                   
+      48 -          className={`                                         
+      49 -            ${styles.sizeScreen}                               
+      50 -            ${styles.flexCol}                                  
+      51 -            ${styles.contentCenter}                            
+      52 -          `}                                                   
+      53 -        >                                                      
+      54 -          <div className="text-(--color-tertiary) text-xl anima
+         -te-pulse">                                                     
+      55 -            {ph("blogLoading")}                                
+      56 -          </div>                                               
+      57 -        </div>                                                 
+      58 -      </PageTransition>                                        
+      59 -    );                                                         
+      60 -  }                                                            
+      61 -                                                               
+      27    return (
+      28      <PageTransition>
+      29        {/* SEO */}
+
+● Now BlogPost.tsx:
+
+● Write(src/pages/BlogPost.tsx)
+  ⎿  Added 23 lines, removed 66 lines
+       1 -import { useEffect, useState } from 'react';                   
+       1  import { useParams, useNavigate } from 'react-router';
+       2  import { ArticleLayout } from '../components/blog';
+       3  import { PageTransition } from '../components/animations';
+       5 -import { BlogPost as BlogPostType } from '../assets/dataTypes';
+       6 -import { getBlogPost, getRelatedPosts } from '../utils/blogLoad
+         -er';                                                           
+       4 +import { UNIVERSAL_LANG } from '../assets/i18n';               
+       5 +import { author } from '../assets/constants';                  
+       6 +import { blogPosts } from '../assets/blog';                    
+       7 +import { getRelatedPosts } from '../utils';                    
+       8  import { StructuredData, MetaTags, generateBlogPostSchema } fro
+          m '../components/seo';
+       9  import styles from '../style';
+      10  
+      11  /**
+      12   * @component BlogPost
+      12 - * @description Individual blog post page with deep linking    
+      13 + * @description Individual blog post page with deep linking.   
+      14 + * Performs synchronous lookup from the blog barrel export.    
+      15   *
+      16   * Features:
+      17   * - Dynamic routing with slug parameter
+     ...
+      19   * - Related posts suggestions
+      20   * - 404 redirect for invalid slugs
+      21   * - Print-friendly layout
+      20 - * - Share functionality                                       
+      22   */
+      23  const BlogPost = () => {
+      24    const { slug } = useParams<{ slug: string }>();
+      25    const navigate = useNavigate();
+      25 -  const [post, setPost] = useState<BlogPostType | null>(null); 
+      26 -  const [relatedPosts, setRelatedPosts] = useState<BlogPostType
+         -[]>([]);                                                       
+      27 -  const [loading, setLoading] = useState<boolean>(true);       
+      26  
+      29 -  useEffect(() => {                                            
+      30 -    const fetchPost = async () => {                            
+      31 -      if (!slug) {                                             
+      32 -        navigate('/blog');                                     
+      33 -        return;                                                
+      34 -      }                                                        
+      35 -                                                               
+      36 -      try {                                                    
+      37 -        // Find the post by slug                               
+      38 -        const foundPost = await getBlogPost(slug);             
+      39 -                                                               
+      40 -        if (foundPost) {                                       
+      41 -          setPost(foundPost);                                  
+      42 -                                                               
+      43 -          // Find related posts                                
+      44 -          const related = await getRelatedPosts(foundPost, unde
+         -fined, 2);                                                     
+      45 -          setRelatedPosts(related);                            
+      46 -        } else {                                               
+      47 -          // Post not found, redirect to 404                   
+      48 -          navigate('/404');                                    
+      49 -          return;                                              
+      50 -        }                                                      
+      51 -      } catch (error) {                                        
+      52 -        console.error('Error loading blog post:', error);      
+      53 -        navigate('/404');                                      
+      54 -        return;                                                
+      55 -      } finally {                                              
+      56 -        setLoading(false);                                     
+      57 -      }                                                        
+      58 -    };                                                         
+      59 -                                                               
+      60 -    fetchPost();                                               
+      61 -  }, [slug, navigate]);                                        
+      62 -                                                               
+      63 -  if (loading) {                                               
+      64 -    return (                                                   
+      65 -      <PageTransition>                                         
+      66 -        <div                                                   
+      67 -          className={`                                         
+      68 -            ${styles.sizeScreen}                               
+      69 -            ${styles.flexCol}                                  
+      70 -            ${styles.contentCenter}                            
+      71 -          `}                                                   
+      72 -        >                                                      
+      73 -          <div className="text-(--color-tertiary) text-xl anima
+         -te-pulse">                                                     
+      74 -            Loading article...                                 
+      75 -          </div>                                               
+      76 -        </div>                                                 
+      77 -      </PageTransition>                                        
+      78 -    );                                                         
+      27 +  if (!slug) {                                                 
+      28 +    navigate('/blog');                                         
+      29 +    return null;                                               
+      30    }
+      31  
+      32 +  const post = blogPosts.find((p) => p.slug === slug);         
+      33 +                                                               
+      34    if (!post) {
+      35 +    navigate('/404');                                          
+      36      return null;
+      37    }
+      38  
+      85 -  const title = post.metadata.title['0'] || post.metadata.title
+         -[Object.keys(post.metadata.title)[0]];                         
+      39 +  const relatedPosts = getRelatedPosts(post, blogPosts, 2);    
+      40 +                                                               
+      41 +  const title = post.title[UNIVERSAL_LANG] || post.title[Object
+         +.keys(post.title)[0]];                                         
+      42    const description =
+      87 -    post.metadata.description['0'] || post.metadata.description
+         -[Object.keys(post.metadata.description)[0]];                   
+      43 +    post.description[UNIVERSAL_LANG] || post.description[Object
+         +.keys(post.description)[0]];                                   
+      44    const postUrl = `https://clembarr.dev/blog/${post.slug}`;
+      45 +  const keywords = Object.values(post.tags).flat();            
+      46  
+      47    return (
+      48      <PageTransition>
+     ...
+       51          schema={generateBlogPostSchema({
+       52            title,
+       53            description,
+       97 -          datePublished: post.metadata.date.toISOString(),    
+       54 +          datePublished: post.date.toISOString(),             
+       55            url: postUrl,
+       99 -          image: post.metadata.coverImage,                    
+      100 -          keywords: post.metadata.tags,                       
+       56 +          image: post.coverImage,                             
+       57 +          keywords,                                           
+       58            author: {
+      102 -            name: `${post.metadata.author.firstName} ${post.me
+          -tadata.author.lastName}`,                                     
+       59 +            name: `${author.firstName} ${author.lastName}`,   
+       60              url: 'https://clembarr.dev',
+       61            },
+       62          })}
+     ...
+       64        <MetaTags
+       65          title={`${title} - Clément Barrière`}
+       66          description={description}
+      110 -        keywords={post.metadata.tags}                         
+       67 +        keywords={keywords}                                   
+       68          ogTitle={title}
+       69          ogDescription={description}
+      113 -        ogImage={post.metadata.coverImage}                    
+       70 +        ogImage={post.coverImage}                             
+       71          ogUrl={postUrl}
+       72          canonical={postUrl}
+       73        />
+
+● Step 7: Delete old files and uninstall markdown dependencies
+
+● Bash(rm /home/depinfo/Documents/Prog/clembarr.dev/src/utils/markdown.ts
+      /home/depinfo/Documents/Prog/clembarr.dev/src/utils/blogLoader.ts && rm
+      -rf /home/depinfo/Doc…)
+  ⎿  Done
+
+● Let me check if the content directory is now empty and can be removed:
+
+● Bash(ls /home/depinfo/Documents/Prog/clembarr.dev/src/content/ 2>/dev/null &&
+      rmdir /home/depinfo/Documents/Prog/clembarr.dev/src/content/ 2>/dev/null;
+      echo "done")
+  ⎿  done
+
+● Check if the utils directory still has other files:
+
+● Read 1 file (ctrl+o to expand)
+
+● Utils directory is empty now. Let me remove it:
+
+● Bash(rmdir /home/depinfo/Documents/Prog/clembarr.dev/src/utils/ 2>/dev/null;
+      echo "done")
+  ⎿  done
+
+● Now uninstall markdown dependencies:
+
+● Bash(npm uninstall gray-matter unified remark-parse remark-rehype
+      rehype-highlight rehype-stringify 2>&1)
+  ⎿  removed 33 packages, and audited 621 packages in 3s
+
+     195 packages are looking for funding
+     … +11 lines (ctrl+o to expand)
+  ⎿  (timeout 1m)
+
+● Step 8: Verify build
+
+● Bash(npx tsc --noEmit 2>&1)
+  ⎿  (No output)
+
+● TypeScript check passes with 0 errors. Now build:
+
+● Bash(npx vite build 2>&1)
+  ⎿  vite v5.4.21 building for production...
+     transforming...
+     ✓ 678 modules transformed.
+     … +96 lines (ctrl+o to expand)
+  ⎿  (timeout 2m)
+
+● Build succeeds. Let me verify everything is clean:
+
+● All done. Here's a summary of what was implemented:
+
+  Migration complete: Markdown pipeline → TypeScript pipeline
+
+  Files created
+
+  - src/assets/blog/mcts-pathfinding.ts — MCTS article migrated to a BlogPost
+  object with multilingual paragraphs: Message[]
+  - src/assets/blog/index.ts — Barrel export (same pattern as projects/index.ts)
+
+  Files modified
+
+  - src/assets/constants.ts — Added 6 new placeholderMessages:
+  blogRelatedArticles, blogReadMore, blogBackToBlog, blogMinRead,
+  blogTableOfContents, blogScrollProgress
+  - src/utils.ts — Added formatBlogDate() and synchronous getRelatedPosts()
+  - src/components/blog/BlogCard.tsx — post.metadata.X → post.X, author from
+  constants, minRead from placeholderMessages
+  - src/components/blog/ArticleLayout.tsx — Major refactoring: renders
+  post.paragraphs[] as JSX with DOMPurify + [[image x]] pattern support,
+  externalized strings
+  - src/components/blog/TableOfContents.tsx — Externalized "Table of Contents"
+  and "Scroll Progress" strings via placeholderMessages
+  - src/components/sections/BlogListing.tsx — post.metadata.X → post.X, removed
+  published filter
+  - src/pages/Blog.tsx — Synchronous import from barrel, removed
+  useState/useEffect/loading state
+  - src/pages/BlogPost.tsx — Synchronous blogPosts.find(), removed async loading
+
+  Files deleted
+
+  - src/utils/markdown.ts, src/utils/blogLoader.ts,
+  src/content/blog/implementing-mcts-pathfinding.md, src/content/ and src/utils/
+   directories
+
+  Dependencies removed
+
+  - gray-matter, unified, remark-parse, remark-rehype, rehype-highlight,
+  rehype-stringify
+
+  Verification
+
+  - npx tsc --noEmit — 0 errors
+  - npx vite build — build successful (4.54s)
+
+✻ Baked for 6m 22s

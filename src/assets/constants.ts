@@ -18,17 +18,22 @@ import {
   AvailableSkillSubcategories,
   AvailableSortOptions,
   SortOption,
+  FilterOption,
+  BlogCategory,
   GalleryControl,
+  GalleryAction,
 } from "./dataTypes";
 import { UNIVERSAL_LANG } from "./i18n";
 
 export const CARD_TEXT_MAX_LINES = 5;
 
 export const galleryControls: Array<GalleryControl> = [
-  { label: "Navigate",  binding: "← →" },
-  { label: "Zoom",      binding: "+/-" },
-  { label: "Reset",     binding: "0" },
-  { label: "Close",     binding: "Esc" },
+  { action: GalleryAction.NAVIGATE_NEXT,  label: "Next",      binding: "→",   keys: ["ArrowRight"] },
+  { action: GalleryAction.NAVIGATE_PREV,  label: "Prev",      binding: "←",   keys: ["ArrowLeft"] },
+  { action: GalleryAction.ZOOM_IN,        label: "Zoom +",    binding: "+",   keys: ["+", "="] },
+  { action: GalleryAction.ZOOM_OUT,       label: "Zoom -",    binding: "-",   keys: ["-", "_"] },
+  { action: GalleryAction.RESET,          label: "Reset",     binding: "0",   keys: ["0"] },
+  { action: GalleryAction.CLOSE,          label: "Close",     binding: "Esc", keys: ["Escape"] },
 ];
 
 export const PageTransitionsConstants = {
@@ -51,6 +56,16 @@ export const ScrollRevealConstants = {
   ANIMATE_POS: 0,
   ANIMATE_OPACITY: 1,
   EASE: "0.25 0.1 0.25 1", //space separated values
+}
+
+export const ArticlesMotionConstants = {
+  MOTION_OPACITY: 0,
+  MOTION_Y: 20,
+  ANIMATE_OPACITY: 1,
+  ANIMATE_Y: 0,
+  REDUCED_MOTION_TRANSITION_DURATION: 0.01,
+  TRANSITION_DURATION: 0.5,
+  TRANSITION_EASE: "0.25 0.1 0.25 1"
 }
 
 export const skillCategories: Array<SkillCategorie> = [
@@ -303,13 +318,24 @@ export const sortOptions: Array<SortOption> = [
   },
   {
     context: AvailableSortOptions.WEB,
-    content: 
+    content:
     {
       [UNIVERSAL_LANG]: "Web",
     },
   },
 ];
 
+/** Store all the available blog sorting/filtering options. */
+export const blogSortingOptions: Array<FilterOption> = [
+  { context: "ALL",                      content: { fr: "Tous", en: "All" } },
+  { context: "NEWEST",                   content: { fr: "Récents", en: "Newest" } },
+  { context: "OLDEST",                   content: { fr: "Anciens", en: "Oldest" } },
+  { context: BlogCategory.RESEARCH,      content: { fr: "Recherche", en: "Research" } },
+  { context: BlogCategory.DEVELOPMENT,   content: { fr: "Développement", en: "Development" }, abreviation: { content: { fr: "Dév", en: "Dev" } } },
+  { context: BlogCategory.TUTORIAL,      content: { fr: "Tutoriel", en: "Tutorial" },         abreviation: { content: { fr: "Tuto", en: "Tuto" } } },
+  { context: BlogCategory.ALGORITHM,     content: { fr: "Algorithmie", en: "Algorithm" },     abreviation: { content: { fr: "Algo", en: "Algo" } } },
+  { context: BlogCategory.OPINION,       content: { fr: "Opinion", en: "Opinion" } },
+];
 
 /**
  * Store all the navigation links for each navbar patterns
@@ -817,7 +843,7 @@ export const flashMessages: Array<FlashMessage> = [
 export const noDataMessages: Array<Message> = [
   {
     context: "projects",
-    content: 
+    content:
     {
       fr: "Aucun projet ne correspond à vos critères >_<",
       en: "No project matches your search criteria >_<",
@@ -825,12 +851,44 @@ export const noDataMessages: Array<Message> = [
   },
   {
     context: "projectImages",
-    content: 
+    content:
     {
       fr: "Aucune image disponible.",
       en: "No available image.",
     },
-  }
+  },
+  {
+    context: "blog",
+    content:
+    {
+      fr: "Aucun article trouvé",
+      en: "No articles found",
+    },
+  },
+  {
+    context: "blogEmpty",
+    content:
+    {
+      fr: "Aucun article pour le moment",
+      en: "No articles yet",
+    },
+  },
+  {
+    context: "blogEmptyHint",
+    content:
+    {
+      fr: "Les articles arrivent bientôt !",
+      en: "Blog posts coming soon!",
+    },
+  },
+  {
+    context: "blogNoResultsHint",
+    content:
+    {
+      fr: "Essayez de modifier vos filtres",
+      en: "Try adjusting your search or filters",
+    },
+  },
 ];
 
 export const placeholderMessages: Array<Message> = [
@@ -920,7 +978,110 @@ export const placeholderMessages: Array<Message> = [
       fr: "Chargement du composant...",
       en: "Loading component...",
     },
-  }
+  },
+  {
+    context: "searchBlog",
+    content:
+    {
+      fr: "Rechercher un article...",
+      en: "Search articles...",
+    },
+  },
+  {
+    context: "blogClearFilters",
+    content:
+    {
+      fr: "Effacer les filtres",
+      en: "Clear Filters",
+    },
+  },
+  {
+    context: "blogLoading",
+    content:
+    {
+      fr: "Chargement des articles...",
+      en: "Loading blog posts...",
+    },
+  },
+  {
+    context: "blogResultSingular",
+    content:
+    {
+      fr: "article trouvé",
+      en: "article found",
+    },
+  },
+  {
+    context: "blogResultPlural",
+    content:
+    {
+      fr: "articles trouvés",
+      en: "articles found",
+    },
+  },
+  {
+    context: "blogTitle",
+    content:
+    {
+      [UNIVERSAL_LANG]: "Blog & Research",
+    },
+  },
+  {
+    context: "blogSubtitle",
+    content:
+    {
+      fr: "Réflexions sur le développement logiciel, la recherche, les algorithmes et la technologie.",
+      en: "Thoughts on software development, research, algorithms, and technology.",
+    },
+  },
+  {
+    context: "blogRelatedArticles",
+    content:
+    {
+      fr: "Articles similaires",
+      en: "Related Articles",
+    },
+  },
+  {
+    context: "blogReadMore",
+    content:
+    {
+      fr: "Lire la suite →",
+      en: "Read more →",
+    },
+  },
+  {
+    context: "blogBackToBlog",
+    content:
+    {
+      fr: "← Retour au blog",
+      en: "← Back to Blog",
+    },
+  },
+  {
+    context: "blogMinRead",
+    content:
+    {
+      fr: "min de lecture",
+      en: "min read",
+    },
+  },
+  {
+    context: "blogTableOfContents",
+    content:
+    {
+      fr: "Table des matières",
+      en: "Table of Contents",
+    },
+  },
+  {
+    context: "blogScrollProgress",
+    content:
+    {
+      fr: "Progression",
+      en: "Scroll Progress",
+    },
+  },
 ]
 
 /**

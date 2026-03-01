@@ -176,6 +176,16 @@ const styles = {
     border border-(--color-tertiary)/20
   `,
 
+  // Animated link (tertiary color + slide-right on hover)
+  animatedLink: `
+    inline-flex items-center gap-2
+    text-(--color-tertiary)
+    hover:translate-x-1.5
+    cursor-pointer
+    font-secondary-semibold
+    transition-all duration-300 ease-in-out
+  `,
+
   // Dividers
   divider: `
     w-full h-px

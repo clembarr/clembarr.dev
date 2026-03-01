@@ -77,7 +77,6 @@ const About = () => {
             ${styles.flexCol}
             space-y-2
             text-md
-            text-(--color-tertiary)
             overflow-x-visible
           `}
         >
@@ -85,20 +84,12 @@ const About = () => {
             ressource.context == "0" ?
               <Link key={ressource.link}
                 to={ressource.link}
-                className={`
-                  cursor-pointer
-                  hover:translate-x-1.5
-                  ${styles.defaultTransition}
-                `}
+                className={styles.animatedLink}
               > {ressource.content[currentLang]} </Link>
             :
               <a key={ressource.link}
                 href={ressource.link}
-                className={`
-                  cursor-pointer
-                  hover:translate-x-1.5
-                  ${styles.defaultTransition}
-                `}
+                className={styles.animatedLink}
               > {ressource.content[currentLang]} </a>
           ))}
         </div>
@@ -254,26 +245,12 @@ const About = () => {
             ressource.context == "0" ?
               <Link key={ressource.link}
                 to={ressource.link}
-                className={`
-                  cursor-pointer
-                  hover:translate-x-1.5
-                  ${styles.defaultTransition}
-                  overflow-x-visible
-                `}
+                className={styles.animatedLink}
               > {ressource.content[currentLang]} </Link>
             :
               <a key={ressource.link}
                 href={ressource.link}
-                className={`
-                  xl:text-lg lg:text-base
-                  text-(--color-tertiary)
-                  cursor-pointer
-                  hover:translate-x-1.5
-                  transition-all
-                  duration-300
-                  ease-in-out
-                  overflow-x-visible
-                `}
+                className={styles.animatedLink}
               > {ressource.content[currentLang]} </a>
           ))}
         </div>

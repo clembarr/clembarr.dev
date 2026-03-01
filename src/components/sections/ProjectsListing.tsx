@@ -132,7 +132,7 @@ const ProjectsListing = () => {
         >
             <Searchbar />
             
-            <Sortingbar />
+            <Sortingbar options={sortOptions} />
         </div>
         
         <div id='retex-container'

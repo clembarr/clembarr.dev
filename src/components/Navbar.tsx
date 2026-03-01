@@ -100,9 +100,9 @@ const Navbar = () => {
           items-center"
       >
         {/**Map the navigation links from the data file according to the current URL.*/
-        navLinks.find(
+        (navLinks.find(
           (nav) => nav.route.includes(window.location.pathname.split('/')[1])
-        )?.links.map((nav, index) => {
+        ) ?? navLinks.find((nav) => nav.route === '')!).links.map((nav, index) => {
           const thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
           const isActive = (nav.link).toLowerCase() === currentNavigation;
           return (

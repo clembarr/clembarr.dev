@@ -5,6 +5,7 @@ import { menuIcons } from "../../assets";
 import { ThemeContext } from "../theme/ThemeEngine";
 import { getActiveBreakpoint } from "../../utils";
 import { galleryControls } from "../../assets/constants";
+import { GalleryAction } from "../../assets/dataTypes";
 import { motion } from "framer-motion";
 
 type RetexGalleryViewerProps = {
@@ -23,25 +24,21 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
     const imageRef = useRef<HTMLImageElement>(null);
     
     useEffect(() => {
+        /** Map each gallery control action to its handler.
+         *  CLOSE is excluded — Escape is handled by RetexViewer via galleryToggleState
+         *  to avoid a race condition between keydown (gallery) and keyup (retex). */
+        const actionHandlers: Partial<Record<GalleryAction, () => void>> = {
+            [GalleryAction.NAVIGATE_NEXT]: () => setIndex((index.current + 1) % images.length),
+            [GalleryAction.NAVIGATE_PREV]: () => setIndex((index.current - 1 + images.length) % images.length),
+            [GalleryAction.ZOOM_IN]:       () => setZoom((prev) => Math.min(prev + 0.25, 3)),
+            [GalleryAction.ZOOM_OUT]:      () => setZoom((prev) => Math.max(prev - 0.25, 1)),
+            [GalleryAction.RESET]:         () => { setZoom(1); setPanOffset({ x: 0, y: 0 }); },
+        };
+
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'ArrowRight') {
-                setIndex((index.current + 1) % images.length);
-            }
-            else if (e.key === 'ArrowLeft') {
-                setIndex((index.current - 1 + images.length) % images.length);
-            }
-            else if (e.key === '+' || e.key === '=') {
-                // Zoom in
-                setZoom((prev) => Math.min(prev + 0.25, 3));
-            }
-            else if (e.key === '-' || e.key === '_') {
-                // Zoom out
-                setZoom((prev) => Math.max(prev - 0.25, 1));
-            }
-            else if (e.key === '0') {
-                // Reset zoom
-                setZoom(1);
-                setPanOffset({ x: 0, y: 0 });
+            const control = galleryControls.find((c) => c.keys.includes(e.key));
+            if (control && actionHandlers[control.action]) {
+                actionHandlers[control.action]();
             }
         };
 
@@ -150,7 +147,9 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     transition-opacity duration-500
                     ${showHints ? 'opacity-100 border border-(--color-tertiary)' : 'opacity-0 pointer-events-none'}
                 `}>
-                    <p>{galleryControls.map((c) => `${c.binding} ${c.label}`).join(' | ')}</p>
+                    <p>{galleryControls
+                        .filter((c) => c.action !== GalleryAction.CLOSE)
+                        .map((c) => `${c.binding} ${c.label}`).join(' | ')}</p>
                 </div>
             </div>
 

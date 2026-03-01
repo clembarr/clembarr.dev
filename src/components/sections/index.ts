@@ -5,6 +5,7 @@ import HeroIllustration from "./HeroIllustration";
 import ProjectsSlider from "./ProjectsSlider";
 import Skills from "./Skills";
 import ProjectsListing from "./ProjectsListing";
+import BlogListing from "./BlogListing";
 
 export  {
     About,
@@ -14,4 +15,5 @@ export  {
     ProjectsSlider,
     Skills,
     ProjectsListing,
+    BlogListing,
 };

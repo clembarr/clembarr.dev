@@ -177,23 +177,15 @@ const RetexHeader = (relatedProject: RetexHeaderProps) => {
                     {relatedProject.additionalRessources ?
                         relatedProject.additionalRessources.map((resource, index) => (
                             <li key={`retex-resource-${index}`}
-                                className=
-                                {`
+                                className={`
                                     ${styles.sizeFull}
-                                    ${styles.flexRow}
-                                    ${styles.contentStartX}
                                     space-x-[3%]
-                                    ${currentTheme === 'dark' ? 'text-(--color-tertiary) hover:text-white' 
-                                        : 'text-(--color-quinary) hover:text-(--color-tertiary)'}
-                                    hover:cursor-pointer
-                                    hover:translate-x-[2%]
-                                    font-bold
-                                    ${styles.defaultTransition}
                                 `}
                             >
                                 <a target='_blank'
                                     rel="noopener noreferrer"
                                     href={resource.link}
+                                    className={`${styles.animatedLink} font-bold`}
                                 > → {resource.content[currentLang]} </a>
                             </li>
                         ))

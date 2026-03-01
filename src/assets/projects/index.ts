@@ -36,3 +36,49 @@ export {
   votator,
   studyOfEew
 };
+
+/**
+ * EMPTY RETEX TEMPLATE:
+ * ---------------------
+ * 
+  {
+    title: 
+    {
+      fr: "",
+      en: "",
+    },
+    date: new Date(2025, 6),
+    tools: [
+    ],
+    description:
+    {
+      fr:
+      "",
+    },
+    specs:
+    {
+      fr: 
+      "",
+    },
+    notions:
+    {
+      fr: [],
+    },
+    tags:
+    {
+      en: [],
+    },
+    img: [
+    ],
+    additionalRessources: [
+      {
+        content: 
+        {
+          fr: "",
+          en: "",
+        },
+        link: "",
+      },
+    ]
+  },
+ */

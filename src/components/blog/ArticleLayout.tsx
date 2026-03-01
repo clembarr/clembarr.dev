@@ -1,9 +1,12 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
+import DOMPurify from 'dompurify';
 import { BlogPost } from '../../assets/dataTypes';
+import { UNIVERSAL_LANG } from '../../assets/i18n';
+import { ArticlesMotionConstants, author, placeholderMessages } from '../../assets/constants';
 import { LangContext } from '../language';
-import { formatBlogDate, generateBlogUrl } from '../../utils/markdown';
+import { formatBlogDate } from '../../utils';
 
 import TableOfContents from './TableOfContents';
 import styles from '../../style';
@@ -15,146 +18,184 @@ type ArticleLayoutProps = {
 
 /**
  * @component ArticleLayout
- * @description Layout wrapper for blog post articles
- *
- * Features:
- * - Article metadata (author, date, reading time, category)
- * - Cover image display
- * - Table of contents sidebar
- * - Share button integration
- * - Related posts section
- * - Print-friendly layout
- * - Syntax highlighting for code blocks
- * - Responsive design
+ * @description Layout wrapper for blog post articles.
+ * Renders post.paragraphs[] as JSX instead of raw HTML via dangerouslySetInnerHTML.
+ * Use the [[image x]] pattern in content to inline images from post.img[].
  */
 const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
   const { currentLang } = useContext(LangContext);
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const title = post.metadata.title[currentLang] || post.metadata.title['0'];
-  const content = post.content[currentLang] || post.content['0'];
-  const toc = post.tableOfContents[currentLang] || post.tableOfContents['0'];
+  const title = post.title[currentLang] || post.title[UNIVERSAL_LANG];
+  const toc = post.tableOfContents?.[currentLang] || post.tableOfContents?.[UNIVERSAL_LANG] || [];
+  const tags = post.tags[currentLang] || post.tags[UNIVERSAL_LANG] || [];
+  const minRead = placeholderMessages.find((m) => m.context === "blogMinRead")!.content[currentLang];
 
-  // Add IDs to headings in content for TOC navigation
-  useEffect(() => {
-    const articleElement = document.getElementById('article-content');
-    if (!articleElement) return;
+  /** @function ph Shorthand to look up a message by context in placeholderMessages. */
+  const ph = (context: string) =>
+    placeholderMessages.find((m) => m.context === context)!.content[currentLang];
 
-    const headings = articleElement.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    headings.forEach((heading) => {
-      const text = heading.textContent || '';
-      const slug = text
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim();
-      heading.id = slug;
+  /**
+   * @function renderParagraphContent Renders a paragraph's content,
+   * replace [[image x]] pattern with corresponding image in post.img[] by inserting <img>
+   * @param content - the content string for the current language
+   * @returns JSX elements array
+   */
+  const renderParagraphContent = (content: string) => {
+    const parts = content.split(/(\[\[image\s+\d+\]\])/g);
+
+    return parts.map((part, i) => {
+      const imageMatch = part.match(/\[\[image\s+(\d+)\]\]/);
+
+      if (imageMatch) {
+        const imgIndex = parseInt(imageMatch[1], 10);
+        const imgSrc = post.img?.[imgIndex];
+
+        if (imgSrc) {
+          return (
+            <img
+              key={i}
+              src={imgSrc}
+              alt={`${title}-illustration${imgIndex}`}
+              className="rounded-lg shadow-xl my-6 w-full"
+              loading="lazy"
+            />
+          );
+        }
+        return null;
+      }
+      if (part.trim()) {
+        return (
+          <div
+            key={i}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(part) }}
+          />
+        );
+      }
+      return null;
     });
-  }, [content]);
+  };
 
   return (
     <motion.article
-      initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={prefersReducedMotion ? {} : { opacity: ArticlesMotionConstants.MOTION_OPACITY, y: ArticlesMotionConstants.MOTION_Y }}
+      animate={{ opacity: ArticlesMotionConstants.ANIMATE_OPACITY, y: ArticlesMotionConstants.ANIMATE_Y }}
       transition={{
-        duration: prefersReducedMotion ? 0.01 : 0.5,
-        ease: [0.25, 0.1, 0.25, 1],
+        duration: prefersReducedMotion ? ArticlesMotionConstants.REDUCED_MOTION_TRANSITION_DURATION : ArticlesMotionConstants.TRANSITION_DURATION,
+        ease: [...ArticlesMotionConstants.TRANSITION_EASE.valueOf().split(' ').map((n) => parseFloat(n))] as [number, number, number, number],
       }}
-      className="w-full"
+      className={`
+        w-full
+        mt-20
+      `}
     >
-      {/* Article Header */}
-      <header className="mb-12">
-        {/* Cover Image */}
-        {post.metadata.coverImage && (
-          <div className="w-full h-96 mb-8 rounded-lg overflow-hidden shadow-2xl">
-            <img
-              src={post.metadata.coverImage}
-              alt={title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-
-        {/* Category Badge */}
-        <div className="mb-4">
-          <span
-            className="
-              bg-(--color-tertiary)
-              text-(--color-primary)
-              px-4
-              py-2
-              rounded-full
-              text-2xs
-              font-primary-semibold
-              uppercase
-              tracking-wider
-            "
-          >
-            {post.metadata.category}
-          </span>
+      <header id='article-header'
+        className={`mb-12`}
+      >
+        <div id='back-to-blog-top' className="mb-6">
+          <Link to="/blog" className={styles.animatedLink}>
+            <span>{ph("blogBackToBlog")}</span>
+          </Link>
         </div>
 
-        {/* Title */}
-        <h1
+        <h1 id='article-title'
           className={`
             font-primary-bold
             2xl:text-5xl xl:text-4xl lg:text-3xl text-2xl
             text-(--color-quaternary)
-            mb-6
             leading-tight
           `}
-        >
-          {title}
-        </h1>
+        > {title} </h1>
 
-        {/* Metadata */}
-        <div className="flex items-center flex-wrap gap-4 text-2xs text-(--color-quaternary) opacity-70">
-          <div className="flex items-center gap-2">
-            <span className="font-secondary-semibold">
-              {post.metadata.author.firstName} {post.metadata.author.lastName}
+        {post.coverImage && (
+          <div id='cover-image-container'
+            className={`
+              w-full 
+              h-50
+              mb-10
+              mt-10
+              shadow-md
+              overflow-hidden 
+              opacity-80
+            `}>
+            <img id='cover-image'
+              src={post.coverImage}
+              alt={title}
+              className={`
+                w-full 
+                h-full
+                object-cover
+              `}
+            />
+          </div>
+        )}
+
+        <div id='article-meta'
+          className={`
+            ${styles.flexRow}
+            ${styles.contentStartX}
+            flex-wrap 
+            gap-4 
+            text-2xs 
+            text-(--color-quaternary) 
+            opacity-70
+          `}
+        >
+          <div id='author-info-container'
+            className={`${styles.flexRow} ${styles.contentStartX} items-center gap-2`}
+          >
+            <span id='author-info'
+              className={`font-secondary-semibold`}
+            >
+              {author.firstName} {author.lastName}
             </span>
           </div>
-          <span>•</span>
-          <time dateTime={post.metadata.date.toISOString()}>
-            {formatBlogDate(post.metadata.date, currentLang)}
-          </time>
-          <span>•</span>
-          <span>{post.metadata.readingTime} min read</span>
+
+          <span id='infos-sep-1'>•</span>
+
+          <time id='date-info'
+            dateTime={post.date.toISOString()}
+          > {formatBlogDate(post.date, currentLang)} </time>
+          
+          <span id='infos-sep-2'>•</span>
+          
+          <span id='reading-time-info'>{post.readingTime} {minRead}</span>
         </div>
 
-        {/* Tags */}
-        {post.metadata.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-4">
-            {post.metadata.tags.map((tag, i) => (
-              <span
+        {tags.length > 0 && (
+          <div 
+            id='tags-container'
+            className={`
+              ${styles.flexWrap}
+              gap-2 
+              mt-6
+            `}
+          >
+            {tags.map((tag, i) => (
+              <span id={`tag-${i}`}
                 key={i}
-                className="
-                  text-3xs
-                  text-(--color-tertiary)
-                  bg-(--color-secondary)
-                  px-3
-                  py-1
-                  rounded-full
-                  font-secondary-regular
-                "
+                className={`${styles.tag} text-3xs opacity-80`}
               >
-                #{tag}
+                {tag}
               </span>
             ))}
           </div>
         )}
-
       </header>
 
-      {/* Article Content with TOC Sidebar */}
-      <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-8">
-          <div
-            id="article-content"
+      <div id='article-container'
+        className={`
+          lg:grid 
+          lg:grid-cols-12 
+          lg:gap-8
+        `}
+      >
+        <div id='article-content-container'
+          className={`
+            lg:col-span-8
+          `}
+      >
+          <div id="article-content"
             className={`
               ${styles.paragraph}
               prose
@@ -202,8 +243,39 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
               prose-img:rounded-lg
               prose-img:shadow-xl
             `}
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
+          >
+            {post.paragraphs.map((paragraph, idx) => {
+              const paragraphContent = paragraph.content[currentLang] || paragraph.content[UNIVERSAL_LANG];
+              const headingId = paragraph.context
+                ?.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim();
+
+              return (
+                <section key={idx} className="mb-8">
+                  {paragraph.context && (
+                    <h2
+                      id={headingId}
+                      className="
+                        font-primary-bold
+                        2xl:text-3xl xl:text-2xl lg:text-xl text-lg
+                        text-(--color-quaternary)
+                        mt-8 mb-4
+                        tracking-wide
+                      "
+                    >
+                      {paragraph.context}
+                    </h2>
+                  )}
+                  {paragraphContent && renderParagraphContent(paragraphContent)}
+                </section>
+              );
+            })}
+          </div>
         </div>
 
         {/* Table of Contents Sidebar */}
@@ -222,13 +294,13 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
               mb-8
             `}
           >
-            Related Articles
+            {ph("blogRelatedArticles")}
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {relatedPosts.slice(0, 2).map((relatedPost, i) => (
               <Link
                 key={i}
-                to={generateBlogUrl(relatedPost.slug)}
+                to={`/blog/${relatedPost.slug}`}
                 className="
                   block
                   p-6
@@ -240,13 +312,13 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
                 "
               >
                 <h3 className="font-primary-semibold text-md text-(--color-quaternary) mb-2">
-                  {relatedPost.metadata.title[currentLang] || relatedPost.metadata.title['0']}
+                  {relatedPost.title[currentLang] || relatedPost.title[UNIVERSAL_LANG]}
                 </h3>
                 <p className="text-2xs text-(--color-quaternary) opacity-70 line-clamp-2">
-                  {relatedPost.metadata.description[currentLang] || relatedPost.metadata.description['0']}
+                  {relatedPost.description[currentLang] || relatedPost.description[UNIVERSAL_LANG]}
                 </p>
                 <span className="text-3xs text-(--color-tertiary) mt-2 inline-block">
-                  Read more →
+                  {ph("blogReadMore")}
                 </span>
               </Link>
             ))}
@@ -256,21 +328,8 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
 
       {/* Back to Blog Link */}
       <div className="mt-12 pt-8 border-t border-(--color-quinary)">
-        <Link
-          to="/blog"
-          className="
-            inline-flex
-            items-center
-            gap-2
-            text-(--color-tertiary)
-            hover:text-(--color-quaternary)
-            transition-colors
-            duration-200
-            font-secondary-semibold
-          "
-        >
-          <span>←</span>
-          <span>Back to Blog</span>
+        <Link to="/blog" className={styles.animatedLink}>
+          <span>{ph("blogBackToBlog")}</span>
         </Link>
       </div>
     </motion.article>

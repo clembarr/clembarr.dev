@@ -6,19 +6,29 @@ import { useContext } from "react"
 import { LangContext } from "../components/language"
 import { Link } from "react-router"
 
-const Err404 = () => {
+type ErrPageProps = {
+  error: Errors;
+}
+
+/**
+ * @description Generic error page that displays the error code, a localised
+ * message from `errorMessages`, and a back-to-home button. Reusable for any
+ * error declared in the `Errors` enum.
+ */
+const ErrPage = ({ error }: ErrPageProps) => {
   const { currentLang } = useContext(LangContext)
 
   return (
-    <section id='err404-container'
+    <section id={`err${error}-container`}
       className=
       {`
         ${styles.sizeScreen}
         ${styles.flexCol}
-        ${styles.contentCenter}
+        ${styles.contentStartX}
+        mt-60
       `}
     >
-        <h1 id='err404-title'
+        <h1 id={`err${error}-title`}
           className=
           {`
             ${styles.contentCenter}
@@ -26,17 +36,18 @@ const Err404 = () => {
             rounded-md
             px-[2%]
             py-[1%]
+            font-black
           `}
-        >Error {Errors.NOT_FOUND}</h1>
+        >Error {error}</h1>
 
-        <p id='err404-message'
+        <p id={`err${error}-message`}
           className=
           {`
             ${styles.sizeFit}
             ${styles.contentCenter}
           `}
           dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(
-            errorMessages.find((message)=>message.error === Errors.NOT_FOUND)!.content[currentLang]
+            errorMessages.find((message) => message.error === error)!.content[currentLang]
           )}}
         />
 
@@ -44,10 +55,13 @@ const Err404 = () => {
           className=
           {`
             mt-[2%]
-            text-[80%]
+            text-2xs
             rounded-lg
             border-2
-            hover:bg-(--light-color-secondary)
+            border-(--color-tertiary)
+            hover:bg-(--color-secondary)
+            hover:scale-105
+            ${styles.defaultTransition}
             px-[1%]
             py-[0.5%]
           `}
@@ -58,4 +72,4 @@ const Err404 = () => {
   )
 }
 
-export default Err404
+export default ErrPage
