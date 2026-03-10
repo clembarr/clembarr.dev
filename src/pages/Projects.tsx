@@ -2,9 +2,14 @@ import styles from '../style'
 import ProjectsListing from '../components/sections/ProjectsListing'
 import { SearchEngine } from '../components/search/SearchEngine'
 import { PageTransition } from '../components/animations'
-import { MetaTags, StructuredData, websiteSchema } from '../components/seo'
-import { ProjectSEOConstants } from '../assets/constants'
+import { MetaTags, StructuredData } from '../components/seo'
+import { ProjectSEOConstants, websiteSchema } from '../assets/constants'
 
+/**
+ * @component Projects
+ * @description Projects listing page. Wraps ProjectsListing in a SearchEngine
+ * context so search, sort and filter state is available to child components.
+ */
 const Projects = () => {
 
     return (
@@ -18,16 +23,14 @@ const Projects = () => {
         />
         <StructuredData schema={websiteSchema} />
         <div id="projects-page-container"
-            className=
-            {`
+            className={`
                 ${styles.page}
                 ${styles.flexCol}
                 relative
             `}
         >
-            <div id="projects-listing-container" 
-                className=
-                {`
+            <div id="projects-listing-container"
+                className={`
                     w-full
                     h-fit
                     ${styles.flexCol}

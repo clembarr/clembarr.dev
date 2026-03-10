@@ -45,8 +45,7 @@ const SwitchButton = () => {
         focus-visible:ring-(--color-tertiary)
       `}
     >
-      {/* Track */}
-      <div
+      <div id="switch-track"
         className={`
           relative
           h-7 w-14
@@ -59,21 +58,22 @@ const SwitchButton = () => {
           border-(--color-border-strong)
         `}
       >
-        {/* Stars (dark mode) */}
-        <div className={`absolute inset-0 transition-opacity duration-500 ${isDark ? 'opacity-100' : 'opacity-0'}`}>
+        <div id="stars-container" 
+          className={`absolute inset-0 transition-opacity duration-500 ${isDark ? 'opacity-100' : 'opacity-0'}`}
+        >
           <span className="absolute w-1 h-1 bg-(--color-quaternary) rounded-full top-1.5 left-2" />
           <span className="absolute w-0.5 h-0.5 bg-(--color-quaternary)/70 rounded-full top-3 left-4" />
           <span className="absolute w-0.5 h-0.5 bg-(--color-quaternary)/50 rounded-full bottom-2 left-3" />
         </div>
 
-        {/* Clouds (light mode) */}
-        <div className={`absolute z-(--z-dropdown) inset-0 transition-opacity duration-500 ${isDark ? 'opacity-0' : 'opacity-100'}`}>
+        <div id="clouds-container"
+          className={`absolute z-(--z-dropdown) inset-0 transition-opacity duration-500 ${isDark ? 'opacity-0' : 'opacity-100'}`}
+        >
           <span className="absolute w-3 h-1.5 bg-(--color-muted)/30 rounded-full top-1.5 left-5" />
           <span className="absolute w-2 h-1 bg-(--color-muted)/20 rounded-full bottom-2 left-7" />
         </div>
 
-        {/* Toggle knob */}
-        <div
+        <div id="toggle-knob"
           className={`
             absolute
             top-1/2
@@ -88,8 +88,9 @@ const SwitchButton = () => {
             shadow-[0_0_12px_var(--color-tertiary)]/40
           `}
         >
-          {/* Moon craters (dark mode) */}
-          <div className={`absolute inset-0 transition-opacity duration-300 ${isDark ? 'opacity-100' : 'opacity-0'}`}>
+          <div id="moon-craters"
+            className={`absolute inset-0 transition-opacity duration-300 ${isDark ? 'opacity-100' : 'opacity-0'}`}
+          >
             <span className="absolute w-1 h-1 bg-(--color-primary)/50 rounded-full top-1 left-1" />
             <span className="absolute w-0.5 h-0.5 bg-(--color-primary)/40 rounded-full bottom-1.5 right-1" />
           </div>

@@ -2,7 +2,7 @@ import { useContext, useRef } from 'react';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
 import { BlogPost } from '../../assets/dataTypes';
-import { UNIVERSAL_LANG } from '../../utils/assetsUtils';
+import { normalizeMedia, UNIVERSAL_LANG } from '../../utils/assetsUtils';
 import { LangContext } from '../language';
 import { ThemeContext } from '../theme/ThemeEngine';
 import { author, placeholderMessages } from '../../assets/constants';
@@ -76,7 +76,6 @@ const BlogCard = ({ post, index = 0 }: BlogCardProps) => {
         onMouseMove={(e) => handleMouseMove(e, cardRef.current)}
         onMouseEnter={() => handleMouseEnter(cardRef.current)}
       >
-        {/* Top highlight line on hover */}
         <div className={`
           absolute
           top-0 left-0 right-0
@@ -88,11 +87,10 @@ const BlogCard = ({ post, index = 0 }: BlogCardProps) => {
 
         <Link to={blogUrl} className={`block h-full ${styles.flexCol}`}>
 
-          {/* Cover Image */}
           {post.coverImage && (
             <div className="w-full h-36 overflow-hidden">
               <img
-                src={post.coverImage as any}
+                src={normalizeMedia(post.coverImage).url}
                 alt={title}
                 className="w-full h-full object-cover"
                 loading="lazy"
@@ -107,7 +105,6 @@ const BlogCard = ({ post, index = 0 }: BlogCardProps) => {
               space-y-5
             `}
           >
-            {/* Header: category badge + date */}
             <div className={`
                 flex
                 items-center

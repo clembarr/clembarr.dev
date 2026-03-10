@@ -1,10 +1,9 @@
-
 import { useContext, useEffect, useRef, useState } from "react";
 import styles from "../../style";
 import { menuIcons } from "../../assets";
 import { ThemeContext } from "../theme/ThemeEngine";
 import { getActiveBreakpoint } from "../../utils/utils";
-import { galleryControls } from "../../assets/constants";
+import { galleryControls, GALLERY_HINTS_DELAY_MS } from "../../assets/constants";
 import { GalleryAction, ProjectMedia } from "../../assets/dataTypes";
 import { motion } from "framer-motion";
 
@@ -13,8 +12,16 @@ type RetexGalleryViewerProps = {
     untoggler: () => void;
 }
 
+/**
+ * @component RetexGalleryViewer
+ * @description Full-screen image gallery for a retex project. Supports keyboard
+ * navigation (arrows, +/-, 0), zoom + drag-to-pan on the focused image, and a
+ * thumbnail strip for direct access. On mobile, renders a vertical scroll list.
+ * Keyboard hints auto-hide after GALLERY_HINTS_DELAY_MS ms.
+ * @param images - Array of images or ProjectMedia objects to display
+ * @param untoggler - Callback to close the gallery and return to the retex view
+ */
 const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
-    const HINTS_DELAY_MS: number = 5000;
     const {currentTheme} = useContext(ThemeContext);
     const [focusedImage, setFocusedImage] = useState<string | ProjectMedia>(images[0]);
     const [zoom, setZoom] = useState<number>(1);
@@ -22,11 +29,11 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
     const [showHints, setShowHints] = useState<boolean>(true);
     const index = useRef<number>(0);
     const imageRef = useRef<HTMLImageElement>(null);
-    
+
     useEffect(() => {
-        /** Map each gallery control action to its handler.
-         *  CLOSE is excluded — Escape is handled by RetexViewer via galleryToggleState
-         *  to avoid a race condition between keydown (gallery) and keyup (retex). */
+        // Map each gallery control action to its handler.
+        // CLOSE is excluded — Escape is handled by RetexViewer via galleryToggleState
+        // to avoid a race condition between keydown (gallery) and keyup (retex).
         const actionHandlers: Partial<Record<GalleryAction, () => void>> = {
             [GalleryAction.NAVIGATE_NEXT]: () => setIndex((index.current + 1) % images.length),
             [GalleryAction.NAVIGATE_PREV]: () => setIndex((index.current - 1 + images.length) % images.length),
@@ -38,14 +45,11 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
         const handleKeyDown = (e: KeyboardEvent) => {
             const control = galleryControls.find((c) => c.keys.includes(e.key));
             const handler: (() => void) | undefined = control ? actionHandlers[control.action] : undefined;
-            if (handler) {
-                handler();
-            }
+            if (handler) handler();
         };
 
         document.addEventListener('keydown', handleKeyDown);
-
-        const hintsTimer = setTimeout(() => setShowHints(false), HINTS_DELAY_MS);
+        const hintsTimer = setTimeout(() => setShowHints(false), GALLERY_HINTS_DELAY_MS);
 
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
@@ -53,7 +57,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
         }
     }, [images.length]);
 
-    // Reset zoom when changing images
+    // Reset zoom and pan when the focused image changes.
     useEffect(() => {
         setZoom(1);
         setPanOffset({ x: 0, y: 0 });
@@ -64,10 +68,12 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
         setFocusedImage(images[index.current]);
     }
 
+    const getUrl = (image: string | ProjectMedia): string =>
+        typeof image === 'string' ? image : image.url;
+
     return (
         <div id="retex-gallery-container"
-            className=
-            {`
+            className={`
                 ${styles.flexCol}
                 ${styles.sizeFull}
                 ${styles.contentCenter}
@@ -78,8 +84,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
             <button
                 type="button"
                 aria-label="Close gallery"
-                className=
-                {`
+                className={`
                     absolute
                     md:-top-[5%] -top-[10px]
                     md:-right-[3%] -right-[15px]
@@ -95,8 +100,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
             </button>
 
             <div id="gallery-focused-image-container"
-                className=
-                {`
+                className={`
                     ${styles.sizeFull}
                     ${getActiveBreakpoint('number') as number < 2 ? "hidden" : styles.flexCol}
                     ${styles.contentCenter}
@@ -110,10 +114,9 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                 <motion.img
                     ref={imageRef}
                     id="gallery-focused-image"
-                    src={(focusedImage as ProjectMedia) ? (focusedImage as ProjectMedia).url : focusedImage as string || ''}
-                    alt={`Focused Retex Image`}
-                    className=
-                    {`
+                    src={getUrl(focusedImage)}
+                    alt="Focused retex image"
+                    className={`
                         ${styles.sizeFull}
                         object-contain
                         object-center
@@ -138,8 +141,8 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                 />
 
                 <div className={`
-                    absolute 
-                    top-0 
+                    absolute
+                    top-0
                     left-0
                     bg-(--color-secondary) bg-opacity-90
                     rounded-lg px-3 py-2
@@ -155,8 +158,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
             </div>
 
             <nav id="gallery-navigation"
-                className=
-                {`
+                className={`
                     absolute
                     ${getActiveBreakpoint('number') as number < 2 ? "hidden" : styles.flexCol}
                     ${styles.contentCenter}
@@ -168,8 +170,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                 `}
             >
                 <div id="gallery-thumbnails"
-                    className=
-                    {`
+                    className={`
                         ${styles.flexRow}
                         ${styles.sizeFull}
                         ${styles.contentCenter}
@@ -178,14 +179,13 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                         opacity-50
                         hover:opacity-100
                         ${styles.defaultTransition}
-                    `}  
+                    `}
                 >
-                    {images ? images.map((image, index) => (
-                        <img key={`retex-gallery-image-${index}`}
-                            src={(image as ProjectMedia) ? (image as ProjectMedia).url : image as string || ''}
-                            alt={`Retex Gallery Image ${index + 1}`}
-                            className=
-                            {`
+                    {images.map((image, i) => (
+                        <img key={`retex-gallery-image-${i}`}
+                            src={getUrl(image)}
+                            alt={`Retex gallery image ${i + 1}`}
+                            className={`
                                 ${styles.sizeFit}
                                 max-w-[100px]
                                 max-h-[60px]
@@ -198,23 +198,18 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                                 ease-in-out
                                 rounded-lg
                                 shadow-lg
-                                
-                                ${focusedImage === image ? 
-                                    'border-2 \
-                                    border-(--color-tertiary) \
-                                    mb-[1.5%]' 
-                                : 
-                                    'border \
-                                    border-(--color-quaternary)'
+                                ${focusedImage === image ?
+                                    'border-2 border-(--color-tertiary) mb-[1.5%]'
+                                :
+                                    'border border-(--color-quaternary)'
                                 }
                             `}
-                            onClick={() => { setIndex(index) }}
+                            onClick={() => setIndex(i)}
                         />
-                    )) : null}
+                    ))}
 
                     <hr id="thumbnail-underline"
-                        className=
-                        {`
+                        className={`
                             absolute
                             bottom-0
                             left-0
@@ -239,10 +234,10 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     pt-6.25
                 `}
             >
-                {images.map((image, idx) => (
-                    <img key={`retex-gallery-mobile-image-${idx}`}
-                        src={(image as ProjectMedia) ? (image as ProjectMedia).url : image as string || ''}
-                        alt={`Retex Gallery Mobile Image ${idx + 1}`}
+                {images.map((image, i) => (
+                    <img key={`retex-gallery-mobile-image-${i}`}
+                        src={getUrl(image)}
+                        alt={`Retex gallery image ${i + 1}`}
                         className={`
                             object-contain
                             object-center

@@ -6,23 +6,27 @@ import { getActiveBreakpoint } from '../../utils/utils'
 import { ThemeContext } from '../theme/ThemeEngine'
 import { useContext } from 'react'
 
-const 
-Contact = () => {
+/**
+ * @component Contact
+ * @description Contact section. On desktop, shows the contact form on the left and
+ * social media links in the centre. On mobile, the layout stacks vertically with
+ * the form rendered below the social links (outside SubmitEngine to avoid context
+ * duplication — only the desktop form uses SubmitEngine).
+ */
+const Contact = () => {
   const { currentTheme } = useContext(ThemeContext);
 
   return (
     <section id="contact"
-      className=
-      {`
+      className={`
         ${styles.sizeFull}
         ${getActiveBreakpoint('number') as number <= 1 ? `${styles.flexCol}` : `${styles.flexRow}`}
         ${styles.contentCenter}
         xl:space-x-50 lg:space-x-37.5
       `}
     >
-        <div id='form-container'
-            className=
-            {`
+        <div id='form-container-desktop'
+            className={`
               ${getActiveBreakpoint('number') as number <= 1 ? `hidden` : `${styles.flexRow}`}
               w-2/5
               h-full
@@ -36,8 +40,7 @@ Contact = () => {
         </div>
 
         <div id='contact-info'
-            className=
-            {`
+            className={`
               w-fit
               h-full
               ${styles.flexCol}
@@ -47,8 +50,7 @@ Contact = () => {
         >
           {socialMedia.map((social: SocialMedia) => (
             <div key={`icon-${social.label}-container`}
-              className=
-              {`
+              className={`
                 ${getActiveBreakpoint('number') as number <= 1 ? `${styles.flexRow}` : `${styles.flexCol}`}
                 ${styles.contentStartAll}
                 w-full
@@ -61,65 +63,57 @@ Contact = () => {
               `}
             >
               <a href={social.link}
-                className=
-                {`
+                className={`
                   ${styles.flexRow}
                   ${styles.contentStartX}
                 `}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={social.icon.content[currentTheme]} 
+                <img src={social.icon.content[currentTheme]}
                     alt={social.icon.alt}
-                    className=
-                    {`
+                    className={`
                       object-cover
                       aspect-square
                       md:w-[120%] base:w-[100%]
                     `}
                 />
               </a>
-              <hr className=
-                  {`
-                    ${styles.line}
-                    w-[20%]
-                    h-[2.5px]
-                  `}
+              <hr className={`
+                  ${styles.line}
+                  w-[20%]
+                  h-[2.5px]
+                `}
               />
 
-              <div className=
-                  {`
-                    ${getActiveBreakpoint('number') as number <= 1 ?
-                      `${styles.flexCol}` : `hidden`
-                    }
-                    ${styles.contentStartX}
-                    ${styles.debugBorders}
-                  `}
+              <div className={`
+                  ${getActiveBreakpoint('number') as number <= 1 ?
+                    `${styles.flexCol}` : `hidden`
+                  }
+                  ${styles.contentStartX}
+                `}
               >
-                <label className=
-                  {`
-                    md:text-base base:text-xs
-                    w-full
-                    ${styles.contentStartX}
-                  `}
+                <label className={`
+                  md:text-base base:text-xs
+                  w-full
+                  ${styles.contentStartX}
+                `}
                 >{social.at}</label>
               </div>
 
-              <label className=
-                  {`
-                    md:visible base:hidden
-                    md:text-base base:text-xs
-                    w-full
-                    ${styles.contentStartX}
-                  `}
+              <label className={`
+                  md:visible base:hidden
+                  md:text-base base:text-xs
+                  w-full
+                  ${styles.contentStartX}
+                `}
               >{social.at}</label>
             </div>
           ))}
         </div>
 
-        <div id='form-container'
-            className=
-            {`
+        <div id='form-container-mobile'
+            className={`
               md:hidden ${styles.flexCol}
               w-full
               h-full

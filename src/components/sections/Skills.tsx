@@ -26,13 +26,13 @@ const assignGridJitterPositions = (
   const n = nodes.length;
   if (n === 0) return;
 
-  /** Match grid aspect ratio to the canvas so cells are roughly square. */
+  // Match grid aspect ratio to the canvas so cells are roughly square.
   const cols = Math.max(1, Math.round(Math.sqrt(n * (vw / vh))));
   const rows = Math.ceil(n / cols);
   const cellW = vw / cols;
   const cellH = vh / rows;
 
-  /** Sort by cluster so same-category nodes occupy adjacent grid cells. */
+  // Sort by cluster so same-category nodes occupy adjacent grid cells.
   const sorted = [...nodes].sort((a, b) => a.cluster.localeCompare(b.cluster));
 
   sorted.forEach((node, i) => {
@@ -40,7 +40,7 @@ const assignGridJitterPositions = (
     const row = Math.floor(i / cols);
     const px = (col + 0.5) * cellW + (Math.random() - 0.5) * cellW * jitter;
     const py = (row + 0.5) * cellH + (Math.random() - 0.5) * cellH * jitter;
-    /** Mutations propagate to the original `nodes` array (shared object refs). */
+    // Mutations propagate to the original `nodes` array (shared object refs).
     node.x = Math.max(0.05, Math.min(0.95, px / vw));
     node.y = Math.max(0.05, Math.min(0.95, py / vh));
   });
@@ -77,7 +77,7 @@ const resolveCircleCollisions = (
   for (let iter = 0; iter < iterations; iter++) {
     let moved = false;
 
-    /** Phase 1 — separation only, no clamping yet. */
+    // Phase 1 — separation only, no clamping yet.
     for (let i = 0; i < pts.length; i++) {
       for (let j = i + 1; j < pts.length; j++) {
         const dx = pts[j].x - pts[i].x;
@@ -86,7 +86,7 @@ const resolveCircleCollisions = (
         const minDist = pts[i].r + pts[j].r + gap;
         if (dist < minDist) {
           const overlap = (minDist - dist) / 2;
-          /** Unit vector from i toward j, or random if nodes are exactly co-located. */
+          // Unit vector from i toward j, or random if nodes are exactly co-located.
           const nx = dist > 0.01 ? dx / dist : (Math.random() - 0.5) * 2;
           const ny = dist > 0.01 ? dy / dist : (Math.random() - 0.5) * 2;
           pts[i].x -= nx * overlap;
@@ -98,7 +98,7 @@ const resolveCircleCollisions = (
       }
     }
 
-    /** Phase 2 — clamp every node after all pairs have been resolved. */
+    // Phase 2 — clamp every node after all pairs have been resolved.
     for (const p of pts) {
       const margin = p.r + 6;
       p.x = Math.max(margin, Math.min(vw - margin, p.x));
@@ -111,6 +111,12 @@ const resolveCircleCollisions = (
   return nodes.map((n, i) => ({ ...n, x: pts[i].x / vw, y: pts[i].y / vh }));
 };
 
+/**
+ * @component Skills
+ * @description Skills section rendering a galaxy visualization of the developer's
+ * skills. Nodes are laid out with a grid-jitter algorithm then collision-resolved,
+ * and re-computed when the theme or language changes.
+ */
 const Skills = () => {
   const { currentTheme } = useContext(ThemeContext);
   const { currentLang } = useContext(LangContext);
@@ -173,16 +179,14 @@ const Skills = () => {
 
   return (
     <section id="skills"
-      className=
-      {`
+      className={`
         ${styles.sizeFull}
         ${styles.flexCol}
         ${styles.contentCenter}
       `}
     >
       <div id="galaxy-container"
-        className=
-        {`
+        className={`
           w-full
           min-h-[500px]
           md:min-h-[600px]

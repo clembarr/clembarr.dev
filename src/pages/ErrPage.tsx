@@ -11,17 +11,18 @@ type ErrPageProps = {
 }
 
 /**
- * @description Generic error page that displays the error code, a localised
- * message from `errorMessages`, and a back-to-home button. Reusable for any
- * error declared in the `Errors` enum.
+ * @component ErrPage
+ * @description Generic error page displaying the error code, a localised message
+ * from `errorMessages`, and a back-to-home button. Reusable for any error declared
+ * in the `Errors` enum.
+ * @param error - The error code to display and look up in `errorMessages`.
  */
 const ErrPage = ({ error }: ErrPageProps) => {
   const { currentLang } = useContext(LangContext)
 
   return (
     <section id={`err${error}-container`}
-      className=
-      {`
+      className={`
         ${styles.sizeScreen}
         ${styles.flexCol}
         ${styles.contentStartX}
@@ -29,8 +30,7 @@ const ErrPage = ({ error }: ErrPageProps) => {
       `}
     >
         <h1 id={`err${error}-title`}
-          className=
-          {`
+          className={`
             ${styles.contentCenter}
             lg:text-[200%]
             rounded-md
@@ -41,8 +41,7 @@ const ErrPage = ({ error }: ErrPageProps) => {
         >Error {error}</h1>
 
         <p id={`err${error}-message`}
-          className=
-          {`
+          className={`
             ${styles.sizeFit}
             ${styles.contentCenter}
           `}
@@ -52,8 +51,7 @@ const ErrPage = ({ error }: ErrPageProps) => {
         />
 
         <Link id='home-button'
-          className=
-          {`
+          className={`
             mt-[2%]
             text-2xs
             rounded-lg

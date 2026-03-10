@@ -2,10 +2,10 @@ import { useParams, useNavigate } from 'react-router';
 import { ArticleLayout } from '../components/blog';
 import { PageTransition } from '../components/animations';
 import { UNIVERSAL_LANG } from '../utils/assetsUtils';
-import { APP_URL, author } from '../assets/constants';
+import { APP_URL, author, generateBlogPostSchema } from '../assets/constants';
 import { blogPosts } from '../assets/blog';
 import { getRelatedPosts } from '../utils/utils';
-import { StructuredData, MetaTags, generateBlogPostSchema } from '../components/seo';
+import { StructuredData, MetaTags } from '../components/seo';
 import styles from '../style';
 
 /**
@@ -41,12 +41,11 @@ const BlogPost = () => {
   const title = post.title[UNIVERSAL_LANG] || post.title[Object.keys(post.title)[0]];
   const description =
     post.description[UNIVERSAL_LANG] || post.description[Object.keys(post.description)[0]];
-  const postUrl = `https://clembarr.dev/blog/${post.slug}`;
+  const postUrl = `${APP_URL}/blog/${post.slug}`;
   const keywords = Object.values(post.tags).flat();
 
   return (
     <PageTransition>
-      {/* Blog Post SEO */}
       <StructuredData
         schema={generateBlogPostSchema({
           title,
@@ -62,7 +61,7 @@ const BlogPost = () => {
         })}
       />
       <MetaTags
-        title={`${title} - Clément Barrière`}
+        title={`${title} - ${author.firstName} ${author.lastName}`}
         description={description}
         keywords={keywords}
         ogTitle={title}

@@ -107,7 +107,7 @@ const Searchbar = ({ placeholderContext = "search" }: SearchbarProps) => {
                 </button>
             )}
         </div>
-  )
+    );
 }
 
 export default Searchbar;

@@ -9,7 +9,8 @@ import { ThemeContext } from "./theme/ThemeEngine"
 import { CreditMention, Hyperlink, NavbarPattern } from "../assets/dataTypes"
 
 /**
- * @description External link icon displayed next to credits and see-also links.
+ * @component ExternalLinkIcon
+ * @description Small SVG icon displayed inline next to external link labels.
  */
 const ExternalLinkIcon = () => (
   <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,8 +19,9 @@ const ExternalLinkIcon = () => (
 )
 
 /**
- * @description This component renders the footer of the website,
- * dynamically generating columns from the footerColumns data structure.
+ * @component Footer
+ * @description Footer with dynamically generated columns from `footerColumns`.
+ * Renders navigation links, credits, and see-also links depending on column context.
  */
 const Footer = () => {
   const [currentNavigation, setCurrentNavigation] = useState(getCurrentNavigation())
@@ -128,8 +130,7 @@ const Footer = () => {
 
   return (
     <footer id="footer"
-      className=
-      {`
+      className={`
         w-screen
         h-full
         px-[5%]
@@ -150,8 +151,7 @@ const Footer = () => {
       `} />
 
       <div id="footer-content"
-        className=
-        {`
+        className={`
           h-full
           w-full
           ${styles.contentStartAll}
@@ -189,8 +189,7 @@ const Footer = () => {
       </div>
 
       <div id="copyrigth-container"
-        className=
-        {`
+        className={`
           ${styles.flexRow}
           ${getActiveBreakpoint('number') as number <= 2 ? styles.contentStartX : styles.contentEndAll}
           ${styles.sizeFull}
@@ -203,8 +202,7 @@ const Footer = () => {
       >
         <a id="copyrigth"
           href={getLinkFromTypedLink(copyrigthText.link, currentLang)}
-          className=
-          {`
+          className={`
             ${getActiveBreakpoint('number') as number <= 2 ? "text-left" : "text-right"}
             text-3xs
             text-(--color-muted)

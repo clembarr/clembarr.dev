@@ -1,20 +1,20 @@
 import { PageTransition, ScrollReveal } from '../components/animations';
-import { BlogSEOConstants, blogSortingOptions } from '../assets/constants';
+import { BlogSEOConstants, blogSortingOptions, blogSchema } from '../assets/constants';
 import { blogPosts } from '../assets/blog';
-import { StructuredData, MetaTags, blogSchema } from '../components/seo';
+import { StructuredData, MetaTags } from '../components/seo';
 import { SearchEngine, Searchbar, Sortingbar } from '../components/search';
 import { BlogListing } from '../components/sections';
 import styles from '../style';
 
 /**
  * @component Blog
- * @description Blog listing page with search and filtering, using the mutualized
+ * @description Blog listing page with search and filtering. Wraps content in a
+ * SearchEngine context shared with Searchbar, Sortingbar and BlogListing.
  */
 const Blog = () => {
 
   return (
     <PageTransition>
-      {/* SEO */}
       <StructuredData schema={blogSchema} />
       <MetaTags
         title={BlogSEOConstants.title}
@@ -36,10 +36,9 @@ const Blog = () => {
             pb-20
           `}
         >
-
-          {/* Search and Filters */}
           <ScrollReveal direction="up" delay={0.2}>
             <div
+              id="blog-search-container"
               className={`
                 ${styles.flexCol}
                 ${styles.contentCenter}

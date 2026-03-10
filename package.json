@@ -16,11 +16,8 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
-    "@react-three/drei": "9.96.1",
-    "@react-three/fiber": "8.15.19",
     "@tailwindcss/typography": "^0.5.19",
     "@types/prismjs": "^1.26.6",
-    "@types/three": "0.158.0",
     "date-fns": "^4.1.0",
     "dompurify": "^3.2.3",
     "framer-motion": "^12.23.26",
@@ -28,8 +25,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router": "^7.1.1",
-    "remark": "^15.0.1",
-    "three": "0.158.0"
+    "remark": "^15.0.1"
   },
   "devDependencies": {
     "@eslint/js": "9.16.0",

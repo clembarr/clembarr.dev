@@ -21,7 +21,8 @@ import {
   SkillGalaxy,
 } from '../components/showcase';
 import styles from '../style';
-import { MetaTags, StructuredData, websiteSchema } from '../components/seo';
+import { MetaTags, StructuredData } from '../components/seo';
+import { websiteSchema } from '../assets/constants';
 import { skills, careerTimeline } from '../assets/contents';
 import { AvailableSkillSubcategories } from '../assets/dataTypes';
 

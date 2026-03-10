@@ -27,7 +27,12 @@ export type MultilingualContent = { [key: string]: string };
 export type MultilingualContentArray = { [key: string]: string[] };
 
 /**
- * Safely retrieve content in the specified language with fallback logic.
+ * @function getContent Safely retrieve content in the specified language with fallback logic.
+ * Falls back to UNIVERSAL_LANG, then the optional fallback string, then the first available value.
+ * @param content - Multilingual content object keyed by language code.
+ * @param lang - Language code to retrieve.
+ * @param fallback - Optional fallback string if no content is found.
+ * @returns The resolved content string, or an empty string if nothing is found.
  */
 export const getContent = (
   content: MultilingualContent | undefined,
@@ -46,12 +51,16 @@ export const getContent = (
 };
 
 /**
- * Simple translation function - alias for getContent.
+ * @function translate Alias for getContent. Retrieves localized content from a
+ * multilingual object with fallback logic.
  */
 export const translate = getContent;
 
 /**
- * Create a translation function bound to a specific language.
+ * @function tCustom Create a translation function bound to a specific language,
+ * returning a reusable `t(content, fallback?)` helper for that language.
+ * @param lang - Language code to bind.
+ * @returns A translation function pre-bound to the given language.
  */
 export const tCustom = (lang: string) => {
   return (content: MultilingualContent | undefined, fallback?: string) =>

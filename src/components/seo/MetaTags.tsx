@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { author as authorConstants } from '../../assets/configConstants';
 
 type MetaTagsProps = {
   title?: string;
@@ -39,7 +40,7 @@ const MetaTags = ({
   title,
   description,
   keywords,
-  author = 'Clément Barrière',
+  author = `${authorConstants.firstName} ${authorConstants.lastName}`,
   ogTitle,
   ogDescription,
   ogImage,
@@ -136,7 +137,6 @@ const MetaTags = ({
       link.href = canonical;
     }
 
-    // Cleanup: remove created elements on unmount
     return () => {
       createdElements.forEach((element) => {
         if (element.parentNode) {

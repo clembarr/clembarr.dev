@@ -236,22 +236,23 @@ export const lightenHexColor = (color: string, percent: number) => {
     (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
 }
 
+const RANDOM_TAILWIND_COLORS = [
+    'red-500',
+    'green-500',
+    'blue-500',
+    'yellow-500',
+    'purple-500',
+    'pink-500',
+    'cyan-500',
+];
+
 /**
- * @function getRandomTailwindColor Get a random Tailwind CSS color anmong a 
+ * @function getRandomTailwindColor Get a random Tailwind CSS color among a
  * predefined list of colors.
  * @returns a random Tailwind CSS color
  */
 export const getRandomTailwindColor = () => {
-    const colors = [
-        'red-500', 
-        'green-500', 
-        'blue-500', 
-        'yellow-500', 
-        'purple-500', 
-        'pink-500', 
-        'cyan-500', 
-    ];
-    return colors[randomNumberBetween(0, colors.length - 1)];
+    return RANDOM_TAILWIND_COLORS[randomNumberBetween(0, RANDOM_TAILWIND_COLORS.length - 1)];
 }
 
 /**
@@ -336,7 +337,6 @@ export const isFullScreen = () => {
  * @param container the container
  * @param fontSize the font size
  * @return the number of characters that can fit in a line
- * @
  */
 export const charsPerLine = (container: HTMLElement, fontSize: number) => {
     return Math.floor(container.clientWidth / fontSize)

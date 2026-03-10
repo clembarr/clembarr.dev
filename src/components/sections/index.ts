@@ -7,7 +7,7 @@ import Skills from "./Skills";
 import ProjectsListing from "./ProjectsListing";
 import BlogListing from "./BlogListing";
 
-export  {
+export {
     About,
     Contact,
     Hero,

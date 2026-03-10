@@ -8,6 +8,15 @@ type EffectDemoProps = {
   extraElements?: React.ReactNode;
 }
 
+/**
+ * @component EffectDemo
+ * @description Renders a single visual effect demo card with a title, description,
+ * and an animated preview of the hero figure image.
+ * @param title - Display name of the effect.
+ * @param description - Short explanation of how the effect works.
+ * @param animationClass - Tailwind animation class(es) applied to the image.
+ * @param extraElements - Optional overlay elements rendered on top of the image.
+ */
 const EffectDemo = ({ title, description, animationClass, extraElements }: EffectDemoProps) => {
   return (
     <div className={`
@@ -45,8 +54,9 @@ const EffectDemo = ({ title, description, animationClass, extraElements }: Effec
 };
 
 /**
- * @description Page de démonstration des différents effets de glitch
- * pour l'image ASCII art en thème sombre
+ * @component GlitchDemo
+ * @description Demo page comparing all available glitch/visual effects applied to
+ * the dark-theme ASCII hero image. Intended as a developer reference only.
  */
 const GlitchDemo = () => {
   // Générer des caractères Matrix aléatoires

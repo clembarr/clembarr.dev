@@ -8,11 +8,9 @@ import { handleMouseLeave, handleMouseMove } from '../../utils/utils';
 import { RetexContext } from '../retex';
 
 /**
- * @description Project card with a preview image or video.
- * 
- * @function ProjectPreview
- * @param project - The project data
- * @returns The project preview card component
+ * @component ProjectPreview
+ * @description Project card with a cover image or video preview, used in the projects listing.
+ * @param project - Retex data for the project to display
  */
 const ProjectPreview = (project: Retex) => {
     const { currentLang } = useContext(LangContext);
@@ -86,8 +84,7 @@ const ProjectPreview = (project: Retex) => {
     return (
         <div ref={cardRef}
             id={`card-${project.title}-container`}
-            className=
-            {`
+            className={`
                 ${styles.flexCol}
                 color-scheme-primary
                 bg-(--color-secondary)
@@ -110,8 +107,7 @@ const ProjectPreview = (project: Retex) => {
             onMouseMove={(e) => handleMouseMove(e, cardRef.current)}
             onClick={() => setDisplayedRetex(project.title[currentLang] || project.title[0])}
         >
-            <div className=
-                {`
+            <div className={`
                     m-[6%]
                     mb-0
                 `}

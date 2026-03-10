@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
 import { PageTransitionsConstants } from '../../assets/constants';
 
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 type PageTransitionProps = {
   children: ReactNode;
   className?: string;
@@ -16,7 +18,6 @@ type PageTransitionProps = {
  * - Works with React Router
  */
 const PageTransition = ({ children, className = '' }: PageTransitionProps) => {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   return (
     <motion.div

@@ -3,11 +3,16 @@ import styles from "../style";
 import { Hero, About, Contact, Skills } from "../components/sections";
 import { ScrollReveal, PageTransition } from "../components/animations";
 import { SuspenseFallback } from "../components";
-import { MetaTags, StructuredData, personSchema, websiteSchema } from "../components/seo";
-import { HomeSEOConstants } from '../assets/constants';
+import { MetaTags, StructuredData } from "../components/seo";
+import { HomeSEOConstants, personSchema, websiteSchema } from '../assets/constants';
 
 const ProjectsSlider = lazy(() => import("../components/sections/ProjectsSlider"));
 
+/**
+ * @component Home
+ * @description Home page. Lazy-loads ProjectsSlider to keep the initial bundle small.
+ * Sections are revealed on scroll via ScrollReveal wrappers.
+ */
 const Home = () => {
   return (
     <PageTransition>
@@ -19,9 +24,8 @@ const Home = () => {
         canonical={HomeSEOConstants.canonical}
       />
       <StructuredData schema={[personSchema, websiteSchema]} />
-    <div id='home-container' 
-      className=
-      {`
+    <div id='home-container'
+      className={`
         ${styles.page}
         ${styles.flexCol}
         2xl:space-y-[10%] xl:space-y-[18%] lg:space-y-[18%] hxs:space-y-20 space-y-2
@@ -29,8 +33,7 @@ const Home = () => {
       `}
     >
       <div id="hero-container"
-        className=
-        {`
+        className={`
           w-screen
           2xl:h-[74vh] lg:h-[62vh] md:h-[40vh] h-[35vh]
           px-[12%]
@@ -41,8 +44,7 @@ const Home = () => {
 
       <ScrollReveal direction="up" delay={0.2}>
         <div id="about-container"
-          className=
-          {`
+          className={`
             ${styles.sectionContainer}
           `}
         > <About /> </div>
@@ -50,8 +52,7 @@ const Home = () => {
 
       <ScrollReveal direction="up" delay={0.3}>
         <div id="projects-slider-container"
-          className=
-          {`
+          className={`
             ${styles.sectionContainer}
             overflow-visible
           `}
@@ -64,8 +65,7 @@ const Home = () => {
 
       <ScrollReveal direction="up" delay={0.35}>
         <div id="skills-container"
-          className=
-          {`
+          className={`
             ${styles.sectionContainer}
           `}
         > <Skills /> </div>
@@ -73,8 +73,7 @@ const Home = () => {
 
       <ScrollReveal direction="up" delay={0.4}>
         <div id="contact-container"
-          className=
-          {`
+          className={`
             ${styles.sectionContainer}
           `}
         > <Contact /> </div>

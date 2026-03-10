@@ -446,3 +446,12 @@ export interface AboutWidget {
   title: MultilingualContent;
   content: MultilingualContent | MultilingualContentArray | LanguageLevel[];
 }
+
+/**
+ * Context type for the retex display engine.
+ * Holds the title of the currently displayed retex and its setter.
+ */
+export interface RetexContextType {
+  displayedRetexTitle: string | undefined;
+  setDisplayedRetex: React.Dispatch<React.SetStateAction<string | undefined>>;
+}

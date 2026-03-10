@@ -17,15 +17,14 @@ import {
 
 export * from './translationUtils';
 
-// --- Skills Utilities ---
-
-/**
- * Lazy-loaded map for O(1) skill lookups.
- * We use a function instead of a top-level constant to avoid circular 
- * dependency issues when configuration assets import this file.
- */
+/** Lazy-loaded map for O(1) skill lookups. Initialized on first call to avoid
+ * circular dependency issues when configuration assets import this file. */
 let _skillsMap: Map<string, Skill> | null = null;
 
+/**
+ * @function getSkillsMap Return the skills lookup map, building it on first call.
+ * @returns A Map keyed by skill label for O(1) lookups.
+ */
 const getSkillsMap = (): Map<string, Skill> => {
   if (!_skillsMap) {
     // Defensive check: if skills is still undefined (module cycle), 
@@ -40,7 +39,11 @@ const getSkillsMap = (): Map<string, Skill> => {
 };
 
 /**
- * Retrieve a skill by its label with O(1) complexity.
+ * @function getSkill Retrieve a skill by its label with O(1) average complexity.
+ * Falls back to a linear search if the map lookup fails. Throws in dev mode if
+ * the skill is not found.
+ * @param label - The skill label to look up.
+ * @returns The matching Skill object.
  */
 export const getSkill = (label: string): Skill => {
   const map = getSkillsMap();
@@ -67,7 +70,9 @@ export const getSkill = (label: string): Skill => {
 };
 
 /**
- * Check if a skill exists in the skills index.
+ * @function hasSkill Check if a skill exists in the skills index.
+ * @param label - The skill label to check.
+ * @returns true if the skill exists, false otherwise.
  */
 export const hasSkill = (label: string): boolean => {
   const safeSkills = skills || [];
@@ -79,17 +84,21 @@ export const hasSkill = (label: string): boolean => {
 };
 
 /**
- * Get all skills filtered by category.
+ * @function getSkillsByCategory Get all skills filtered by category.
+ * @param category - The category to filter by.
+ * @returns Array of skills belonging to the given category.
  */
 export const getSkillsByCategory = (category: AvailableSkillCategories): Skill[] => {
   const safeSkills = skills || [];
   return safeSkills.filter(skill => skill.category.context === category);
 };
 
-// --- Projects Utilities ---
-
 /**
- * Wrap a resource URL into a ProjectMedia object.
+ * @function wrapInMedia Wrap a resource URL into a ProjectMedia object.
+ * @param ressourceUrl - The URL of the media resource.
+ * @param type - The media type (IMAGE or VIDEO).
+ * @param alt - Alternative text for accessibility.
+ * @returns A ProjectMedia object.
  */
 export const wrapInMedia = (ressourceUrl: string, type: MediaType, alt: string): ProjectMedia => {
     if (type === MediaType.IMAGE) {
@@ -110,30 +119,53 @@ export const wrapInMedia = (ressourceUrl: string, type: MediaType, alt: string):
     }
 }
 
-// --- Blog Utilities ---
-
 /** URL of the blog page */
 const BLOG_URL = APP_URL + "/blog";
 
 /**
- * Returns an array of blog posts that are related to the given project 
+ * @function getRelatedPosts Returns blog posts that reference the given project title
+ * in their `relatedProjects` field.
+ * @param projectTitle - The project title to match against.
+ * @returns Array of related BlogPost objects.
  */
 export const getRelatedPosts = (projectTitle: string) => {
     return blogPosts.filter((post) => post.relatedProjects && post.relatedProjects.includes(projectTitle));
 }
 
 /**
- * Returns the blog post with the given slug
+ * @function getPost Returns the blog post with the given slug.
+ * @param postSlug - The slug to look up.
+ * @returns The matching BlogPost, or undefined if not found.
  */
 export const getPost = (postSlug: string) => {
     return blogPosts.find((post) => post.slug === postSlug);
 }
 
 /**
- * Returns the URL of the blog post with the given slug
+ * @function getPostUrl Returns the full URL of a blog post given its slug.
+ * @param postSlug - The post slug to build the URL from.
+ * @returns The full blog post URL string.
  */
 export const getPostUrl = (postSlug: string) => {
     return BLOG_URL + "/" + postSlug;
 }
 
 export { skills };
+
+/**
+ * @function normalizeMedia Normalizes media input into a ProjectMedia object.
+ * Plain URL strings are wrapped as IMAGE type; existing ProjectMedia objects are
+ * returned as-is.
+ * @param media - A raw image URL string or an existing ProjectMedia object.
+ * @returns A normalized ProjectMedia object.
+ */
+export const normalizeMedia = (media: string | ProjectMedia): ProjectMedia => {
+    if (typeof media === 'string') {
+        return {
+            url: media,
+            type: MediaType.IMAGE,
+            alt: "Project illustration"
+        };
+    }
+    return media;
+};

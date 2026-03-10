@@ -89,16 +89,14 @@ const CareerSlide = ({ entry, index, total, lang }: CareerSlideProps) => {
   return (
     <div className={`${styles.flexCol} gap-4`}>
 
-      {/* Slide counter */}
-      <span
+      <span id="slide-counter"
         className="font-secondary-regular text-3xs tracking-[0.2em] uppercase"
         style={{ color: accent, opacity: 0.7 }}
       >
         {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
       </span>
 
-      {/* Entry type badge */}
-      <div>
+      <div id="entry-type-badge">
         <span
           className="font-primary-semibold text-3xs tracking-widest uppercase px-3 py-1 rounded-full"
           style={{ color: accent, background: `${accent}1A`, border: `1px solid ${accent}38` }}
@@ -107,13 +105,11 @@ const CareerSlide = ({ entry, index, total, lang }: CareerSlideProps) => {
         </span>
       </div>
 
-      {/* Title */}
-      <h2 className="font-primary-bold 2xl:text-4xl xl:text-3xl lg:text-2xl text-xl text-(--color-quaternary) leading-tight">
+      <h2 id="entry-title" className="font-primary-bold 2xl:text-4xl xl:text-3xl lg:text-2xl text-xl text-(--color-quaternary) leading-tight">
         {entry.title[lang]}
       </h2>
 
-      {/* Organization + period */}
-      <div className={`${styles.flexCol} gap-0.5`}>
+      <div id="entry-org-period" className={`${styles.flexCol} gap-0.5`}>
         <p className="font-secondary-regular text-sm text-(--color-quaternary) opacity-60">
           {entry.organization[lang]}
         </p>
@@ -122,17 +118,14 @@ const CareerSlide = ({ entry, index, total, lang }: CareerSlideProps) => {
         </p>
       </div>
 
-      {/* Accent divider */}
-      <div className="w-10 h-px" style={{ background: accent, opacity: 0.5 }} />
+      <div id="accent-divider" className="w-10 h-px" style={{ background: accent, opacity: 0.5 }} />
 
-      {/* Description */}
-      <p className="font-primary-regular text-sm leading-relaxed text-(--color-quaternary) opacity-75 tracking-wide text-wrap">
+      <p id="entry-description" className="font-primary-regular text-sm leading-relaxed text-(--color-quaternary) opacity-75 tracking-wide text-wrap">
         {entry.description[lang]}
       </p>
 
-      {/* Tags */}
       {entry.tags && entry.tags.length > 0 && (
-        <div className={`${styles.flexRow} flex-wrap gap-2`}>
+        <div id="entry-tags" className={`${styles.flexRow} flex-wrap gap-2`}>
           {entry.tags.map(tag => (
             <span key={tag} className={`${styles.tag} text-3xs`}>{tag}</span>
           ))}
@@ -196,7 +189,7 @@ const CareerCard3D = ({
 }: CareerCard3DProps) => {
   const accent = ENTRY_ACCENT[entry.type];
 
-  /** Signed distance from the active card position (0 = active, ±1 = adjacent). */
+  // Signed distance from the active card position (0 = active, ±1 = adjacent).
   const dist = useTransform(scrollY, v => {
     const cardProgress = scrollRange > 0 ? v * (n - 1) / scrollRange : 0;
     return index - cardProgress;
@@ -211,10 +204,8 @@ const CareerCard3D = ({
   });
   const zIndex  = useTransform(dist, d => Math.round(100 - Math.abs(d) * 20));
 
-  /**
-   * Background year opacity: peaks at 0.07 when dist=0, reaches 0 at |dist|=0.9.
-   * Each card owns its year text; only the active one is ever visible.
-   */
+  // Background year opacity: peaks at 0.07 when dist=0, reaches 0 at |dist|=0.9.
+  // Each card owns its year text; only the active one is ever visible.
   const yearOpac = useTransform(dist, d => {
     const abs = Math.abs(d);
     return abs > 0.9 ? 0 : 0.07 * Math.max(0, 1 - abs / 0.9);
@@ -222,8 +213,8 @@ const CareerCard3D = ({
 
   return (
     <>
-      {/* ── Background year text — visible only while this card is active ── */}
       <motion.div
+        id={`card-${index}-year-bg`}
         className="absolute inset-0 pointer-events-none select-none flex items-center justify-center"
         style={{ opacity: yearOpac }}
       >
@@ -240,7 +231,6 @@ const CareerCard3D = ({
         </span>
       </motion.div>
 
-      {/* ── 3D card ── */}
       <motion.div
         style={{
           position: 'absolute',
@@ -297,13 +287,13 @@ const Career = () => {
 
   const { scrollY } = useScroll();
 
-  /** Height consumed by each card step in the scroll space. */
+  // Height consumed by each card step in the scroll space.
   const slideH = vpHeight * SLIDE_H_FACTOR;
 
-  /** Total scroll distance to traverse all n cards. */
+  // Total scroll distance to traverse all n cards.
   const scrollRange = (n - 1) * slideH;
 
-  /** Container height: full scroll range + one viewport to rest at the end. */
+  // Container height: full scroll range + one viewport to rest at the end.
   const containerH = scrollRange + vpHeight + navbarH;
 
   useMotionValueEvent(scrollY, 'change', v => {
@@ -336,7 +326,6 @@ const Career = () => {
           `}
         >
 
-          {/* ── 3D card fan: all cards stacked, spread by scroll ── */}
           {careerTimeline.map((entry, i) => (
             <CareerCard3D
               key={`card-${i}`}
@@ -351,7 +340,6 @@ const Career = () => {
             />
           ))}
 
-          {/* ── Decorative illustration — bottom-right ── */}
           <img
             src={coreImages.careerFigure.content[currentTheme]}
             alt={coreImages.careerFigure.alt}
@@ -362,10 +350,8 @@ const Career = () => {
             }}
           />
 
-          {/* ── Slide dot indicator ── */}
           <SlideIndicator count={n} active={activeIndex} />
 
-          {/* ── Scroll hint — fades out after first movement ── */}
           <motion.div
             className={`absolute bottom-8 right-[6%] ${styles.flexRow} items-center gap-2 text-(--color-quaternary)`}
             animate={{ opacity: activeIndex > 0 ? 0 : 0.35 }}

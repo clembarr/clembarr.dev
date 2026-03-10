@@ -8,6 +8,13 @@ import { getActiveBreakpoint } from "../../utils/utils"
 import { menuIcons } from "../../assets"
 import { RetexContext } from "./RetexDisplayEngine"
 
+/**
+ * @component RetexHeader
+ * @description Left-side panel of the retex viewer. Displays the project title,
+ * date, tool icons, and additional resource links. On mobile, renders a close
+ * button and a horizontal scrollable tool strip instead of the sidebar layout.
+ * @param relatedProject - The retex project data to display
+ */
 const RetexHeader = (relatedProject: Retex) => {
     const { currentLang } = useContext(LangContext);
     const { currentTheme } = useContext(ThemeContext);
@@ -17,8 +24,7 @@ const RetexHeader = (relatedProject: Retex) => {
 
     return (
         <header id='retex-header'
-            className=
-            {`
+            className={`
                 h-fit
                 md:w-3/12 w-full
                 ${styles.flexCol}
@@ -29,8 +35,7 @@ const RetexHeader = (relatedProject: Retex) => {
             <button
                 type="button"
                 aria-label="Close"
-                className=
-                {`
+                className={`
                     absolute
                     ${isMobile ? "" : "hidden"}
                     top-[30px]
@@ -47,52 +52,44 @@ const RetexHeader = (relatedProject: Retex) => {
             </button>
 
             <div id='retex-header-main'
-                className=
-                {`
+                className={`
                     ${styles.flexCol}
                     color-scheme-secondary
                     rounded-lg
                     shadow-lg
                 `}
             >
-                <h1 className=
-                    {`
-                        w-full
-                        font-primary-bold
-                        md:text-3xl text-xl
-                        tracking-wide
-                        md:py-[6%]
-                        md:pt-[6%]
-                        px-[10%]
-                        border-dashed
-                        md:space-y-[6%] space-y-[2%]
-                        md:mb-[3%]
+                <h1 className={`
+                    w-full
+                    font-primary-bold
+                    md:text-3xl text-xl
+                    tracking-wide
+                    md:py-[6%]
+                    md:pt-[6%]
+                    px-[10%]
+                    border-dashed
+                    md:space-y-[6%] space-y-[2%]
+                    md:mb-[3%]
+                `}>
+                    <p className={`
+                        ${styles.flexWrap}
+                        ${styles.contentStartX}
+                        leading-8
+                        md:mr-0 mr-4
                     `}
-                >
-                    <p className=
-                        {`
-                            ${styles.flexWrap}
-                            ${styles.contentStartX}
-                            leading-8
-                            md:mr-0 mr-4
-                        `}
                         dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(relatedProject.title[currentLang] || relatedProject.title[0])}}
                     />
 
-                    <hr className=
-                        {`
-                            ${styles.line}
-                            md:w-[50%] w-[25%]
-
-                        `}
+                    <hr className={`
+                        ${styles.line}
+                        md:w-[50%] w-[25%]
+                    `}
                     />
 
-                    <span className=
-                        {`
-                            font-primary-regular
-                            text-[60%]
-                        `}
-                    >
+                    <span className={`
+                        font-primary-regular
+                        text-[60%]
+                    `}>
                     {relatedProject.date.toLocaleDateString(
                         currentLang === 'fr' ? 'fr' : 'en',
                         {month: 'numeric', year: 'numeric'}
@@ -101,8 +98,7 @@ const RetexHeader = (relatedProject: Retex) => {
                 </h1>
 
                 <div id='retex-skills'
-                    className=
-                    {`
+                    className={`
                         ${isMobile ? styles.flexRow : styles.flexCol}
                         ${styles.sizeFull}
                         ${styles.contentStartX}
@@ -116,8 +112,7 @@ const RetexHeader = (relatedProject: Retex) => {
                 >
                     {relatedProject.content.tools.slice(0, 6).map((tool, index) => (
                         <span key={`retex-skill-${index}`}
-                            className=
-                            {`
+                            className={`
                                 ${isMobile ? styles.flexCol : styles.flexRow}
                                 ${styles.sizeFull}
                                 ${isMobile ? styles.contentStartY : styles.contentStartX}
@@ -126,8 +121,7 @@ const RetexHeader = (relatedProject: Retex) => {
                         >
                             <img src={tool.icon.content[currentTheme]}
                                 alt={tool.icon.alt}
-                                className=
-                                {`
+                                className={`
                                     object-cover
                                     object-center
                                     aspect-square
@@ -136,27 +130,23 @@ const RetexHeader = (relatedProject: Retex) => {
                                 `}
                             />
 
-                            <span className=
-                                {`
-                                    ${isMobile ? "hidden" : ""}
-                                    font-primary-regular
-                                    2xl:text-lg md:text-sm
-                                `}
-                            > {tool.label} </span>
+                            <span className={`
+                                ${isMobile ? "hidden" : ""}
+                                font-primary-regular
+                                2xl:text-lg md:text-sm
+                            `}> {tool.label} </span>
                         </span>
                     ))}
                 </div>
             </div>
 
             <div id='retex-header-additional'
-                className=
-                {`
+                className={`
                     ${isMobile ? "hidden" : styles.flexCol}
                 `}
             >
                 <ul id='retex-header-additional-ressources'
-                    className=
-                    {`
+                    className={`
                         ${styles.sizeFull}
                         ${styles.flexCol}
                         list-none

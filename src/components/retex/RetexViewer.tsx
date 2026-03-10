@@ -11,8 +11,14 @@ import RetexHeader from './RetexHeader';
 import RetexGalleryViewer from './RetexGalleryViewer';
 import { ThemeContext } from "../theme/ThemeEngine";
 import { ProjectMedia, MediaType } from "../../assets/dataTypes";
-import { translate, UNIVERSAL_LANG } from "../../utils/assetsUtils";
+import { normalizeMedia, translate, UNIVERSAL_LANG } from "../../utils/assetsUtils";
 
+/**
+ * @component RetexViewer
+ * @description Full-screen overlay that displays a project retex. Scroll, keyboard
+ * (Escape), and backdrop-click all close the panel. Contains a gallery sub-view
+ * toggled by the media preview button.
+ */
 const RetexViewer = () => {
     const { currentLang } = useContext(LangContext);
     const { displayedRetexTitle, setDisplayedRetex } = useContext(RetexContext);
@@ -38,7 +44,7 @@ const RetexViewer = () => {
         }
 
         if (notionsContainer.current) {
-            if (isOverflowing(notionsContainer.current)) {adjustFontSize(notionsContainer.current, "max");}
+            if (isOverflowing(notionsContainer.current)) {adjustFontSize(notionsContainer.current, "min");}
             else {adjustFontSize(notionsContainer.current, "max");}
         }
 
@@ -121,26 +127,8 @@ const RetexViewer = () => {
     if (!displayedRetexTitle) return;
     if (!relatedProject) {console.warn(`No project found for '${displayedRetexTitle}'.`); return;}
 
-    /** Notions list capped by maxNotions to avoid overflow without DOM mutation. */
+    // Notions list capped by maxNotions to avoid overflow without DOM mutation.
     const displayedNotions = (relatedProject.content.notions[currentLang] || relatedProject.content.notions[UNIVERSAL_LANG] || []).slice(0, maxNotions);
-
-    /**
-     * Normalizes media input (string or ProjectMedia) into a ProjectMedia object.
-     * 
-     * @function normalizeMedia
-     * @param media - The media to normalize (image URL or media object)
-     * @returns A ProjectMedia object
-     */
-    const normalizeMedia = (media: string | ProjectMedia): ProjectMedia => {
-        if (typeof media === 'string') {
-            return {
-                url: media,
-                type: MediaType.IMAGE,
-                alt: "Project illustration"
-            };
-        }
-        return media;
-    };
 
     const projectMedia = relatedProject.content.images ? relatedProject.content.images.map((media) => normalizeMedia(media)) : [];
 
@@ -192,8 +180,7 @@ const RetexViewer = () => {
 
     return (
         <div id={`retex-${displayedRetexTitle}`}
-            className=
-            {`
+            className={`
                 ${isMobile ? "" : styles.sizeFull}
                 ${isMobile ? styles.flexCol : styles.flexRow}
                 p-[6%]
@@ -204,8 +191,7 @@ const RetexViewer = () => {
             <RetexHeader {...relatedProject} />
 
             <div id='retex-content'
-                className=
-                {`
+                className={`
                     ${styles.sizeFull}
                     ${styles.flexCol}
                     color-scheme-secondary
@@ -253,16 +239,14 @@ const RetexViewer = () => {
 
                     <span id='specs'
                         ref={specsContainer}
-                        className=
-                        {`
+                        className={`
                             ${styles.sizeFull}
                             ${styles.flexCol}
                             overflow-hidden
                             mb-[0.5%]
                         `}
                     >
-                        <p className=
-                            {`
+                        <p className={`
                                 ${styles.sizeFull}
                                 text-wrap
                                 ${isMobile ? "text-xs" : ""}
@@ -272,8 +256,7 @@ const RetexViewer = () => {
                     </span>
 
                     <div id='retex-bottom'
-                        className=
-                        {`
+                        className={`
                             w-full
                             md:h-fit h-full
                             md:max-h-[40%]
@@ -285,8 +268,7 @@ const RetexViewer = () => {
                     >
                         <span id='notions'
                             ref={notionsContainer}
-                            className=
-                            {`
+                            className={`
                                 ${styles.sizeFull}
                                 ${styles.flexRow}
                                 ${styles.contentStartX}
@@ -314,8 +296,7 @@ const RetexViewer = () => {
                         </span>
 
                         <div id='retex-imgs-container'
-                            className=
-                            {`
+                            className={`
                                 relative
                                 ${styles.sizeFull}
                                 md:max-w-[44%]
@@ -327,8 +308,7 @@ const RetexViewer = () => {
                         >
                             <span id='retex-gallery-preview'
                                 ref={galleryPreview}
-                                className=
-                                {`
+                                className={`
                                     ${styles.sizeFull}
                                     ${projectMedia.length !== 1 ? 
                                         "grid grid-cols-2 grid-rows-2 grid-flow-dense"
@@ -351,8 +331,7 @@ const RetexViewer = () => {
                                         <img key={`placeholder-img-${i}`}
                                             src={coreImages.placeholder_retex_image}
                                             alt={`placeholder image ${i+1}`}
-                                            className=
-                                            {`
+                                            className={`
                                                 ${styles.sizeFull}
                                                 object-cover
                                                 object-center
@@ -365,8 +344,7 @@ const RetexViewer = () => {
                                 {projectMedia.length !== 1 ?
                                     <button id='retex-gallery-button'
                                         ref={galleryButton}
-                                        className=
-                                        {`
+                                        className={`
                                             absolute
                                             ${styles.sizeFit}
                                             ${styles.flexRow}
@@ -401,14 +379,12 @@ const RetexViewer = () => {
             </div>
 
             <div id='retex-mobile-additional'
-                className=
-                {`
+                className={`
                     ${styles.flexCol}
                 `}
             >
                 <ul id='retex-header-additional-ressources'
-                    className=
-                    {`
+                    className={`
                         ${styles.sizeFull}
                         ${styles.flexCol}
                         list-none
@@ -420,8 +396,7 @@ const RetexViewer = () => {
                     {relatedProject.content.additionalRessources ?
                         relatedProject.content.additionalRessources.map((resource, index) => (
                             <li key={`retex-resource-${index}`}
-                                className=
-                                {`
+                                className={`
                                     ${styles.sizeFull}
                                     ${isMobile ? styles.flexRow : "hidden"}
                                     ${styles.contentStartX}

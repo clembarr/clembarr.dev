@@ -1,4 +1,5 @@
 import { Project } from "../../assets/dataTypes"
+import { SLIDER_CARD_INTERVAL_MS, SLIDER_CARD_APPARITION_TIMEOUT_MS, SLIDER_PERSPECTIVE } from "../../assets/constants"
 import { projects } from "../../assets/contents"
 import styles from "../../style"
 import { coreImages, menuIcons } from "../../assets"
@@ -8,6 +9,12 @@ import { ProjectCard } from "../cards"
 import { ThemeContext } from "../theme/ThemeEngine"
 import { LangContext } from "../language"
 
+/**
+ * @component ProjectsSlider
+ * @description Animated stacked card carousel displaying projects on the home page.
+ * Cards appear one by one on mount and can be cycled forward or backward.
+ * Each card has a randomised tilt; the top card flattens to 0° when active.
+ */
 const ProjectsSlider = () => {
   const { currentTheme } = useContext(ThemeContext);
   const { currentLang } = useContext(LangContext);
@@ -57,15 +64,15 @@ const ProjectsSlider = () => {
         clearInterval(interval);
       }
       i++;
-    }, 200); 
+    }, SLIDER_CARD_INTERVAL_MS);
 
     return () => {
       clearInterval(interval);
-      setTimeout(() => apparitionEnded.current = true, 400*initialCards.length);
+      setTimeout(() => apparitionEnded.current = true, SLIDER_CARD_APPARITION_TIMEOUT_MS * initialCards.length);
     };
   }, [currentLang, currentTheme]);
 
-  // This funtion is called before updating the cards, to animate the cards according to their position
+  // This function is called before updating the cards, to animate the cards according to their position
   const adjustAnimations = (cardsCopy: ReactElement[], from?: "prev" | "next") => {
     let tmp: number;
 
@@ -164,7 +171,7 @@ const ProjectsSlider = () => {
           relative
         `}
         style={{
-          perspective: '1000px',
+          perspective: SLIDER_PERSPECTIVE,
         }}
       > 
         {cards.map((card: ReactElement) => (
@@ -234,8 +241,7 @@ const ProjectsSlider = () => {
       </div>
 
       <div id="image-container"
-        className=
-        {`
+        className={`
           ${styles.sizeFull}
           ${getActiveBreakpoint('number') as number <= 2 ? "hidden" : styles.flexCol}
           ${styles.contentCenter}

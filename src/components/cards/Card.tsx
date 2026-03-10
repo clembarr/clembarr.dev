@@ -15,7 +15,16 @@ type CardProps = {
 }
 
 /**
- * @description Modern Card component with theme-aware styling
+ * @component Card
+ * @description Generic card with title, content and tag list. Truncates overflow
+ * text and trims tags until they fit the allocated height.
+ * @param title - Card heading (sanitized as HTML)
+ * @param content - Card body text (sanitized as HTML)
+ * @param tags - Full tag list; displayed tags are trimmed to fit
+ * @param moreTopClasses - Extra classes on the root element
+ * @param titleProps - Extra classes on the title element
+ * @param contentProps - Extra classes on the content element
+ * @param tagsProps - Extra classes on the tags container
  */
 const Card = ({title, content, tags, moreTopClasses, titleProps, contentProps, tagsProps}: CardProps) => {
   const [displayedTags, setDisplayedTags] = useState<string[]>(tags.slice(0, 3));
@@ -43,7 +52,7 @@ const Card = ({title, content, tags, moreTopClasses, titleProps, contentProps, t
         relative
       `}
     >
-      <header id="card-header"
+      <header id={`card-${title}-header`}
         className={`
           flex
           w-full

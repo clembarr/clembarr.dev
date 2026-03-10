@@ -1313,3 +1313,29 @@ export const GALAXY_CLUSTER_COLORS: Record<string, string> = {
   FORMATING: '#A78BFA',
   OTHER: '#71cbb3',
 };
+/** Delay in milliseconds before the gallery keyboard hints fade out. */
+export const GALLERY_HINTS_DELAY_MS = 5000;
+
+/** Delay in ms before the hero illustration and text fade in on mount. */
+export const HERO_FADE_DELAY_MS = 100;
+
+/** Interval in ms between each character typed in the hero subtitle. */
+export const HERO_TYPING_SPEED_MS = 50;
+
+/** Interval in ms between each character deleted in the hero subtitle. */
+export const HERO_BACKSPACE_SPEED_MS = 1;
+
+/** Pause in ms after a subtitle is fully typed before backspacing begins. */
+export const HERO_TYPING_PAUSE_MS = 4000;
+
+/** Interval in ms between each card appearing in the projects slider stack. */
+export const SLIDER_CARD_INTERVAL_MS = 200;
+
+/** Per-card timeout multiplier in ms for the slider apparition end detection. */
+export const SLIDER_CARD_APPARITION_TIMEOUT_MS = 400;
+
+/** CSS perspective depth for the projects slider stack (px). */
+export const SLIDER_PERSPECTIVE = '1000px';
+
+/** CSS perspective depth for the projects listing grid (px). */
+export const PROJECTS_LISTING_PERSPECTIVE = '2000px';

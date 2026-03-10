@@ -10,12 +10,14 @@ import { menuIcons } from "../assets";
 import { ThemeContext } from "./theme/ThemeEngine";
 
 /**
-* @description This component renders the navigation bar of the website, from the info in the constants file.
-*/
+ * @component Navbar
+ * @description Navigation bar rendered from the navLinks constants. Highlights the
+ * active route, hides/shows on scroll, and collapses into a burger menu on mobile.
+ */
 const Navbar = () => {
-  /**@constant toggleBurger true if the burger menu is clicked, else false.*/
+  // true if the burger menu is closed, false if open.
   const [toggleBurger, setToggleBurger] = useState(true);
-  /**@constant currentNavigation the current navigation, used to colorize the related label in the navbar. */
+  // Current navigation link, used to colorize the active label in the navbar.
   const [currentNavigation, setCurrentNavigation] = useState(getCurrentNavigation());
   const [scrollData, setScrollData] = useState({current: 0, last: 0});
   const navbar = useRef<HTMLDivElement>(null);
@@ -26,8 +28,7 @@ const Navbar = () => {
     setScrollData(prev => {return {current: window.scrollY, last: prev.current}});
   }
 
-  /** If rather the currently used langage or the current navigation link changed, actualize
-   * the current navigation label in the navbar.*/
+  // Update the active nav label when the route or hash changes.
   useEffect(() => {
     setCurrentNavigation(getCurrentNavigation());
 
@@ -72,8 +73,7 @@ const Navbar = () => {
   return (
     <nav id="navbar"
       ref={navbar}
-      className= 
-      {`
+      className={`
         fixed
         top-0
         w-screen
@@ -99,16 +99,14 @@ const Navbar = () => {
           lg:flex hidden
           items-center"
       >
-        {/**Map the navigation links from the data file according to the current URL.*/
-        (navLinks.find(
+        {(navLinks.find(
           (nav) => nav.route.includes(window.location.pathname.split('/')[1])
         ) ?? navLinks.find((nav) => nav.route === '')!).links.map((nav, index) => {
           const thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
           const isActive = getLinkFromTypedLink(nav.link, currentLang).toLowerCase() === currentNavigation;
           return (
             <li key={`navlink-${index}`}
-              className=
-              {`
+              className={`
                 font-secondary-regular
                 tracking-wider
                 cursor-pointer
@@ -124,9 +122,7 @@ const Navbar = () => {
                 }
               `}
             >
-              {/** If the navigation link is an anchor on the page, it become an <a>. Else if it
-               * is supposed to redirect on another page, it become a React <Link>. */
-              getLinkFromTypedLink(nav.link, currentLang).includes('#') ?
+              {getLinkFromTypedLink(nav.link, currentLang).includes('#') ?
                 <a id={`page-navigation-link-${getLinkFromTypedLink(nav.link, currentLang)}`}
                   href={getLinkFromTypedLink(nav.link, currentLang).toLowerCase()}
                   onClick={() => setCurrentNavigation(getLinkFromTypedLink(nav.link, currentLang).toLowerCase())}
@@ -149,8 +145,7 @@ const Navbar = () => {
       </ul>
 
       <div id="navbar-options"
-        className=
-        {`
+        className={`
           ${styles.sizeFull}
           ${styles.flexRow}
           ${getActiveBreakpoint('number') as number < 3 ? styles.contentStartX : styles.contentEndX}
@@ -166,8 +161,7 @@ const Navbar = () => {
       </div>
 
       <div id="burger-container"
-        className=
-        {`
+        className={`
           ${styles.sizeFull}
           min-h-15
           ${styles.contentEndX}
@@ -179,8 +173,7 @@ const Navbar = () => {
         `}
       >
         <button id="burger"
-          className=
-          {`
+          className={`
             ${styles.sizeFull}
             ${styles.flexRow}
             ${styles.contentEndX}
@@ -201,14 +194,13 @@ const Navbar = () => {
               : menuIcons.close_menu_icon.content[currentTheme]} 
             alt={toggleBurger ? menuIcons.burger_menu_icon.alt
               : menuIcons.close_menu_icon.alt}
-            className=
-            {`
+            className={`
               object-cover
               object-center
-              ${toggleBurger ? 
-                "sm:w-[26px] w-[24px]" 
+              ${toggleBurger ?
+                "sm:w-[26px] w-[24px]"
                 : "sm:w-[24px] w-[22px]"
-              } 
+              }
               transition-all
               duration-300
               ease-in-out
@@ -217,8 +209,7 @@ const Navbar = () => {
         </button>
 
         <div id="burger-menu"
-          className=
-          {`
+          className={`
             ${toggleBurger ? 'hidden' : 'flex'}
             ${styles.sizeFull}
             ${styles.flexCol}
@@ -234,8 +225,7 @@ const Navbar = () => {
             animation: 'burger-menu-apparition 0.5s ease-in-out'
           }}
         >
-          <ul className=
-            {`
+          <ul className={`
               list-none
               absolute
               -top-5
@@ -251,16 +241,14 @@ const Navbar = () => {
               backdrop-blur-lg
             `}
           >
-            {/**Map the navigation links from the data file according to the current URL.*/
-            navLinks.find(
+            {navLinks.find(
               (nav) => nav.route.includes(window.location.pathname.split('/')[1])
             )?.links.map((nav, index) => {
               const thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
               const isActive = getLinkFromTypedLink(nav.link, currentLang).toLowerCase() === currentNavigation;
               return (
                 <li key={`navlink-${index}`}
-                  className=
-                  {`
+                  className={`
                     font-secondary-regular
                     tracking-wider
                     cursor-pointer
@@ -276,9 +264,7 @@ const Navbar = () => {
                     }
                   `}
                 >
-                  {/** If the navigation link is an anchor on the page, it become an <a>. Else if it
-                   * is supposed to redirect on another page, it become a React <Link>. */
-                  getLinkFromTypedLink(nav.link, currentLang).includes('#') ?
+                  {getLinkFromTypedLink(nav.link, currentLang).includes('#') ?
                     <a href={getLinkFromTypedLink(nav.link, currentLang)}
                       onClick={() => setCurrentNavigation(getLinkFromTypedLink(nav.link, currentLang).toLowerCase())}
                     > {thisNav} </a>

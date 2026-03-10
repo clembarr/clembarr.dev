@@ -14,7 +14,11 @@ type ProjectCardProps = {
 }
 
 /**
- * @description Project card for the home page's slider
+ * @component ProjectCard
+ * @description Tilt-on-hover project card used in the home page slider.
+ * @param project - Project data to display
+ * @param additionalStyles - Inline styles forwarded to the root element (position, z-index, etc.)
+ * @param onanimationend - Handler forwarded to the root element's onAnimationEnd event
  */
 const ProjectCard = ({project, additionalStyles, onanimationend}: ProjectCardProps) => {
   const { currentLang } = useContext(LangContext);
@@ -26,7 +30,7 @@ const ProjectCard = ({project, additionalStyles, onanimationend}: ProjectCardPro
   return (
     <div
       ref={cardRef}
-      id={`card-${project.title}-container`}
+      id={`card-${project.title[currentLang]}-container`}
       className={`
         group
         ${styles.sizeFull}
@@ -63,7 +67,7 @@ const ProjectCard = ({project, additionalStyles, onanimationend}: ProjectCardPro
         onanimationend ? onanimationend(e) : () => {}
       }
     >
-      <div id={`top-card-${project.title}-line`}
+      <div id={`top-card-${project.title[currentLang]}-line`}
         className={`
           absolute
           top-0 left-0 right-0

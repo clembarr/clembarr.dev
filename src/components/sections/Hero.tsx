@@ -1,5 +1,5 @@
 import styles from "../../style"
-import { author } from "../../assets/constants"
+import { author, HERO_FADE_DELAY_MS, HERO_TYPING_SPEED_MS, HERO_BACKSPACE_SPEED_MS, HERO_TYPING_PAUSE_MS } from "../../assets/constants"
 import { subtitleMessages } from "../../assets/contents"
 import { useContext, useEffect, useState } from "react"
 import DOMPurify from "dompurify"
@@ -8,6 +8,12 @@ import { LangContext } from "../language"
 import { getActiveBreakpoint } from "../../utils/utils"
 import HeroIllustration from "./HeroIllustration"
 
+/**
+ * @component Hero
+ * @description Landing section. Displays the author's name with a typewriter
+ * subtitle cycling through subtitleMessages. The illustration and text fade in
+ * on mount; the underline slides in with a short delay.
+ */
 const Hero = () => {
   const { currentTheme } = useContext(ThemeContext);
   const [displayText, setDisplayText] = useState('');
@@ -17,13 +23,13 @@ const Hero = () => {
 
   const isDark = currentTheme === 'dark';
 
-  //fade in effect on mount
+  // Fade in the section on mount.
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 100);
+    const timer = setTimeout(() => setIsVisible(true), HERO_FADE_DELAY_MS);
     return () => clearTimeout(timer);
   }, []);
 
-  //typing effect for subtitle messages
+  // Typewriter effect: type the current subtitle, pause, then backspace.
   useEffect(() => {
     const message: string = subtitleMessages[currentMessage].content[currentLang];
     let index = 0;
@@ -38,30 +44,28 @@ const Hero = () => {
             if (index === 0) {
               clearInterval(interval);
               setCurrentMessage((currentMessage + 1) % subtitleMessages.length);
-
             } else {
               index--;
               text = message.substring(0, index);
               setDisplayText(text);
             }
-          }, 1);
+          }, HERO_BACKSPACE_SPEED_MS);
 
-        }, 4000);
+        }, HERO_TYPING_PAUSE_MS);
 
       } else {
         index++;
         text = message.substring(0, index);
         setDisplayText(text);
       }
-    }, 50);
+    }, HERO_TYPING_SPEED_MS);
 
     return () => clearInterval(interval);
   }, [currentMessage, currentLang]);
 
   return (
     <section id="hero"
-      className=
-      {`
+      className={`
         ${styles.sizeFull}
         ${styles.flexRow}
         ${getActiveBreakpoint('number') as number <= 2 ? styles.contentStartX : styles.contentCenter}
@@ -74,8 +78,7 @@ const Hero = () => {
       <HeroIllustration isVisible={isVisible} />
 
       <div id="hero-text"
-        className=
-        {`
+        className={`
           ${styles.sizeFull}
           z-10
           ${styles.flexCol}
@@ -85,9 +88,8 @@ const Hero = () => {
           2xl:pr-[75%] xl:pr-[75%] lg:pr-[70%] md:pr-[65%] sm:pr-[65%] ss:pr-[50%] xs:pr-[40%] pr-[40%]
         `}
       >
-        <div id="text-container" 
-          className=
-          {`
+        <div id="text-container"
+          className={`
             ${styles.sizeFit}
             relative
             2xl:mt-37.5 xl:mt-27.5 lg:mt-25 md:mt-20 sm:mt-15 mt-11.25
@@ -96,40 +98,36 @@ const Hero = () => {
           `}
         >
           <h1 id="main-title-container"
-            className=
-            {`
+            className={`
               tracking-[0.05em]
               2xl:leading-11 leading-9.5
               2xl:text-md
             `}
           >
             <span id="first-line"
-              className=
-              {`
+              className={`
                 2xl:text-[60px] text-md
                 text-(--color-muted)
                 font-primary-regular
-            `}>
+              `}>
               {author.firstName}
             </span>
             <br/>
 
             <span id="second-line"
-              className=
-              {`
+              className={`
                 2xl:font-black
                 2xl:text-7xl text-[38px]
                 tracking-wide
                 ${isDark ? 'text-(--color-tertiary)' : 'text-(--color-quaternary)'}
-            `}>
+              `}>
               {author.lastName.toUpperCase()}
             </span>
             <br className="sm:block base:hidden"/>
           </h1>
 
-          <div id="underline" 
-            className=
-            {`
+          <div id="underline"
+            className={`
               absolute
               2xl:-bottom-4.5 lg:-bottom-3.5 -bottom-2.5
               sm:left-1/4 left-[26%]
@@ -169,7 +167,7 @@ const Hero = () => {
               )
             }}
           />
-          
+
           <span id="typing-cursor"
             className={`
               inline-block
@@ -180,7 +178,7 @@ const Hero = () => {
               bg-(--color-tertiary)
               animate-[glow-pulse_1s_ease_infinite]
               ${isDark ? 'shadow-(--glow-sm)' : ''}
-            `} 
+            `}
           />
         </div>
       </div>

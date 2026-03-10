@@ -2,6 +2,8 @@ import { motion, useInView } from 'framer-motion';
 import { useRef, ReactNode } from 'react';
 import { ScrollRevealConstants } from '../../assets/constants';
 
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 type ScrollRevealProps = {
   children: ReactNode;
   delay?: number;
@@ -41,8 +43,6 @@ const ScrollReveal = ({
     once,
     margin: '-100px', //trigger animation 100px before element enters viewport
   });
-
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const getInitialPosition = () => {
     if (prefersReducedMotion) return {};

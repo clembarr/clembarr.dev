@@ -6,6 +6,14 @@ type HeroIllustrationProps = {
   isVisible: boolean;
 }
 
+/**
+ * @component HeroIllustration
+ * @description Theme-aware decorative illustration positioned in the hero section.
+ * In dark mode: glowing hero figure with an ascii-pulse animation.
+ * In light mode: hero figure with an orbiting boulder animation overlay.
+ * Fades and slides in when isVisible becomes true.
+ * @param isVisible - Controls the fade-in / slide-in entrance transition
+ */
 const HeroIllustration = ({ isVisible }: HeroIllustrationProps) => {
   const { currentTheme } = useContext(ThemeContext);
   const isDark = currentTheme === 'dark';

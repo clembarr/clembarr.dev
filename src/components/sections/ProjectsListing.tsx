@@ -9,11 +9,17 @@ import { Retex } from "../../assets/dataTypes";
 import { LangContext } from "../language";
 import { RetexViewer, RetexContext } from "../retex";
 import { getActiveBreakpoint, randomNumberBetween } from "../../utils/utils";
-import { noDataMessages, sortOptions } from "../../assets/constants";
+import { noDataMessages, sortOptions, PROJECTS_LISTING_PERSPECTIVE } from "../../assets/constants";
 import { ThemeContext } from "../theme/ThemeEngine";
 import { ScrollReveal } from "../animations";
 
 
+/**
+ * @component ProjectsListing
+ * @description Full projects listing page with search, sort, and retex overlay.
+ * Filters and sorts projects based on SearchContext. Opens a modal-style retex
+ * dialog when a project is selected, trapping focus inside for accessibility.
+ */
 const ProjectsListing = () => {
     const { toMatch } = useContext(SearchContext);
     const { currentLang } = useContext(LangContext);
@@ -97,7 +103,7 @@ const ProjectsListing = () => {
         if (displayedRetexTitle != undefined) {
             document.body.style.overflow = "hidden";
             document.addEventListener('keydown', handleFocusTrap);
-            /** Auto-focus the dialog so screen readers announce it. */
+            // Auto-focus the dialog so screen readers announce it.
             setTimeout(() => retexContainerRef.current?.focus(), 50);
         }
         else {
@@ -121,8 +127,7 @@ const ProjectsListing = () => {
 
     return (
     <section id='projects-listing'
-        className=
-        {`
+        className={`
             ${styles.sizeFull}
             ${styles.flexCol}
             ${styles.contentCenter}
@@ -131,8 +136,7 @@ const ProjectsListing = () => {
     >
         <ScrollReveal direction="up" delay={0.2} className="w-full">
             <div id='search-options-container'
-                className=
-                {`
+                className={`
                     w-full
                     h-fit
                     ${getActiveBreakpoint("number") as number > 1 ? styles.flexRow + " gap-36" : styles.flexCol}
@@ -151,8 +155,7 @@ const ProjectsListing = () => {
             aria-modal="true"
             aria-label="Project details"
             tabIndex={-1}
-            className=
-            {`
+            className={`
                 ${displayedRetexTitle === undefined ? "hidden" : "block"}
                 ${styles.sizeFull}
                 fixed
@@ -172,8 +175,7 @@ const ProjectsListing = () => {
 
         <ScrollReveal direction="up" delay={0.35} className="w-full">
         <div id="projects-container"
-            className=
-            {`
+            className={`
                 ${styles.flexWrap}
                 ${displayedProjects.length > 0 ?  styles.contentStartX : styles.contentCenter}
                 gap-x-[3%]
@@ -185,7 +187,7 @@ const ProjectsListing = () => {
                 ml-[4%]
             `}
             style={{
-                perspective: '2000px',
+                perspective: PROJECTS_LISTING_PERSPECTIVE,
             }}
         >   
             {getProjectsPreviews()}

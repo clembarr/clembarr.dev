@@ -13,7 +13,7 @@ import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-sql';
 import { BlogPost } from '../../assets/dataTypes';
-import { UNIVERSAL_LANG } from '../../utils/assetsUtils';
+import { normalizeMedia, UNIVERSAL_LANG } from '../../utils/assetsUtils';
 import { ArticlesMotionConstants, author, placeholderMessages } from '../../assets/constants';
 import { LangContext } from '../language';
 import { formatBlogDate } from '../../utils/utils';
@@ -137,7 +137,7 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
 
       if (imageMatch) {
         const imgIndex = parseInt(imageMatch[1], 10);
-        const imgSrc = (post as any).img?.[imgIndex];
+        const imgSrc = post.img?.[imgIndex];
         if (!imgSrc) return null;
 
         /** Parse optional params: w=<CSS value> and positioning keyword */
@@ -155,7 +155,7 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
         const img = (
           <img id={`img-${imgIndex}`}
             key={i}
-            src={imgSrc as any}
+            src={normalizeMedia(imgSrc).url}
             alt={`${title}-illustration${imgIndex}`}
             className={`
               rounded-lg
@@ -237,7 +237,7 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
               opacity-80
             `}>
             <img id='cover-image'
-              src={post.coverImage as any}
+              src={normalizeMedia(post.coverImage).url}
               alt={title}
               className={`
                 w-full 
@@ -450,8 +450,7 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
           </div>
         </section>
       )}
-
-      {/* Back to Blog Link */}
+      
       <div className="mt-12 pt-8 border-t border-(--color-quinary)">
         <Link to="/blog" className={styles.animatedLink}>
           <span>{ph("blogBackToBlog")}</span>

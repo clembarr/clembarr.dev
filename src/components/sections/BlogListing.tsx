@@ -15,9 +15,11 @@ type BlogListingProps = {
 const BLOG_CATEGORIES = Object.values(BlogCategory) as string[];
 
 /**
+ * @component BlogListing
  * @description Blog post listing that consumes SearchContext to filter and sort posts.
  * Handles category filtering, date sorting, and text search — mirroring the logic
  * used by ProjectsListing for projects.
+ * @param posts - Array of all blog posts to filter and display.
  */
 const BlogListing = ({ posts }: BlogListingProps) => {
     const { toMatch } = useContext(SearchContext);
@@ -59,11 +61,11 @@ const BlogListing = ({ posts }: BlogListingProps) => {
         return filtered;
     }, [posts, toMatch, currentLang]);
 
-    /** @function msg Shorthand to look up a message by context in noDataMessages. */
+    // Shorthand to look up a message by context in noDataMessages.
     const msg = (context: string) =>
         noDataMessages.find((m) => m.context === context)!.content[currentLang];
 
-    /** @function ph Shorthand to look up a message by context in placeholderMessages. */
+    // Shorthand to look up a message by context in placeholderMessages.
     const ph = (context: string) =>
         placeholderMessages.find((m) => m.context === context)!.content[currentLang];
 

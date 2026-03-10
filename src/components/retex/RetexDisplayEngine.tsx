@@ -1,9 +1,5 @@
 import { createContext, useState, ReactNode } from "react";
-
-interface RetexContextType {
-  displayedRetexTitle: string | undefined;
-  setDisplayedRetex: React.Dispatch<React.SetStateAction<string | undefined>>;
-}
+import { RetexContextType } from "../../assets/dataTypes";
 
 const RetexContext = createContext<RetexContextType>({
   displayedRetexTitle: undefined,

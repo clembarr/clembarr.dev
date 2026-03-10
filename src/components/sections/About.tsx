@@ -12,6 +12,12 @@ import AboutWidget from "../widgets/AboutWidget"
 import { LanguageLevel } from "../../assets/dataTypes"
 import { MultilingualContent, MultilingualContentArray } from "../../utils/assetsUtils"
 
+/**
+ * @component About
+ * @description About section displaying bio text, portrait, links, and
+ * contextual widgets (languages, hobbies, interests, currently working on, future goals).
+ * Adjusts text font size dynamically on resize to prevent overflow.
+ */
 const About = () => {
   const { currentLang } = useContext(LangContext);
   const { currentTheme } = useContext(ThemeContext);
@@ -119,8 +125,7 @@ const About = () => {
 
   return (
     <section id="about"
-      className=
-      {`
+      className={`
         ${styles.sizeFull}
         ${getActiveBreakpoint('number') as number <= 1 ? styles.flexCol : styles.flexRow}
         ${styles.contentStartY}
@@ -128,8 +133,7 @@ const About = () => {
       `}
     >
       <div id="left-side-container"
-        className=
-        {`
+        className={`
           ${getActiveBreakpoint('number') as number <= 2 ? "hidden" : styles.flexCol}
           w-5/12
           h-fit
@@ -194,8 +198,7 @@ const About = () => {
         `}
       >
         <h2 dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(bioText.find((e) => e.active)!.title[currentLang])}}
-          className=
-          {`
+          className={`
             font-primary-bold
             2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-md
             xl:leading-8 base:leading-6
@@ -273,8 +276,7 @@ const About = () => {
       </div>
 
       <span id="portrait-container-mobile"
-        className=
-        {`
+        className={`
           ${getActiveBreakpoint('number') as number < 1 ? styles.flexCol : "hidden"}
           sm:ss:hidden
           w-full
