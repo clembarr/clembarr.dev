@@ -1,6 +1,6 @@
 import styles from "../../style"
 import { coreImages } from "../../assets"
-import { bioText, aboutSection, aboutWidgets } from "../../assets/contents"
+import { bioText, aboutWidgets } from "../../assets/contents"
 import DOMPurify from "dompurify"
 import { useCallback, useContext, useEffect, useMemo, useRef } from "react"
 import { Link } from "react-router"
@@ -69,7 +69,7 @@ const About = () => {
         )}
         titleAdditionnalStyle="text-sm md:text-lg font-bold mb-2 md:mb-4"
         additionalTopStyles={`${styles.flexCol}`}
-        contentStyle="text-2xs ss:text-xs md:text-sm"
+        contentStyle="text-2xs ss:text-xs md:text-sm lg:text-md"
       />
     );
   }, [currentLang]);
@@ -86,7 +86,7 @@ const About = () => {
         title={widget.title[currentLang]}
         content={content}
         titleAdditionnalStyle="text-sm md:text-lg font-bold mb-2 md:mb-4"
-        contentStyle="text-xs md:text-sm"
+        contentStyle="text-xs md:text-sm "
         additionalTopStyles={`${styles.flexCol}`}
       />
     );
@@ -110,7 +110,7 @@ const About = () => {
         title={widget.title[currentLang]}
         content={(<p dangerouslySetInnerHTML={{__html: DOMPurify.sanitize((widget.content as MultilingualContent)[currentLang])}} />)}
         titleAdditionnalStyle="text-sm md:text-lg font-bold mb-2"
-        contentStyle="text-2xs ss:text-sm md:text-sm"
+        contentStyle="text-2xs ss:text-sm md:text-md lg:text-md"
         additionalTopStyles={`${styles.flexCol}`}
       />
     );
@@ -132,6 +132,7 @@ const About = () => {
         ${styles.flexColToRowAtMd}
         ${styles.contentStartY}
         overflow-hidden
+        2xl:space-x-0 space-x-12
       `}
     >
       <div id="left-side-container"
@@ -140,12 +141,13 @@ const About = () => {
           w-5/12
           h-fit
           relative
-          space-y-12
+          xl:space-y-12 space-y-8
         `}
       >
         <div className="relative w-fit">
           <div className={`
               absolute
+              hidden xl:block
               top-4 left-6
               w-full h-full
               rounded-[5px]
@@ -164,6 +166,7 @@ const About = () => {
               max-w-70
               shadow-xl
               relative
+
             "
           />
         </div>
@@ -208,6 +211,7 @@ const About = () => {
             md:tracking-wider tracking-normal
             xl:mb-6 lg:mb-6 mb-4
             text-(--color-quaternary)
+            ml-1 lg:ml-0
           `}
         />
 
@@ -215,6 +219,7 @@ const About = () => {
             ${styles.flexColToRowAtMd}
             w-full
             xl:gap-5 lg:gap-4 gap-3
+            ml-1 lg:ml-0
           `}
         >
           <div id="about-text"
@@ -225,7 +230,7 @@ const About = () => {
           >
             <div className={`md:flex-1`}>
               <p ref={aboutTextRef}
-                dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(aboutSection.content[currentLang])}}
+                dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(bioText.find((e) => e.active)!.content[currentLang])}}
                 className={`
                   font-primary-regular
                   text-xs ss:text-base md:text-md xl:text-lg 2xl:text-lg
@@ -253,7 +258,7 @@ const About = () => {
           <div id='first-row'
             className={`
               w-full
-              grid grid-cols-1 md:grid-cols-2
+              grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2
               gap-4
             `}
           >
@@ -264,7 +269,7 @@ const About = () => {
           <div id='second-row'
             className={`
               w-full
-              grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr]
+              grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-[1.2fr_1fr_1fr]
               gap-4
               shadow-lg
               pb-2
@@ -273,6 +278,32 @@ const About = () => {
             <div id="widget-3" className="h-full"> {languagesWidget} </div>
             <div id="widget-4" className="h-full"> {interestsWidget} </div>
             <div id="widget-5" className="h-full"> {hobbiesWidget} </div>
+
+            <div id="widget-links" className="h-full lg:hidden">
+              <div id="about-widget-links"
+                className={`
+                  px-3 py-2 md:px-6 md:py-4
+                  h-full
+                  ${styles.flexCol}
+                  space-y-2
+                  sm:text-base text-sm
+                  ${styles.contentStartY}
+                `}
+              >
+                {aboutLinks.map((ressource) => (
+                  ressource.context == "0" ?
+                    <Link key={getLinkFromTypedLink(ressource.link, currentLang)}
+                      to={getLinkFromTypedLink(ressource.link, currentLang)}
+                      className={styles.animatedLink}
+                    > {ressource.content[currentLang]} </Link>
+                  :
+                    <a key={getLinkFromTypedLink(ressource.link, currentLang)}
+                      href={getLinkFromTypedLink(ressource.link, currentLang)}
+                      className={styles.animatedLink}
+                    > {ressource.content[currentLang]} </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

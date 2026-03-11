@@ -157,11 +157,3 @@ export const HomeSEOConstants: SEOConstants = {
   ogUrl: `${APP_URL}`,
   canonical: `${APP_URL}`,
 }
-
-export const CareerSEOConstants: SEOConstants = {
-  title: `Career - Clément Barrière`,
-  description: "Parcours professionnel de Clément Barrière : expérience, formations et certifications.",
-  keywords: ['career', 'resume', 'timeline', 'education', 'experience'],
-  ogUrl: `${APP_URL}/career`,
-  canonical: `${APP_URL}/career`,
-}

@@ -35,6 +35,12 @@ import veridisquo_output from "./veridisquo_output.mp4"
 import veridisquo_front from "./veridisquo_front.png"
 import veridisquo_pipeline from "./veridisquo_pipeline.png"
 import veridisquo_trainloss from "./veridisquo_trainloss.png"
+import custom_cnn_archi from "./custom_cnn_archi.png"
+import custom_cnn_irl from "./custom_cnn_irl.webp"
+import custom_cnn_calibration from "./custom_cnn_calibration.png"
+import custom_cnn_demo from "./custom_cnn_demo.mp4"
+import custom_cnn_universe from "./custom_cnn_universe.png"
+import custom_cnn_losses from "./custom_cnn_loses.png"
 
 export const veridisquoOutput: ProjectMedia = {
     url: veridisquo_output,
@@ -66,44 +72,85 @@ export const dummyArraysOptim: ProjectMedia = {
     alt: "Graph illustrating the optimization results for the Dummy Arrays project, comparing the original and optimized versions in terms of execution time and memory usage."
 } 
 
-export const projectsMedia: Record<string, ProjectMedia> = {
-  veridisquoOutput,
-  dummyArraysCode,
-  dummyArraysScheme,
-  dummyArraysBench,
-  dummyArraysOptim,
+export const customCNNArchi: ProjectMedia = {
+    url: custom_cnn_archi,
+    type: MediaType.IMAGE,
+    alt: "Architecture diagram of the custom CNN model for deepfake detection, detailing the spatial and frequency analysis components, as well as the preprocessing steps."
+}
+
+export const customCNNIRL: ProjectMedia = {
+    url: custom_cnn_irl,
+    type: MediaType.IMAGE,
+    alt: "In real life application of the custom CNN model, showcasing the heatmap output highlighting suspicious areas in a video frame."
+}
+
+export const customCNNCalibration: ProjectMedia = {
+    url: custom_cnn_calibration,
+    type: MediaType.IMAGE,
+    alt: "Calibration graph for the custom CNN model, illustrating the relationship between predicted probabilities and actual outcomes to assess model reliability."
+}
+
+export const customCNNDemo: ProjectMedia = {
+    url: custom_cnn_demo,
+    type: MediaType.VIDEO,
+    alt: "Demo video of the custom CNN model in action, showcasing its performance in detecting deepfakes."
+}
+
+export const customCNNUniverse: ProjectMedia = {
+    url: custom_cnn_universe,
+    type: MediaType.IMAGE,
+    alt: "World point implementation scheme"
+}
+
+export const customCNNLosses: ProjectMedia = {
+    url: custom_cnn_losses,
+    type: MediaType.IMAGE,
+    alt: "Loss curves for the custom CNN model, showing training and validation loss over epochs to evaluate model convergence."
+}
+
+/**
+ * @deprecated The projectsMedia object is deprecated, use individual media objects instead.
+ */
+export const projectsMedia = {
+    veridisquoOutput,
+    dummyArraysCode,
+    dummyArraysScheme,
+    dummyArraysBench,
+    dummyArraysOptim,
 };
 
-export const projectsImages: Record<string, string> = {
-  veridisquo_trainloss,
-  veridisquo_pipeline,
-  veridisquo_front,
-  scaleway_pipeline,
-  gpgtool_home,
-  gpgtool_crypto_tool,
-  gpgtool_pgp_diagram,
-  gpgtool_keys_listing,
-  gpgtool_error_handling,
-  portfolio,
-  mstar_end_board,
-  mstar_mcts_algo,
-  mstar_tournament_results,
-  ecograph_home,
-  ecograph_gestion,
-  ecograph_gantt,
-  ecograph_visu,
-  votator_home,
-  votator_swagger,
-  votator_active_bracket,
-  votator_closed_ones,
-  votator_past_round,
-  eew_algo,
-  eew_uml_makegraph,
-  eew_uml_simulation,
-  eew_lang_behaviors,
-  eew_lang_bias,
-  eew_logs_file,
-  eew_prompts,
-  eew_basic_visuals
-  
+/**
+ * @deprecated The projectsImages object is deprecated, use individual media objects instead.
+ */
+export const projectsImages = {
+    veridisquo_trainloss,
+    veridisquo_pipeline,
+    veridisquo_front,
+    scaleway_pipeline,
+    gpgtool_home,
+    gpgtool_crypto_tool,
+    gpgtool_pgp_diagram,
+    gpgtool_keys_listing,
+    gpgtool_error_handling,
+    portfolio,
+    mstar_end_board,
+    mstar_mcts_algo,
+    mstar_tournament_results,
+    ecograph_home,
+    ecograph_gestion,
+    ecograph_gantt,
+    ecograph_visu,
+    votator_home,
+    votator_swagger,
+    votator_active_bracket,
+    votator_closed_ones,
+    votator_past_round,
+    eew_algo,
+    eew_uml_makegraph,
+    eew_uml_simulation,
+    eew_lang_behaviors,
+    eew_lang_bias,
+    eew_logs_file,
+    eew_prompts,
+    eew_basic_visuals
 }

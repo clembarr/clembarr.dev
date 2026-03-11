@@ -11,6 +11,9 @@ import FlowingPath from './FlowingPath';
 import MathSpiral from './MathSpiral';
 import SkillTreeRPG from './SkillTreeRPG';
 import SkillGalaxy from './SkillGalaxy';
+import { TickerTimeline } from './TickerTimeline';
+import { AccordionTimeline } from './AccordionTimeline';
+import { StaircaseTimeline } from './StaircaseTimeline';
 
 export {
   OrbitingSkills,
@@ -21,4 +24,7 @@ export {
   MathSpiral,
   SkillTreeRPG,
   SkillGalaxy,
+  TickerTimeline,
+  AccordionTimeline,
+  StaircaseTimeline,
 };

@@ -167,8 +167,9 @@ const ProjectsSlider = () => {
         className={`
           ${styles.sizeFull}
           ${styles.flexRow}
-          ${styles.contentCenter}
+          ${styles.contentStartYToCenterAtMd}
           relative
+          pt-10 md:pt-0
         `}
         style={{
           perspective: SLIDER_PERSPECTIVE,
@@ -182,9 +183,9 @@ const ProjectsSlider = () => {
           md:hidden
           absolute
           ${styles.line}
-          top-[82%]
+          sm:bottom-11 ss:bottom-20.5 xs:bottom-21.5 bottom-18.5
           w-6
-          h-1.25
+          h-2
           opacity-25
           rounded-full
         `} />
@@ -192,8 +193,8 @@ const ProjectsSlider = () => {
         <button id="prev-button"
           className={`
             absolute
-            2xl:left-6 xl:-left-6 lg:-left-8 md:-left-3 left-[20%]
-            md:top-1/2 top-[80%]
+            2xl:left-6 xl:-left-6 lg:-left-8 md:left-10 sm:left-[25%] ss:left-[22%] left-[20%]
+            md:top-1/2 sm:top-[88%] ss:top-[81%] top-[80%]
             z-10
             hover:scale-105
             transition-all
@@ -216,8 +217,8 @@ const ProjectsSlider = () => {
         <button id="next-button"
           className={`
             absolute
-            2xl:right-6 xl:-right-6 lg:-right-8 md:-right-3 right-[20%]
-            md:top-1/2 top-[80%]
+            2xl:right-6 xl:-right-6 lg:-right-8 md:right-10 sm:right-[25%] ss:right-[22%] right-[20%]
+            md:top-1/2 sm:top-[88%] ss:top-[81%] top-[80%]
             z-10
             rounded-full
             hover:scale-105

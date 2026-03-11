@@ -20,8 +20,10 @@ export const votator: Retex = {
     [UNIVERSAL_LANG]: ["TypeScript", "Tailwind", "Responsive"],
   },
   description: {
-    fr: "Votator est une application front-end React qui permet aux utilisateurs de se connecter, suivre et participer à des tournois de vote sur diverses thématiques.",
-    en: "Votator is a front-end application built with React that allows users to log in, track, and participate in voting tournaments on various topics."
+    fr: "Une application front-end React pour le suivit et la participation à des tournois de vote sur diverses thématiques. Un système de logging \
+    permet aux utilisateurs de se connecter et consulter les données du serveur distant en temps réel.",
+    en: "A front-end React application for tracking and participating in voting tournaments on various topics. A logging system \
+    allows users to log in and view data from the remote server in real time."
   },
   content: {
     specs: {

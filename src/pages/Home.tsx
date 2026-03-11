@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import styles from "../style";
-import { Hero, About, Contact, Skills } from "../components/sections";
+import { Hero, About, CareerTimeline, Contact } from "../components/sections";
 import { ScrollReveal, PageTransition } from "../components/animations";
 import { SuspenseFallback } from "../components";
 import { MetaTags, StructuredData } from "../components/seo";
@@ -28,7 +28,7 @@ const Home = () => {
       className={`
         ${styles.page}
         ${styles.flexCol}
-        2xl:space-y-[12%] xl:space-y-[17%] lg:space-y-[10%] md:space-y-[20%] sm:space-y-[17%] ss:space-y-[10%] space-y-10
+        2xl:space-y-[12%] xl:space-y-[17%] lg:space-y-[10%] md:space-y-[8%] sm:space-y-[17%] ss:space-y-[10%] space-y-10
         lg:pb-25
       `}
     >
@@ -46,6 +46,7 @@ const Home = () => {
         <div id="about-container"
           className={`
             ${styles.sectionContainer}
+            md:mt-25 lg:mt-0
           `}
         > <About /> </div>
       </ScrollReveal>
@@ -63,13 +64,8 @@ const Home = () => {
         </div>
       </ScrollReveal>
 
-      <ScrollReveal direction="up" delay={0.35}>
-        <div id="skills-container"
-          className={`
-            ${styles.sectionContainer}
-          `}
-        > <Skills /> </div>
-      </ScrollReveal>
+      {/* CareerTimeline manages its own sticky-scroll layout */}
+      <CareerTimeline />
 
       <ScrollReveal direction="up" delay={0.4}>
         <div id="contact-container"

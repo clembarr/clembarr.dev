@@ -80,9 +80,9 @@ export type SkillGalaxyProps = {
   className?: string;
 };
 
-/** 
+/**
  * @enum CareerEntryType
- * @description The career entry types supported by the app. 
+ * @description The career entry types supported by the app.
 */
 export enum CareerEntryType {
   EDUCATION = "EDUCATION",

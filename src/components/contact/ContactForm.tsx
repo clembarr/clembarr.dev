@@ -91,9 +91,10 @@ const ContactForm = () => {
       onSubmit={(e) => handleSubmit(e)}
       className=
       {`
+        rounded-md
         ${styles.sizeFull}
-        md:max-h-[75%] 
-        lg:max-w-125
+        md:max-h-[75%]
+        lg:max-w-125 md:max-w-100 sm:max-w-[82%] 
         ${styles.flexCol}
         ${styles.contentCenter}
         font-primary-regular
@@ -112,10 +113,10 @@ const ContactForm = () => {
           h-1/5
           ${styles.contentStartAll}
           font-primary-bold
-          text-base
+          ss:text-xl text-base
           ${styles.heading2}
-          tracking-wider
-          
+          sm:tracking-wider tracking-normal
+          leading-8
           mb-[8%] xl:mb-[10%]
         `}
         dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(contactForm.title[currentLang])}}
@@ -130,7 +131,7 @@ const ContactForm = () => {
           space-x-2
           resize-none
           relative
-          text-xxs
+          text-2xs sm:text-sm
         `}
       >
         <input type="text"
@@ -147,6 +148,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
+            md:py-0 py-1
             resize-none
             border-2
           `}
@@ -167,6 +169,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
+            md:py-0 py-1
             border-2
             resize-none
           `}
@@ -183,7 +186,7 @@ const ContactForm = () => {
           w-full
           h-1/5
           relative
-          text-xxs
+          text-2xs sm:text-sm
         `}
       >
         <input type="email"
@@ -200,6 +203,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
+            md:py-0 py-1
             border-2
             resize-none
           `}
@@ -222,7 +226,7 @@ const ContactForm = () => {
           border-2
           resize-none
           relative
-          text-xxs
+          text-2xs sm:text-sm
           rounded-md
           ${styles.defaultTransition  }
           focus-within:border-(--color-tertiary)
@@ -246,6 +250,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
+            md:py-0 py-1
             resize-none
           `}
           style={{border: 'none'}}
@@ -262,7 +267,7 @@ const ContactForm = () => {
           w-full
           h-3/5
           relative
-          text-xxs
+          text-2xs sm:text-sm
         `}
       >
         <textarea name="message"
@@ -273,7 +278,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
-            py-2
+            md:py-0 py-2
             overflow-y-scroll
             resize-none
             border-2
@@ -296,7 +301,7 @@ const ContactForm = () => {
         <label id="indication-label"
           className=
           {`
-            lg:text-[70%]
+            lg:text-[70%] text-2xs
             self-baseline
           `}
         ><strong>*</strong>: {contactForm.alert.find(alert => alert.context === "mendatory")!.content[currentLang]}</label>
@@ -308,6 +313,7 @@ const ContactForm = () => {
         className=
         {`
           rounded-md
+          ss:text-base text-xs
           ${canSubmit ? 
             'color-scheme-quaternary \
             hover:bg-(--color-quinary) \

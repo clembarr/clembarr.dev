@@ -13,59 +13,60 @@ export const scalewayDeployment: Retex = {
     fr: "Déploiement Scaleway",
     en: "Scaleway Deployment",
   },
-  date: new Date(2025, 1), // Février 2025
-  coverImage: projectsImages.gpgtool_pgp_diagram, // Using the first image as cover
-  favorite: false,
+  date: new Date(2026, 1),
+  coverImage: projectsImages.scaleway_pipeline, 
   tags: {
-    en: ["Cloud", "IaC", "DevOps", "Infrastructure", "Automation", "Academic", "University"],
-    fr: ["Cloud", "IaC", "DevOps", "Infrastructure", "Automatisation", "Académique", "Universitaire"],
-    [UNIVERSAL_LANG]: ["Terraform", "Docker", "Scaleway", "Rust", "S3"],
+    en: ["Cloud", "IaC", "DevOps", "Infrastructure", "Automation", "Academic", "University", "IA"],
+    fr: ["Cloud", "IaC", "DevOps", "Infrastructure", "Automatisation", "Académique", "Universitaire", "AI"],
+    [UNIVERSAL_LANG]: ["Terraform", "Docker", "Scaleway", "Rust", "S3", "Web", "Backend", "MCP"],
   },
   description: {
     fr:
-    "Déploiement automatisé d'une application Rust sur l'infrastructure Cloud Scaleway en utilisant Terraform (IaC) et Docker.",
+    "Déploiement automatisé d'un MCP en Rust sur l'infrastructure Cloud Scaleway en utilisant Terraform (IaC) et Docker.\
+    Le service est conteneurisé avec une image multi-stage, et utilisé pour gérer une BD.",
     en:
-    "Automated deployment of a Rust application on Scaleway Cloud infrastructure using Terraform (IaC) and Docker.",
+    "Automated deployment of a Rust MCP on the Scaleway Cloud infrastructure using Terraform (IaC) and Docker.\
+    The service is containerized with a multi-stage image, and used to manage a database.",
   },
   content: {
     specs: {
       fr:
-      "Ce projet d'introduction au <strong>Cloud Computing</strong> consistait à mettre en place une infrastructure complète sur <strong>Scaleway</strong>. \
-      L'application, développée en <strong>Rust</strong>, est conteneurisée via un <strong>Dockerfile multi-stage</strong> pour optimiser la taille de l'image finale \
-      (réduction d'environ 500 Mo). L'infrastructure est gérée comme du code (<strong>IaC</strong>) avec <strong>Terraform</strong>, incluant la configuration d'un \
-      <strong>backend distant S3</strong> pour le stockage du state et l'activation du <strong>state locking</strong> pour permettre la collaboration. \
-      Le déploiement cible un <strong>Container Namespace</strong> Scaleway avec une gestion précise des ressources (CPU et RAM) pour optimiser les coûts.",
+      "Ce projet de <strong>Cloud Computing</strong> consistait à déployer un <strong>MCP de gestion de BDD PostgreSQL en Rust</strong> sur l'infrastructure <strong>Scaleway</strong>. \
+      L'application est conteneurisée et optimisée via un <strong>Dockerfile multi-stage</strong>, et gérée avec <strong>Terraform</strong> (IaC). \
+      Le backend distant S3 est configuré par le state de Terraform, avec activation du <strong>state locking</strong> pour la collaboration. Le déploiement cible \
+      un Container Namespace Scaleway, avec une gestion précise des ressources (CPU et RAM) pour <strong>optimiser les coûts</strong>. Les permissions \
+      au sein de l'application sont configurées pour assurer la sécurité et l'accès contrôlé. Ainsi, j'ai pu brancher mon service au <strong>Chat de Mistral</strong> en lecture\
+      seule, et l'utiliser pour <strong>mener des analyses sur ma base de données</strong>.",
       en:
-      "This introductory <strong>Cloud Computing</strong> project involved setting up a complete infrastructure on <strong>Scaleway</strong>. \
-      The application, developed in <strong>Rust</strong>, is containerized via a <strong>multi-stage Dockerfile</strong> to optimize the final image size \
-      (reduction of approximately 500 MB). The infrastructure is managed as code (<strong>IaC</strong>) with <strong>Terraform</strong>, including the configuration \
-      of an <strong>S3 remote backend</strong> for state storage and the activation of <strong>state locking</strong> to enable collaboration. \
-      The deployment targets a Scaleway <strong>Container Namespace</strong> with precise resource management (CPU and RAM) to optimize costs.",
+      "This <strong>Cloud Computing</strong> project consisted in deploying a <strong>Rust PostgreSQL management MCP</strong> on the <strong>Scaleway</strong> infrastructure.\
+      The application is containerized and optimized via a <strong>multi-stage Dockerfile</strong>, and managed with <strong>Terraform</strong> (IaC). \
+      The S3 remote backend is configured by the Terraform state, with <strong>state locking</strong> enabled for collaboration. The deployment targets \
+      a Scaleway Container Namespace, with precise resource management (CPU and RAM) to <strong>optimize costs</strong>. Permissions within the application are\
+      configured to ensure security and controlled access. Thus, I was able to connect my service to the <strong>Mistral Chat</strong> in read-only,\
+      and use it to <strong>conduct analyses on my database</strong>.",
     },
     notions: {
       fr: [
         "Infrastructure as Code (IaC)",
-        "Gestion de conteneurs (Docker)",
-        "Optimisation d'images (Multi-stage builds)",
-        "Backend distant et State Locking",
-        "Cloud Provider (Scaleway Serverless)"
+        "Conteneurisation optimisée",
+        "Collaboration et gestion d'état",
+        "Mise en relation de services"
       ],
       en: [
         "Infrastructure as Code (IaC)",
-        "Container management (Docker)",
-        "Image optimization (Multi-stage builds)",
-        "Remote backend and State Locking",
-        "Cloud Provider (Scaleway Serverless)"
+        "Optimized containerization",
+        "Collaboration and state management",
+        "Connecting services"
       ],
     },
     tools: [
       getSkill('Rust'),
       getSkill('Docker'),
-      getSkill('Git'),
-      getSkill('Debian'),
+      getSkill('Terraform'),
+      getSkill('SQL'),
     ],
     images: [
-      projectsImages.gpgtool_pgp_diagram, 
+      projectsImages.scaleway_pipeline, 
     ],
   }
 };

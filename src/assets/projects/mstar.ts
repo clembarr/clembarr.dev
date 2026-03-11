@@ -21,9 +21,11 @@ export const mstar: Retex = {
   },
   description: {
     fr:
-    "MStar (M*) est un algorithme de pathfinding développé en Java, sur le modèle du Monte Carlo Tree Search, appliqué à une \"IA\" joueuse.",
+    "Un algorithme de pathfinding développé en Java, sur le modèle du Monte Carlo Tree Search, appliqué à une \"IA\" joueuse. \
+    Itérativement optimisé pour remporter un tournoi de bots.",
     en:
-    "MStar (M*) is a pathfinding algorithm developed in Java, based on the Monte Carlo Tree Search, applied to an \"AI\" playing bot.",
+    "A pathfinding algorithm developed in Java, based on the Monte Carlo Tree Search, applied to an \"AI\" playing bot. \
+    Iteratively optimized to win a bot tournament.",
   },
   content: {
     specs: {

@@ -20,10 +20,10 @@ export const dummyArrays: Retex = {
     [UNIVERSAL_LANG]: ["Rust", "Go", "OS", "Algo", "Sys", "QEMU"],
   },
   description: {
-    fr: "La Dummy Array est une structure de données associative. Après l'avoir implémentée en Rust et en Go, nous avons \
-    réalisés un benchmark sur leurs performances et optimisés leur conception pour une meilleure efficacité.",
-    en: "The Dummy Array is an associative data structure. After implementing it in Rust and Go, we conducted a \
-    benchmark on their performance and optimized their design for better efficiency."
+    fr: "Structure de données associative, implémentée en Rust et en Go, nous avons pour réaliser un benckmark des\
+    trade-offs de leurs performances respectives. Nous avons ensuite optimisé leur conception pour une meilleure efficacité.",
+    en: "Associative data structure, implemented in Rust and Go, we conducted a benchmark to compare their respective performance trade-offs. \
+    We then optimized their design for better efficiency."
   },
   content: {
     specs: {

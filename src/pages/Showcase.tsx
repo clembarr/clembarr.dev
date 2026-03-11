@@ -19,6 +19,9 @@ import {
   MathSpiral,
   SkillTreeRPG,
   SkillGalaxy,
+  TickerTimeline,
+  AccordionTimeline,
+  StaircaseTimeline,
 } from '../components/showcase';
 import styles from '../style';
 import { MetaTags, StructuredData } from '../components/seo';
@@ -233,30 +236,6 @@ const Showcase = () => {
       if (parent) galaxyLinks.push({ source: s.label, target: parent.label, type: 'framework' });
     }
   });
-  // Career links (skills sharing a tag in careerTimeline)
-  const tagToSkillLabels = new Map<string, Set<string>>();
-  careerTimeline.forEach(entry => {
-    entry.tags?.forEach(tag => {
-      const matching = skills.filter(s => s.label === tag);
-      matching.forEach(m => {
-        if (!tagToSkillLabels.has(entry.title.en)) tagToSkillLabels.set(entry.title.en, new Set());
-        tagToSkillLabels.get(entry.title.en)!.add(m.label);
-      });
-    });
-  });
-  const careerPairsSeen = new Set<string>();
-  tagToSkillLabels.forEach(labelSet => {
-    const arr = Array.from(labelSet);
-    for (let a = 0; a < arr.length; a++) {
-      for (let b = a + 1; b < arr.length; b++) {
-        const key = [arr[a], arr[b]].sort().join('|');
-        if (!careerPairsSeen.has(key)) {
-          careerPairsSeen.add(key);
-          galaxyLinks.push({ source: arr[a], target: arr[b], type: 'career' });
-        }
-      }
-    }
-  });
 
   // Section component for consistent styling
   const Section = ({
@@ -463,6 +442,36 @@ const Showcase = () => {
             : 'A constellation where each star is a skill, connected by framework and experience links.'}
         >
           <SkillGalaxy nodes={galaxyNodes} links={galaxyLinks} />
+        </Section>
+
+        {/* 9. Ticker Timeline (Idea 2) */}
+        <Section
+          title={currentLang === 'fr' ? 'Ticker de Terminal' : 'Terminal Ticker'}
+          subtitle={currentLang === 'fr'
+            ? 'Une approche minimaliste et dense inspirée des terminaux de commande. Un flux de données pur avec des détails interactifs.'
+            : 'A minimalist and dense approach inspired by command terminals. A pure data stream with interactive details.'}
+        >
+          <TickerTimeline events={careerTimeline} lang={currentLang} />
+        </Section>
+
+        {/* 10. Accordion Timeline (Idea 3) */}
+        <Section
+          title={currentLang === 'fr' ? 'Accordéon de Fiches' : 'Card Accordion'}
+          subtitle={currentLang === 'fr'
+            ? 'Un système de dossiers compressés qui s\'étendent au survol. Permet de voir l\'ensemble du parcours sans scroll horizontal.'
+            : 'A system of compressed folders that expand on hover. Allows viewing the entire path without horizontal scroll.'}
+        >
+          <AccordionTimeline events={careerTimeline} lang={currentLang} />
+        </Section>
+
+        {/* 11. Staircase Timeline (Idea 4) */}
+        <Section
+          title={currentLang === 'fr' ? 'Escalier Architectural' : 'Architectural Staircase'}
+          subtitle={currentLang === 'fr'
+            ? 'Une progression diagonale symbolisant l\'ascension. Brise la ligne d\'horizon répétitive avec une structure en escalier.'
+            : 'A diagonal progression symbolizing growth. Breaks the repetitive horizon line with a staircase structure.'}
+        >
+          <StaircaseTimeline events={careerTimeline} lang={currentLang} />
         </Section>
 
         {/* Footer Note */}

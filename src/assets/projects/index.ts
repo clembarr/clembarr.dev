@@ -11,8 +11,8 @@ import { mstar } from './mstar';
 import { ecograph } from './ecograph';
 import { dummyArrays } from './dummy-arrays';
 import { votator } from './votator';
-import { studyOfEew } from './study-of-eew';
 import { scalewayDeployment } from './scaleway-deployement';
+import { customCNN } from './custom_cnn';
 
 /**
  * All projects - maintains array interface for backward compatibility
@@ -27,7 +27,7 @@ export const projects: Retex[] = [
   ecograph,
   dummyArrays,
   votator,
-  studyOfEew,
+  customCNN
 ];
 
 // Individual exports for direct access
@@ -39,6 +39,6 @@ export {
   ecograph,
   dummyArrays,
   votator,
-  studyOfEew,
-  scalewayDeployment
+  scalewayDeployment,
+  customCNN
 };

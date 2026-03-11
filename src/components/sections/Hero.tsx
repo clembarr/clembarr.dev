@@ -99,13 +99,13 @@ const Hero = () => {
           <h1 id="main-title-container"
             className={`
               tracking-[0.05em]
-              2xl:leading-11 lg:leading-11 md:leading-9 ss:leading-8 leading-7
+              2xl:leading-11 lg:leading-11 md:leading-10 sm:leading-9 ss:leading-8 leading-7
               2xl:text-md text-md
             `}
           >
             <span id="first-line"
               className={`
-                2xl:text-[60px] xl:text-[48px] lg:text-[42px] md:text-[32px] ss:text-[30px] text-[25px]
+                2xl:text-[60px] xl:text-[48px] lg:text-[42px] md:text-[38px] ss:text-[32px] text-[25px]
                 text-(--color-muted)
                 font-primary-regular
               `}>
@@ -116,7 +116,7 @@ const Hero = () => {
             <span id="second-line"
               className={`
                 font-black
-                2xl:text-7xl xl:text-[52px] lg:text-[49px] md:text-[38px] ss:text-[36px] text-[30px]
+                2xl:text-7xl xl:text-[52px] lg:text-[49px] md:text-[45px] ss:text-[38px] text-[30px]
                 tracking-wide
                 ${isDark ? 'text-(--color-tertiary)' : 'text-(--color-quaternary)'}
               `}>

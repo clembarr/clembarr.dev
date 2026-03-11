@@ -5,7 +5,7 @@ import { ThemeContext } from "../theme/ThemeEngine";
 import SkillGalaxy from "../showcase/SkillGalaxy";
 import { LangContext } from "../language";
 import { translate } from "../../utils/assetsUtils";
-import { SkillLink, SkillNode } from "../../assets/dataTypes";
+import { GalaxyLink, SkillNode } from "../../assets/dataTypes";
 
 /**
  * @function assignGridJitterPositions Distribute nodes evenly across the virtual
@@ -123,7 +123,7 @@ const Skills = () => {
 
   const { nodes, links } = useMemo(() => {
     const galaxyNodes: SkillNode[] = [];
-    const galaxyLinks: SkillLink[] = [];
+    const galaxyLinks: GalaxyLink[] = [];
 
     skills.forEach((skill) => {
       galaxyNodes.push({

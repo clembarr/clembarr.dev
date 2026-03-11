@@ -9,19 +9,6 @@ import sysiphus_working from "./sysiphus_working.png";
 import sysiphus_boulder from "./sysiphus_boulder.png";
 import hero_figure_light from "./sysiphus_working.png";
 import hero_figure_dark from "./hero_figure_dark.webp";
-import career_figure_light from "./flying_bird.webp";
-import career_figure_dark from "./cyber_eye.webp";
-
-
-export const careerFigure: GraphicAsset = {
-  label: "careerFigure",
-  content: {
-    'light': career_figure_light,
-    'dark': career_figure_dark,
-  },
-  alt: "Career Figure",
-};
-
 const sysiphus: GraphicAsset = {
   label: "sysiphus",
   content: {
@@ -75,7 +62,6 @@ export const coreImages = {
   hephaistos,
   heroFigure,
   placeholder_retex_image,
-  careerFigure,
 
 };
 

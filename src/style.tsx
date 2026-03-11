@@ -18,10 +18,10 @@ const styles = {
 
   heading2: `
     font-primary-bold
-    2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-md
+    2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl text-lg
     leading-6 xl:leading-8
     w-full
-    tracking-wider
+    md:tracking-wider tracking-normal
     xl:mb-9 lg:mb-6 mb-4
     text-(--color-quaternary)`,
 
@@ -78,13 +78,14 @@ const styles = {
   contentEndX: `justify-end items-center`,
   contentEndY: `justify-center items-end`,
 
+  contentStartYToCenterAtMd: `justify-center items-start md:justify-center md:items-center`,
+
   // Size utilities
   sizeFull: `w-full h-full`,
   sizeScreen: `h-screen w-auto`,
   sizeFit: `w-fit h-fit`,
   sizeAuto: `w-auto h-auto`,
 
-  // Button styles
   buttonBase: `
     inline-flex items-center justify-center gap-2
     px-6 py-3

@@ -1,13 +1,11 @@
 import {
   Message,
   Biography,
-  AvailableSkillCategories,
-  AvailableSkillSubcategories,
   Hyperlink,
-  CareerEntry,
-  CareerEntryType,
   FooterColumn,
   AboutWidget,
+  CareerEntry,
+  CareerEntryType,
 } from "./dataTypes";
 import { navLinks, creditsMentions } from "./constants";
 
@@ -52,6 +50,22 @@ export const bioText: Array<Biography> = [
         fr: "Développer un futur libre et équitable.",
         en: "Develop the future, free and fair.",
       },
+      content: {
+        fr:
+          "Passionné par le développement d'outils intelligents, je lie <strong>utilité</strong> et <strong>accessibilité</strong> dans mes projets. \
+          La programmation est un art, et <strong>ma polyvalence</strong> fait aujourd'hui ma force.",
+        en:
+          "Passionate about building intelligent tools, I combine <strong>utility</strong> and <strong>accessibility</strong> in my projects. \
+          Programming is an art, and <strong>my versatility</strong> is one of my key assets today.",
+      },
+      active: true,
+    },
+    {
+      title: 
+      {
+        fr: "Développer un futur libre et équitable.",
+        en: "Develop the future, free and fair.",
+      },
       content:
       {
         fr: 
@@ -73,8 +87,27 @@ export const bioText: Array<Biography> = [
         I am currently preparing a University Bachelor of Technology (<strong>BUT</strong>) \
         en informatique, à l'Institut Universitaire de Technologie (IUT) de Bordeaux, France.",
       },
-      active: true,
-    }
+      active: false,
+    },
+    {
+      title:
+      {
+        fr: "Un développeur polyvalent, passionné par les outils intelligents.",
+        en: "A versatile developer, passionate about intelligent tools.",
+      },
+      content:
+      {
+        fr: 
+        "Je suis un développeur polyvalent, passionné par la création d'outils intelligents qui allient utilité et accessibilité. \
+        Depuis plusieurs années, je m'efforce de maîtriser divers langages et technologies pour concrétiser mes idées. \
+        Actuellement étudiant en Bachelor Universitaire de Technologie (BUT) en informatique à l'IUT de Bordeaux, je cherche à repousser les limites de ce que je peux créer et partager avec le monde.",
+        en: 
+        "I am a versatile developer, passionate about creating intelligent tools that combine utility and accessibility. \
+        For several years, I have been striving to master various languages and technologies to bring my ideas to life. \
+        Currently a student in a University Bachelor of Technology (BUT) in computer science at the IUT of Bordeaux, I seek to push the boundaries of what I can create and share with the world.",
+      },
+      active: false,
+    },
 ];
 
 /** Shared links, mainly displayed in the footer. */
@@ -99,23 +132,23 @@ export const sharedLinks: Array<Hyperlink> = [
     content:
     {
       fr: "Zao, développeur de jeux vidéo",
-      en: "Zao, video games developer",
+      en: "Zao, game developer",
     },
     link: "https://zaofromage.github.io/portfolio",
   },
   {
     content:
     {
-      fr: "Antoine, développeur d'API",
-      en: "Antoine, API developer",
+      fr: "Antoine, spécialiste des microservices",
+      en: "Antoine, microservices specialist",
     },
     link: "https://labian0.github.io",
   },
   {
     content:
     {
-      fr: "Alexandre, développeur d'algorithmes",
-      en: "Alexandre, algorithms developer",
+      fr: "Alexandre, concepteur d'algorithmes",
+      en: "Alexandre, algorithms conceptor",
     },
     link: "https://carcroks.github.io",
   },
@@ -134,7 +167,15 @@ export const sharedLinks: Array<Hyperlink> = [
       en: "Rodolphe, bots developer",
     },
     link: "https://rodolphent.github.io/",
-  }
+  },
+  {
+    content:
+    {
+      fr: "Gurvan, developpeur de logiciels",
+      en: "Gurvan, software developer",
+    },
+    link: "https://www.gdumarchat.dev/",
+  },
 ];
 
 /** Footer columns definition, mapping each column to its title, context and content. */
@@ -163,7 +204,7 @@ export const aboutWidgets: Array<AboutWidget> = [
     title: 
     {
       fr: "Actuellement",
-      en: "Currently working on",
+      en: "Currently",
     },
     content:
     {
@@ -180,8 +221,8 @@ export const aboutWidgets: Array<AboutWidget> = [
     },
     content:
     {
-      fr: "Entrer en école d'ingénieur et, à terme, travailler à la frontière entre l'ingénierie et la recherche.",
-      en: "Enter engineering school and, eventually, work at the frontier between engineering and research.",
+      fr: "Entrer en <strong>école d'ingénieur</strong> et, à terme, faire de la <strong>recherche</strong> sur les systèmes complexes et la modélisation.",
+      en: "Enter engineering school and, ultimately, do <strong>research</strong> on complex systems and modeling.",
     },
   },
   {
@@ -191,8 +232,8 @@ export const aboutWidgets: Array<AboutWidget> = [
       en: "Hobbies",
     },
     content: {
-      fr: ["Natation", "Philo", "Dev", "Musique"],
-      en: ["Swimming", "Philo", "Dev", "Music"],
+      fr: ["Natation", "Philo", "Cuisine", "Musique"],
+      en: ["Swimming", "Philo", "Cooking", "Music"],
     }
   },
   {
@@ -202,8 +243,8 @@ export const aboutWidgets: Array<AboutWidget> = [
       en: "Interests",
     },
     content: {
-      fr: ["ALife", "IA", "Biologie", "Logiciel"],
-      en: ["ALife", "AI", "Biology", "Software"],
+      fr: ["ALife", "IA", "Modélisation", "Logiciel"],
+      en: ["ALife", "AI", "Modeling", "Software"],
     }
   },
   {
@@ -218,7 +259,7 @@ export const aboutWidgets: Array<AboutWidget> = [
         level: { fr: "Natif", en: "Native" },
       },
       {
-        label: { fr: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Anglais", en: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 English" },
+        label: { fr: "🇬🇧 Anglais", en: "🇬🇧 English" },
         level: { fr: "Courant (C1)", en: "Fluent (C1)" },
       },
       {
@@ -228,31 +269,6 @@ export const aboutWidgets: Array<AboutWidget> = [
     ]
   }
 ];
-
-/** About me text block for the About dashboard. */
-export const aboutSection: { title: {[lang: string]: string}; content: {[lang: string]: string} } = {
-  title: { fr: "À propos de moi", en: "About me" },
-  content: {
-    fr:
-      "Passionné par le développement d'outils intelligents, je lie <strong>utilité</strong> et <strong>accessibilité</strong> dans mes projets. \
-      La programmation est un art, et <strong>ma polyvalence</strong> fait aujourd'hui ma force.",
-    en:
-      "Passionate about building intelligent tools, I combine <strong>utility</strong> and <strong>accessibility</strong> in my projects. \
-      Programming is an art, and <strong>my versatility</strong> is one of my key assets today.",
-  },
-};
-
-/** Page title and subtitle for the Career page. */
-export const careerPageContent: { title: {[lang: string]: string}; subtitle: {[lang: string]: string} } = {
-  title: {
-    fr: "Mon Parcours",
-    en: "My Career Path",
-  },
-  subtitle: {
-    fr: "Formation, expériences et projets marquants",
-    en: "Education, experiences and notable projects",
-  },
-};
 
 /** Career timeline entries, sorted from most recent to oldest. */
 export const careerTimeline: Array<CareerEntry> = [
@@ -276,6 +292,69 @@ export const careerTimeline: Array<CareerEntry> = [
     },
     tags: ["React", "TypeScript", "Node.js", "Docker"],
   },
+  {
+    type: CareerEntryType.CERTIFICATION,
+    title: {
+      fr: "Certification Cloud Fundamentals",
+      en: "Cloud Fundamentals Certification",
+    },
+    organization: {
+      fr: "Fournisseur Cloud",
+      en: "Cloud Provider",
+    },
+    period: {
+      fr: "Fév. 2025",
+      en: "Feb. 2025",
+    },
+    description: {
+      fr: "Certification couvrant les fondamentaux du cloud computing : virtualisation, conteneurisation, services managés et bonnes pratiques de sécurité.",
+      en: "Certification covering cloud computing fundamentals: virtualization, containerization, managed services and security best practices.",
+    },
+    tags: ["Cloud", "DevOps", "Docker"],
+  },
+
+  {
+    type: CareerEntryType.CERTIFICATION,
+    title: {
+      fr: "Certification Cloud Fundamentals",
+      en: "Cloud Fundamentals Certification",
+    },
+    organization: {
+      fr: "Fournisseur Cloud",
+      en: "Cloud Provider",
+    },
+    period: {
+      fr: "Fév. 2025",
+      en: "Feb. 2025",
+    },
+    description: {
+      fr: "Certification couvrant les fondamentaux du cloud computing : virtualisation, conteneurisation, services managés et bonnes pratiques de sécurité.",
+      en: "Certification covering cloud computing fundamentals: virtualization, containerization, managed services and security best practices.",
+    },
+    tags: ["Cloud", "DevOps", "Docker"],
+  },
+
+  {
+    type: CareerEntryType.CERTIFICATION,
+    title: {
+      fr: "Certification Cloud Fundamentals",
+      en: "Cloud Fundamentals Certification",
+    },
+    organization: {
+      fr: "Fournisseur Cloud",
+      en: "Cloud Provider",
+    },
+    period: {
+      fr: "Fév. 2025",
+      en: "Feb. 2025",
+    },
+    description: {
+      fr: "Certification couvrant les fondamentaux du cloud computing : virtualisation, conteneurisation, services managés et bonnes pratiques de sécurité.",
+      en: "Certification covering cloud computing fundamentals: virtualization, containerization, managed services and security best practices.",
+    },
+    tags: ["Cloud", "DevOps", "Docker"],
+  },
+
   {
     type: CareerEntryType.CERTIFICATION,
     title: {

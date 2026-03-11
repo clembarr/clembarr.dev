@@ -6,51 +6,55 @@
 import { Retex } from '../dataTypes';
 import { UNIVERSAL_LANG } from '../../utils/translationUtils';
 import { getSkill, wrapInMedia } from '../../utils/assetsUtils';
-import { projectsImages, documents } from '../index';
+import { projectsImages } from '../index';
 import { MediaType } from '../dataTypes';
+import { projectsMedia } from '../projects_images';
 
 export const veridisquo: Retex = {
   title: {
     [UNIVERSAL_LANG]: "VeridisQuo"
   },
-  date: new Date(2024, 11), // Decembre 2024
-  coverImage: projectsImages.veridisquo_front,
+  date: new Date(2025, 11),
+  coverImage: projectsMedia.veridisquoOutput,
+  favorite: true,
   tags: {
-    en: ["AI", "Deep Learning", "Computer Vision", "Research", "Security", "Professional"],
-    fr: ["IA", "Deep Learning", "Vision par ordinateur", "Recherche", "Sécurité", "Professionnel"],
-    [UNIVERSAL_LANG]: ["PyTorch", "Python", "XAI"],
+    en: ["AI", "Vision", "Maths", "Security", "Personal", "Mathematics"],
+    fr: ["IA", "Vision", "Maths", "Sécurité", "Personnel", "Mathématiques"],
+    [UNIVERSAL_LANG]: ["XAI", "Deep Learning", "Computer Vision", "Perso"],
   },
   description: {
-    fr: "Réseau de neurones de pointe pour la détection de deepfakes par agrégation d'informations hybrides.",
-    en: "State-of-the-art neural network for deepfake detection using hybrid information aggregation."
+    fr: "Réseau de neurones hybride pour la détection de deepfakes. Combine analyses fréquentielle et spatiale, classification flottante\
+    et met en évidence les zones suspectes grâce à Grad-CAM.",
+    en: "Deepfakes detection hybrid neural network. Combines frequency and spatial analysis, floating classification and lighten up\
+    suspicious areas in videos."
   },
   content: {
     specs: {
       fr:
-      "VeridisQuo est un projet de recherche et développement visant à concevoir un détecteur de <strong>deepfakes</strong> ultra-performant. \
-      Le modèle repose sur une architecture hybride qui combine l'analyse de texture locale (via des filtres de Sobel et de fréquence) \
-      et des caractéristiques sémantiques globales extraites par un backbone <strong>EfficientNet</strong>. \
-      L'innovation majeure réside dans le module d'attention croisée qui permet de corréler les artefacts visuels subtils \
-      avec la structure globale du visage. Le projet inclut également une dimension <strong>XAI (IA explicable)</strong> via Grad-CAM \
-      pour visualiser les zones suspectes ayant conduit à la décision du modèle.",
+      "VeridisQuo est <strong>un réseau de neurones hybride pour la détection de deefakes</strong> vidéos. Il combine <strong>analyse spatiale (via EfficientNet-B4) et\
+      fréquentielle (FFT + DCT)</strong>. Cela lui permet de détecter des incohérences structurelles, et des artéfactes de génération ou de compression \
+      dans chaque frame des vidéos. La solution embarque donc également un système de <strong>preprocessing (extraction des frames + detection des visages \
+      avec YOLO)</strong>. La pipeline possède deux sorties : une <strong>classification flottante des résultats des analyses (avec aggrégation préalable)</strong>, ainsi qu'une <strong>heat-map \
+      des mise en évidence des zones suspectes</strong> sur la vidéo originale générée avec Grad-CAM. Le <strong>grand nombre d'hyperparamètres</strong> (centralisés) \
+      rend le modèle robuste et facilement adaptable. Enfin Le modèle a été entrainé sur <strong>un dataset de 7000 vidéos</strong>.",
       en:
-      "VeridisQuo is an R&D project focused on designing a high-performance <strong>deepfake</strong> detector. \
-      The model is based on a hybrid architecture that combines local texture analysis (via Sobel and frequency filters) \
-      with global semantic features extracted by an <strong>EfficientNet</strong> backbone. \
-      The key innovation lies in the cross-attention module that correlates subtle visual artifacts \
-      with the overall face structure. The project also includes an <strong>XAI (Explainable AI)</strong> dimension using Grad-CAM \
-      to visualize the suspicious areas that led to the model's decision.",
+      "VeridisQuo is a <strong>hybrid neural network for deepfakes detection</strong>. It combines a <strong>spatial (via EfficientNet-B4) analysis \
+      and a frequency (FFT + DCT) analysis</strong>. This allows to detect structural incoherences, generation or compression artifacts in each frame \
+      of videos. The solution also includes a <strong>preprocessing system (frame extraction + face detection with YOLO)</strong>. The pipeline has two \
+      outputs: a <strong>floating classification of the analysis results (with prior aggregation)</strong>, and a <strong>heat-map of the suspicious \
+      areas</strong> on the original video generated with Grad-CAM. The <strong>large number of hyperparameters</strong> (centralized) makes the model \
+      robust and easily adaptable. Finally, the model was trained on <strong>a dataset of 7000 videos</strong>."
     },
     notions: {
       fr: [
         "Computer vision et caractérisation des deepfakes",
-        "IA expliquable (XAI) avec Grad-CAM",
+        "IA expliquable (XAI)",
         "Aggregation d'informations hybrides",
         "Optimisation du transit des calculs sur hardware",
       ],
       en: [
         "Computer vision and deepfake characterization",
-        "Explainable AI (XAI) with Grad-CAM",
+        "Explainable AI (XAI)",
         "Hybrid information aggregation",
         "Hardware compute transit optimization",
       ],
@@ -59,20 +63,23 @@ export const veridisquo: Retex = {
       getSkill('Python'),
       getSkill('PyTorch'),
       getSkill('CUDA'),
-      getSkill('OpenCV'),
+      getSkill('YOLO'),
+      getSkill('HuggingFace'),
+      getSkill('Git'),
     ],
     images: [
-      projectsImages.veridisquo_front,
-      wrapInMedia(projectsImages.veridisquo_output, MediaType.VIDEO, "Demo output"),
-      projectsImages.veridisquo_pipeline,
-    ] as any[],
+      projectsMedia.veridisquoOutput,
+      wrapInMedia(projectsImages.veridisquo_pipeline, MediaType.IMAGE, "Model processing pipeline"),
+      wrapInMedia(projectsImages.veridisquo_front, MediaType.IMAGE, "XAI visualization interface"),
+      wrapInMedia(projectsImages.veridisquo_trainloss, MediaType.IMAGE, "XAI visualization interface"),
+    ],
     additionalRessources: [
       {
         content: {
-          fr: "Rapport de recherche",
-          en: "Research report",
+          fr: "Répo GitHub",
+          en: "GitHub Repo",
         },
-        link: documents.eewInternshipReport,
+        link: "https://github.com/VeridisQuo-orga/VeridisQuo",
       },
     ]
   }

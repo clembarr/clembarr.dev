@@ -34,8 +34,8 @@ const ProjectCard = ({project, additionalStyles, onanimationend}: ProjectCardPro
       className={`
         group
         ${styles.sizeFull}
-        xl:max-h-[75%] lg:max-h-[65%] md:max-h-[55%] sm:max-h-[55%] ss:max-h-[50%] xs:max-h-[40%] max-h-[35%]
-        2xl:max-w-95 xl:max-w-87.5 lg:max-w-75 md:max-w-100 sm:max-w-[75%] ss:max-w-[75%] max-w-[80%]
+        xl:max-h-[75%] lg:max-h-[65%] md:max-h-[65%] sm:max-h-[70%] ss:max-h-[65%] xs:max-h-[60%] max-h-[60%]
+        2xl:max-w-95 xl:max-w-87.5 lg:max-w-75 md:max-w-80 sm:max-w-[60%] ss:max-w-[75%] max-w-[80%]
         aspect-square
         absolute
         rounded-xl
@@ -94,16 +94,16 @@ const ProjectCard = ({project, additionalStyles, onanimationend}: ProjectCardPro
           }
           moreTopClasses="pt-4"
           titleProps={`
-            lg:text-xl md:text-2xl sm:text-xl ss:text-md text-sm
+            lg:text-xl md:text-lg sm:text-lg ss:text-md text-sm
             md:px-[8%] px-[10%]
-            mb-[4%]
+            md:mb-[4%] xs:mb-0 mb-[1%]
             mt-6
             text-(--color-quaternary)
             group-hover:text-(--color-tertiary)
             transition-colors duration-300
           `}
           contentProps={`
-            2xl:text-lg lg:text-lg md:text-xl sm:text-lg ss:text-base text-xs
+            2xl:text-lg lg:text-lg md:text-md sm:text-sm ss:text-xs text-2xs
             md:px-[8%] px-[10%]
             md:mt-0 mt-2
             mb-[4%]
@@ -111,7 +111,7 @@ const ProjectCard = ({project, additionalStyles, onanimationend}: ProjectCardPro
             text-(--color-quaternary)/80
           `}
           tagsProps={`
-            2xl:text-sm lg:text-md md:text-lg sm:text-md ss:text-sm text-2xs
+            2xl:text-sm lg:text-md md:text-sm sm:text-sm ss:text-sm text-2xs
             md:px-[8%] px-[10%]
           `}
         />

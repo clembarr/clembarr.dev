@@ -144,13 +144,15 @@ const RetexViewer = () => {
         media: ProjectMedia, 
         index: number, 
         isBlurred: boolean =true, 
-        play: boolean =false
+        play: boolean =false,
+        additionalStyles?: string
     ) => {
-        const className = `
+        const className =`
             ${styles.sizeFull}
             object-cover
             object-center
             ${isBlurred ? 'blur-[2px]' : ''}
+            ${additionalStyles || ''}
         `;
 
         if (media.type === MediaType.VIDEO) {

@@ -21,7 +21,7 @@ const Contact = () => {
         ${styles.sizeFull}
         ${styles.flexColToRowAtMd}
         ${styles.contentCenter}
-        xl:space-x-50 lg:space-x-37.5
+        xl:space-x-50 lg:space-x-37.5 md:space-x-10
       `}
     >
         <div id='form-container-desktop'
@@ -44,27 +44,26 @@ const Contact = () => {
               h-full
               ${styles.flexCol}
               ${styles.contentCenter}
-              space-y-[15%] md:space-y-[50%] lg:space-y-[35%]
+              space-y-[8%] md:space-y-[20%] lg:space-y-[35%]
               order-last md:order-none
+              mt-10 md:mt-0
             `}
         >
           {socialMedia.map((social: SocialMedia) => (
             <div key={`icon-${social.label}-container`}
               className={`
-                ${styles.flexRowToColAtMd}
+                ${styles.flexCol}
                 ${styles.contentStartAll}
                 w-full
                 h-fit
-                space-y-[3%] md:space-y-[1%]
+                space-y-0 md:space-y-[1%]
                 md:color-scheme-primary
-                rounded-lg md:rounded-none
                 py-[3%] px-[5%] md:p-0
-                shadow-md md:shadow-none
               `}
             >
               <a href={social.link}
                 className={`
-                  ${styles.flexRow}
+                  ${styles.flexCol}
                   ${styles.contentStartX}
                 `}
                 target="_blank"
@@ -78,6 +77,14 @@ const Contact = () => {
                       w-full md:w-[120%]
                     `}
                 />
+                <hr className={`
+                    md:hidden block
+                    ${styles.line}
+                    w-[80%]
+                    h-[2.5px]
+                    mt-1
+                  `}
+                />
               </a>
               <hr className={`
                   hidden md:block
@@ -90,10 +97,11 @@ const Contact = () => {
               <div className={`
                   ${styles.flexColHideAtMd}
                   ${styles.contentStartX}
+                  md:mt-0 mt-1
                 `}
               >
                 <label className={`
-                  text-xs md:text-base
+                  text-xs sm:text-base
                   w-full
                   ${styles.contentStartX}
                 `}

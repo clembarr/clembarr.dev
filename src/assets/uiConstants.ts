@@ -20,7 +20,6 @@ import {
   BlogCategory,
   GalleryControl,
   GalleryAction,
-  CareerEntryType,
 } from "./dataTypes";
 import { UNIVERSAL_LANG } from "../utils/translationUtils";
 import { emailAPI } from "./configConstants";
@@ -472,6 +471,14 @@ export const navLinks: Array<NavbarPattern> = [
       {
         content:
         {
+          fr: "Parcours",
+          [UNIVERSAL_LANG]: "Career",
+        },
+        link: "/#career",
+      },
+      {
+        content:
+        {
           fr: "Projets",
           [UNIVERSAL_LANG]: "Projects",
         },
@@ -483,14 +490,6 @@ export const navLinks: Array<NavbarPattern> = [
           [UNIVERSAL_LANG]: "Blog",
         },
         link: "/blog",
-      },
-      {
-        content:
-        {
-          fr: "Carrière",
-          [UNIVERSAL_LANG]: "Career",
-        },
-        link: "/career",
       },
       {
         content:
@@ -538,14 +537,6 @@ export const navLinks: Array<NavbarPattern> = [
       {
         content:
         {
-          fr: "Carrière",
-          [UNIVERSAL_LANG]: "Career",
-        },
-        link: "/career",
-      },
-      {
-        content:
-        {
           [UNIVERSAL_LANG]: "Contact",
         },
         link: "/#contact",
@@ -585,65 +576,6 @@ export const navLinks: Array<NavbarPattern> = [
           [UNIVERSAL_LANG]: "Blog",
         },
         link: "/blog",
-      },
-      {
-        content:
-        {
-          fr: "Carrière",
-          [UNIVERSAL_LANG]: "Career",
-        },
-        link: "/career",
-      },
-      {
-        content:
-        {
-          [UNIVERSAL_LANG]: "Contact",
-        },
-        link: "/#contact",
-      },
-      {
-        context: "1",
-        content:
-        {
-          [UNIVERSAL_LANG]: "CV",
-        },
-        link: documents.curiculumVitae,
-      },
-    ],
-  },
-  {
-    route: 'career',
-    links: [
-      {
-        content:
-        {
-          fr: "Accueil",
-          [UNIVERSAL_LANG]: "Home",
-        },
-        link: "/",
-      },
-      {
-        content:
-        {
-          fr: "Projets",
-          [UNIVERSAL_LANG]: "Projects",
-        },
-        link: "/projects",
-      },
-      {
-        content:
-        {
-          [UNIVERSAL_LANG]: "Blog",
-        },
-        link: "/blog",
-      },
-      {
-        content:
-        {
-          fr: "Carrière",
-          [UNIVERSAL_LANG]: "Career",
-        },
-        link: "/career",
       },
       {
         content:
@@ -691,14 +623,6 @@ export const navLinks: Array<NavbarPattern> = [
       {
         content:
         {
-          fr: "Carrière",
-          [UNIVERSAL_LANG]: "Career",
-        },
-        link: "/career",
-      },
-      {
-        content:
-        {
           [UNIVERSAL_LANG]: "Contact",
         },
         link: "/#contact",
@@ -738,14 +662,6 @@ export const navLinks: Array<NavbarPattern> = [
           [UNIVERSAL_LANG]: "Blog",
         },
         link: "/blog",
-      },
-      {
-        content:
-        {
-          fr: "Carrière",
-          [UNIVERSAL_LANG]: "Career",
-        },
-        link: "/career",
       },
       {
         content:
@@ -1266,15 +1182,6 @@ export const contactForm: ContactForm = {
  */
 export const aboutLinks: Array<Hyperlink> = [
   {
-    context: "0",
-    content:
-    {
-      fr: "→ Carrière",
-      en: "→ Career path",
-    },
-    link: "/career"
-  },
-  {
     context: "1",
     content:
     {
@@ -1285,25 +1192,6 @@ export const aboutLinks: Array<Hyperlink> = [
   },
 ];
 
-/** Translated labels for each career entry type, keyed by language. */
-export const careerTypeLabels: {[type: string]: {[lang: string]: string}} = {
-  [CareerEntryType.EDUCATION]: { 
-    fr: "Formation", 
-    en: "Education" 
-  },
-  [CareerEntryType.EXPERIENCE]: {
-    fr: "Expérience", 
-    en: "Experience" 
-  },
-  [CareerEntryType.CERTIFICATION]: { 
-    fr: "Certification", 
-    en: "Certification" 
-  },
-  [CareerEntryType.VOLUNTEERING]: { 
-    fr: "Bénévolat", 
-    en: "Volunteering" 
-  },
-};
 
 export const GALAXY_CLUSTER_COLORS: Record<string, string> = {
   WEB: '#7CFFC4',

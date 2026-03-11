@@ -3,11 +3,12 @@ import styles from "../../style";
 import { menuIcons } from "../../assets";
 import { ThemeContext } from "../theme/ThemeEngine";
 import { galleryControls, GALLERY_HINTS_DELAY_MS } from "../../assets/constants";
-import { GalleryAction, ProjectMedia } from "../../assets/dataTypes";
+import { GalleryAction, MediaType, ProjectMedia } from "../../assets/dataTypes";
 import { motion } from "framer-motion";
+import { normalizeMedia } from "../../utils/assetsUtils";
 
 type RetexGalleryViewerProps = {
-    images: string[] | ProjectMedia[];
+    images: ProjectMedia[];
     untoggler: () => void;
 }
 
@@ -28,6 +29,7 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
     const [showHints, setShowHints] = useState<boolean>(true);
     const index = useRef<number>(0);
     const imageRef = useRef<HTMLImageElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         // Map each gallery control action to its handler.
@@ -70,6 +72,59 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
     const getUrl = (image: string | ProjectMedia): string =>
         typeof image === 'string' ? image : image.url;
 
+    /**
+     * Renders a media for the retex (supporting both images and videos).
+     * 
+     * @function renderMedia
+     * @param media - The ProjectMedia object to render
+     * @param index - The index of the media in the list (used for keys)
+     * @param isBlurred - Whether to apply a blur effect to the media (defaults to true)
+     * @param play - Whether to play the media (for videos) (defaults to false)
+     * @param additionalStyles - Any additional CSS classes to apply to the media container
+     * @param onClick - Optional click handler for the media (e.g., to set focus)
+     * @returns A React element (img or video)
+     */
+    const renderMedia = (
+        media: ProjectMedia, 
+        index: number, 
+        isBlurred: boolean =true, 
+        play: boolean =false,
+        additionalStyles?: string,
+        onClick?: () => void,
+    ) => {
+        const className =`
+            ${styles.sizeFull}
+            object-cover
+            object-center
+            ${isBlurred ? 'blur-[2px]' : ''}
+            ${additionalStyles || ''}
+        `;
+
+        if (media.type === MediaType.VIDEO) {
+            return (
+                <video key={`retex-media-${index}`}
+                    src={media.url}
+                    poster={media.poster}
+                    autoPlay={play}
+                    muted={true}
+                    loop={play}
+                    playsInline={play}
+                    className={className}
+                    onClick={onClick}
+                />
+            );
+        }
+
+        return (
+            <img key={`retex-media-${index}`}
+                src={media.url}
+                alt={media.alt || `retex image ${index + 1}`}
+                className={className}
+                onClick={onClick}
+            />
+        );
+    };
+
     return (
         <div id="retex-gallery-container"
             className={`
@@ -110,34 +165,69 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     relative
                 `}
             >
-                <motion.img
-                    ref={imageRef}
-                    id="gallery-focused-image"
-                    src={getUrl(focusedImage)}
-                    alt="Focused retex image"
-                    className={`
-                        ${styles.sizeFull}
-                        object-contain
-                        object-center
-                        rounded-lg
-                        ${zoom > 1 ? 'cursor-move' : 'cursor-zoom-in'}
-                    `}
-                    style={{
-                        transform: `scale(${zoom}) translate(${panOffset.x}px, ${panOffset.y}px)`,
-                    }}
-                    drag={zoom > 1}
-                    dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
-                    dragElastic={0.1}
-                    onClick={() => {
-                        if (zoom === 1) {
-                            setZoom(2);
-                        } else {
-                            setZoom(1);
-                            setPanOffset({ x: 0, y: 0 });
-                        }
-                    }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
+                {normalizeMedia(focusedImage).type === MediaType.VIDEO ?
+                    <motion.video
+                        ref={videoRef}
+                        id="gallery-focused-video"
+                        src={normalizeMedia(focusedImage).url}
+                        poster={normalizeMedia(focusedImage).poster}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className={`
+                            ${styles.sizeFull}
+                            object-contain
+                            object-center
+                            rounded-lg
+                            ${zoom > 1 ? 'cursor-move' : 'cursor-zoom-in'}
+                        `}
+                        style={{
+                            transform: `scale(${zoom}) translate(${panOffset.x}px, ${panOffset.y}px)`,
+                        }}
+                        drag={zoom > 1}
+                        dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
+                        dragElastic={0.1}
+                        onClick={() => {
+                            if (zoom === 1) {
+                                setZoom(2);
+                            } else {
+                                setZoom(1);
+                                setPanOffset({ x: 0, y: 0 });
+                            }
+                        }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    />
+                :
+                    <motion.img
+                        ref={imageRef}
+                        id="gallery-focused-image"
+                        src={getUrl(focusedImage)}
+                        alt="Focused retex image"
+                        className={`
+                            ${styles.sizeFull}
+                            object-contain
+                            object-center
+                            rounded-lg
+                            ${zoom > 1 ? 'cursor-move' : 'cursor-zoom-in'}
+                        `}
+                        style={{
+                            transform: `scale(${zoom}) translate(${panOffset.x}px, ${panOffset.y}px)`,
+                        }}
+                        drag={zoom > 1}
+                        dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
+                        dragElastic={0.1}
+                        onClick={() => {
+                            if (zoom === 1) {
+                                setZoom(2);
+                            } else {
+                                setZoom(1);
+                                setPanOffset({ x: 0, y: 0 });
+                            }
+                        }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    />
+                }
 
                 <div className={`
                     absolute
@@ -181,10 +271,12 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                     `}
                 >
                     {images.map((image, i) => (
-                        <img key={`retex-gallery-image-${i}`}
-                            src={getUrl(image)}
-                            alt={`Retex gallery image ${i + 1}`}
-                            className={`
+                        renderMedia(
+                            image, 
+                            i, 
+                            false, 
+                            false, 
+                            `
                                 ${styles.sizeFit}
                                 max-w-[100px]
                                 max-h-[60px]
@@ -202,9 +294,9 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                                 :
                                     'border border-(--color-quaternary)'
                                 }
-                            `}
-                            onClick={() => setIndex(i)}
-                        />
+                            `,
+                            () => setIndex(i)
+                        )
                     ))}
 
                     <hr id="thumbnail-underline"
@@ -234,16 +326,19 @@ const RetexGalleryViewer = ({images, untoggler}: RetexGalleryViewerProps) => {
                 `}
             >
                 {images.map((image, i) => (
-                    <img key={`retex-gallery-mobile-image-${i}`}
-                        src={getUrl(image)}
-                        alt={`Retex gallery image ${i + 1}`}
-                        className={`
+                    renderMedia(
+                        image, 
+                        i, 
+                        true, 
+                        true, 
+                        `
                             object-contain
                             object-center
                             rounded-lg
                             shadow-lg
-                        `}
-                    />
+                        `,
+
+                    )
                 ))}
             </div>
         </div>

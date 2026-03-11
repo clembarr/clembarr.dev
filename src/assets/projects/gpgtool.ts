@@ -16,14 +16,16 @@ export const gpgtool: Retex = {
   coverImage: projectsImages.gpgtool_home,
   tags: {
     fr: ["POO", "Utilitaire", "Crypto", "PE", "Programmation évenementielle", "Logiciel", "Programmation orientée objet", "Personnel", "IU"],
-    en: ["Tool", "OOP", "Crypto", "EP", "Event-driven programming", "Object-oriented programming", "Personnal", "Software"],
-    [UNIVERSAL_LANG]: ["UI", "UX", "CLI", "Test", "Tests", "Perso", "Testing", "Perso"],
+    en: ["Tool", "OOP", "Crypto", "EP", "Event-driven programming", "Object-oriented programming", "Personal", "Software"],
+    [UNIVERSAL_LANG]: ["UI", "UX", "CLI", "Test", "Tests", "Perso", "Testing"],
   },
   description: {
     fr:
-    "GPGtool est un gestionnaire de clés PGP 100% Python. Il embarque une interface graphique accessible, et facilite l'utilisation de la technologie GnuPG. Gérez vos propres paires de clés, et utilisez les pour des messages et fichiers.",
+    "Un gestionnaire de clés PGP 100% Python. Il embarque une interface graphique accessible, et facilite l'utilisation de la technologie GnuPG. \
+    Gérez vos propres paires de clés, et utilisez les pour des messages et fichiers.",
     en:
-    "GPGtool is a 100% Python PGP keys manager, which embeds an accessible graphic interface, facilitating the use of the GnuPG technology. Manage your own key pairs, and encrypt/decrypt messages and files.",
+    "A 100% Python PGP keys manager, which embeds an accessible graphic interface, facilitating the use of the GnuPG technology. Manage your own \
+    key pairs, and encrypt/decrypt messages and files.",
   },
   content: {
     specs: {
