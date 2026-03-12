@@ -22,6 +22,10 @@ import {
   TickerTimeline,
   AccordionTimeline,
   StaircaseTimeline,
+  SilentTrack,
+  TypographicAxis,
+  GhostPath,
+  BreadcrumbSequence,
 } from '../components/showcase';
 import styles from '../style';
 import { MetaTags, StructuredData } from '../components/seo';
@@ -285,7 +289,7 @@ const Showcase = () => {
         canonical="https://clembarr.dev/showcase"
       />
       <StructuredData schema={websiteSchema} />
-      <div className={`${styles.page} ${styles.flexCol}`}>
+      <div id="showcase-page-container" className={`${styles.page} ${styles.flexCol}`}>
         {/* Hero Section */}
         <section
           className="min-h-[60vh] flex items-center justify-center px-4 py-20"
@@ -444,34 +448,74 @@ const Showcase = () => {
           <SkillGalaxy nodes={galaxyNodes} links={galaxyLinks} />
         </Section>
 
-        {/* 9. Ticker Timeline (Idea 2) */}
+        {/* 9. Ticker Timeline */}
         <Section
           title={currentLang === 'fr' ? 'Ticker de Terminal' : 'Terminal Ticker'}
           subtitle={currentLang === 'fr'
-            ? 'Une approche minimaliste et dense inspirée des terminaux de commande. Un flux de données pur avec des détails interactifs.'
-            : 'A minimalist and dense approach inspired by command terminals. A pure data stream with interactive details.'}
+            ? 'Une approche minimaliste et dense inspirée des terminaux de commande.'
+            : 'A minimalist and dense approach inspired by command terminals.'}
         >
           <TickerTimeline events={careerTimeline} lang={currentLang} />
         </Section>
 
-        {/* 10. Accordion Timeline (Idea 3) */}
+        {/* 10. Accordion Timeline */}
         <Section
           title={currentLang === 'fr' ? 'Accordéon de Fiches' : 'Card Accordion'}
           subtitle={currentLang === 'fr'
-            ? 'Un système de dossiers compressés qui s\'étendent au survol. Permet de voir l\'ensemble du parcours sans scroll horizontal.'
-            : 'A system of compressed folders that expand on hover. Allows viewing the entire path without horizontal scroll.'}
+            ? 'Un système de dossiers compressés qui s\'étendent au survol.'
+            : 'A system of compressed folders that expand on hover.'}
         >
           <AccordionTimeline events={careerTimeline} lang={currentLang} />
         </Section>
 
-        {/* 11. Staircase Timeline (Idea 4) */}
+        {/* 11. Staircase Timeline */}
         <Section
           title={currentLang === 'fr' ? 'Escalier Architectural' : 'Architectural Staircase'}
           subtitle={currentLang === 'fr'
-            ? 'Une progression diagonale symbolisant l\'ascension. Brise la ligne d\'horizon répétitive avec une structure en escalier.'
-            : 'A diagonal progression symbolizing growth. Breaks the repetitive horizon line with a staircase structure.'}
+            ? 'Une progression diagonale symbolisant l\'ascension.'
+            : 'A diagonal progression symbolizing growth.'}
         >
           <StaircaseTimeline events={careerTimeline} lang={currentLang} />
+        </Section>
+
+        {/* 12. Silent Track */}
+        <Section
+          title={currentLang === 'fr' ? 'Axe de Points (Silent Track)' : 'Silent Track'}
+          subtitle={currentLang === 'fr'
+            ? 'Le summum du minimalisme. Une ligne fine, des points, et des informations qui n\'apparaissent qu\'au survol.'
+            : 'The peak of minimalism. A thin line, dots, and information that only appears on hover.'}
+        >
+          <SilentTrack events={careerTimeline} lang={currentLang} />
+        </Section>
+
+        {/* 13. Typographic Axis */}
+        <Section
+          title={currentLang === 'fr' ? 'Axe Typographique' : 'Typographic Axis'}
+          subtitle={currentLang === 'fr'
+            ? 'La typographie devient l\'élément de design. Les dates en arrière-plan guident la lecture.'
+            : 'Typography becomes the design element. Background dates guide the reading.'}
+        >
+          <TypographicAxis events={careerTimeline} lang={currentLang} />
+        </Section>
+
+        {/* 14. Ghost Path */}
+        <Section
+          title={currentLang === 'fr' ? 'Chemin Filaire (Ghost Path)' : 'Ghost Path'}
+          subtitle={currentLang === 'fr'
+            ? 'Un design filaire sans aucun fond solide. Léger, aérien et technique.'
+            : 'A wireframe design without any solid backgrounds. Light, airy and technical.'}
+        >
+          <GhostPath events={careerTimeline} lang={currentLang} />
+        </Section>
+
+        {/* 15. Breadcrumb Sequence */}
+        <Section
+          title={currentLang === 'fr' ? 'Séquence de Mots' : 'Word Sequence'}
+          subtitle={currentLang === 'fr'
+            ? 'Un fil d\'ariane géant où chaque étape est un mot-clé. Cliquez pour explorer les détails.'
+            : 'A giant breadcrumb where each step is a keyword. Click to explore details.'}
+        >
+          <BreadcrumbSequence events={careerTimeline} lang={currentLang} />
         </Section>
 
         {/* Footer Note */}

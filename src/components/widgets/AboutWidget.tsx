@@ -1,7 +1,6 @@
 import styles from "../../style";
 import { ReactElement, useContext, useMemo } from "react";
 import { ThemeContext } from "../theme/ThemeEngine";
-import { randomNumberBetween } from "../../utils/utils";
 
 interface AboutWidgetProps {
     id: number | string;
@@ -88,7 +87,6 @@ const AboutWidget = ({ id, title, content, titleAdditionnalStyle, contentStyle, 
                 ${additionalTopStyles}
             `}
             style={{
-                translate: `${randomNumberBetween(-2,2)}px ${randomNumberBetween(-2,2)}px`,
             }}
         >
             <h3 id={`about-widget-${id}-title`}

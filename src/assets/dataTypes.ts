@@ -273,7 +273,7 @@ export interface Skill {
  * Pattern of a credit mention.
  */
 export interface CreditMention extends Hyperlink{
-  contentRef: GraphicAsset | GraphicAsset[];
+  contentRef?: GraphicAsset | GraphicAsset[];
   author?: Author;
 }
 

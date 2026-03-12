@@ -206,7 +206,7 @@ const About = () => {
           className={`
             font-primary-bold
             2xl:text-3xl xl:text-2xl lg:text-xl md:text-xl ss:text-lg text-md
-            leading-6 xl:leading-8
+            leading-6 xs:leading-7 xl:leading-8
             w-full
             md:tracking-wider tracking-normal
             xl:mb-6 lg:mb-6 mb-4
@@ -233,7 +233,7 @@ const About = () => {
                 dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(bioText.find((e) => e.active)!.content[currentLang])}}
                 className={`
                   font-primary-regular
-                  text-xs ss:text-base md:text-md xl:text-lg 2xl:text-lg
+                  text-xs ss:text-base sm:text-base md:text-md xl:text-lg 2xl:text-lg
                   leading-[140%] md:leading-[145%]
                   tracking-wide
                   text-wrap

@@ -471,18 +471,18 @@ export const navLinks: Array<NavbarPattern> = [
       {
         content:
         {
-          fr: "Parcours",
-          [UNIVERSAL_LANG]: "Career",
-        },
-        link: "/#career",
-      },
-      {
-        content:
-        {
           fr: "Projets",
           [UNIVERSAL_LANG]: "Projects",
         },
         link: "/projects",
+      },
+      {
+        content:
+        {
+          fr: "Carrière",
+          [UNIVERSAL_LANG]: "Career",
+        },
+        link: "/#career",
       },
       {
         content:
@@ -637,49 +637,6 @@ export const navLinks: Array<NavbarPattern> = [
       },
     ],
   },
-  {
-    route: 'glitch-demo',
-    links: [
-      {
-        content:
-        {
-          fr: "Accueil",
-          [UNIVERSAL_LANG]: "Home",
-        },
-        link: "/",
-      },
-      {
-        content:
-        {
-          fr: "Projets",
-          [UNIVERSAL_LANG]: "Projects",
-        },
-        link: "/projects",
-      },
-      {
-        content:
-        {
-          [UNIVERSAL_LANG]: "Blog",
-        },
-        link: "/blog",
-      },
-      {
-        content:
-        {
-          [UNIVERSAL_LANG]: "Contact",
-        },
-        link: "/#contact",
-      },
-      {
-        context: "1",
-        content:
-        {
-          [UNIVERSAL_LANG]: "CV",
-        },
-        link: documents.curiculumVitae,
-      },
-    ],
-  },
 ];
 
 /**
@@ -761,7 +718,7 @@ export const socialMedia: Array<SocialMedia> = [
   {
     label: "github",
     icon: socialsIcons.github_icon,
-    link: "https://github.com/B-a-r-r",
+    link: "https://github.com/clembarr",
     at: "@clembarr",
   },
   {
@@ -779,20 +736,29 @@ export const creditsMentions: Array<CreditMention> = [
   {
     content: 
     {
-      fr: "Croquis de Sisyphe original",
-      en: "Original Sisyphus sketch",
+      fr: "Croquis de Sisyphe",
+      en: "Sisyphus sketch",
     },
     contentRef: coreImages.sysiphus,
     link: "https://www.google.com/search/about-this-image?img=H4sIAAAAAAAAAFMy5NLnePr3nIoAkwSjkoq5hZlJomlysm6KSWqyrolZkqWuhbllmm6SiamRpUmymZFxUgoAWMCsSTMAAAA&sa=X&ved=2ahUKEwjA-qCj4dqKAxUoVaQEHYJXNngQs6gLegQIDBAB",
   },
   {
-    content: 
+    content:
     {
-      fr: "Croquis de Héphaïstos original",
-      en: "Original Hephaistos sketch",
+      fr: "Empreintes digitales",
+      en: "Fingerprints",
     },
     contentRef: coreImages.hephaistos,
-    link: "https://fr.pinterest.com/pin/1080582504340139757/",
+    link: "https://pin.it/3EXJ4aFFY",
+  },
+  {
+    content: 
+    {
+      fr: "Silhouette ascii",
+      en: "Ascii silhouette",
+    },
+    contentRef: coreImages.heroFigure,
+    link: "https://pin.it/4LxNpn3hI",
   },
   {
     content: 
@@ -812,6 +778,14 @@ export const creditsMentions: Array<CreditMention> = [
     ],
     link: "https://boxicons.com/",
   },
+  {
+    content:
+    {
+      fr: "Icônes de compétences",
+      en: "Skills icons",
+    },
+    link: "https://boxicons.com/",
+  }
 ];
 
 /**
@@ -1190,6 +1164,15 @@ export const aboutLinks: Array<Hyperlink> = [
     },
     link: documents.curiculumVitae.link
   },
+  {
+    context: "0",
+    content:
+    {
+      fr: "→ Carrière",
+      en: "→ Career"
+    },
+    link: "/#career"
+  }
 ];
 
 

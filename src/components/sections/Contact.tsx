@@ -21,7 +21,7 @@ const Contact = () => {
         ${styles.sizeFull}
         ${styles.flexColToRowAtMd}
         ${styles.contentCenter}
-        xl:space-x-50 lg:space-x-37.5 md:space-x-10
+        2xl:space-x-40 xl:space-x-30 lg:space-x-15 md:space-x-10
       `}
     >
         <div id='form-container-desktop'
@@ -31,6 +31,8 @@ const Contact = () => {
               h-full
               ${styles.contentCenter}
               overflow-hidden
+              xl:min-w-0 lg:min-w-1/2 md:min-w-2/3
+              2xl:max-w-180
             `}
         >
           <SubmitEngine>
@@ -44,9 +46,11 @@ const Contact = () => {
               h-full
               ${styles.flexCol}
               ${styles.contentCenter}
-              space-y-[8%] md:space-y-[20%] lg:space-y-[35%]
+              space-y-[8%] md:space-y-[20%] lg:space-y-[25%]
               order-last md:order-none
               mt-10 md:mt-0
+              xl:max-w-full lg:max-w-1/3
+              lg:ml-10 xl:ml-0
             `}
         >
           {socialMedia.map((social: SocialMedia) => (

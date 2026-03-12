@@ -148,7 +148,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
-            md:py-0 py-1
+            md:py-1 py-1 xl:py-1
             resize-none
             border-2
           `}
@@ -169,7 +169,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
-            md:py-0 py-1
+            md:py-1 py-1 xl:py-1
             border-2
             resize-none
           `}
@@ -203,7 +203,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
-            md:py-0 py-1
+            md:py-1 py-1 xl:py-1
             border-2
             resize-none
           `}
@@ -250,7 +250,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
-            md:py-0 py-1
+            md:py-1 py-1 xl:py-1
             resize-none
           `}
           style={{border: 'none'}}
@@ -266,6 +266,7 @@ const ContactForm = () => {
         {`
           w-full
           h-3/5
+          min-h-30
           relative
           text-2xs sm:text-sm
         `}
@@ -278,7 +279,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
-            md:py-0 py-2
+            md:py-1 py-2 xl:py-1
             overflow-y-scroll
             resize-none
             border-2

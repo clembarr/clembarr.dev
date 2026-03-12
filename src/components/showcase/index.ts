@@ -14,6 +14,10 @@ import SkillGalaxy from './SkillGalaxy';
 import { TickerTimeline } from './TickerTimeline';
 import { AccordionTimeline } from './AccordionTimeline';
 import { StaircaseTimeline } from './StaircaseTimeline';
+import { SilentTrack } from './SilentTrack';
+import { TypographicAxis } from './TypographicAxis';
+import { GhostPath } from './GhostPath';
+import { BreadcrumbSequence } from './BreadcrumbSequence';
 
 export {
   OrbitingSkills,
@@ -27,4 +31,8 @@ export {
   TickerTimeline,
   AccordionTimeline,
   StaircaseTimeline,
+  SilentTrack,
+  TypographicAxis,
+  GhostPath,
+  BreadcrumbSequence,
 };
