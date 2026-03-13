@@ -54,11 +54,12 @@ const Searchbar = ({ placeholderContext = "search" }: SearchbarProps) => {
         <div id='search-bar-container'
             className=
             {`
-                ${styles.sizeFit}
+                h-fit
+                w-full
                 ${styles.flexRow}
                 ${styles.contentCenter}
                 relative
-                md:text-base text-2xs
+                md:text-xs text-2xs
             `}
         >
             <input type='search'

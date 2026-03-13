@@ -5,6 +5,7 @@ import { StructuredData, MetaTags } from '../components/seo';
 import { SearchEngine, Searchbar, Sortingbar } from '../components/search';
 import { BlogListing } from '../components/sections';
 import styles from '../style';
+import { getMaxPills } from '../utils/utils';
 
 /**
  * @component Blog
@@ -31,8 +32,9 @@ const Blog = () => {
             ${styles.page}
             ${styles.flexCol}
             ${styles.sectionContainer}
+            ${styles.contentCenter}
             space-y-12
-            mt-25
+            md:mt-25 mt-15
             pb-20
           `}
         >
@@ -40,10 +42,11 @@ const Blog = () => {
             <div
               id="blog-search-container"
               className={`
-                ${styles.flexCol}
+                w-full
+                h-fit
                 ${styles.contentCenter}
                 gap-4
-                space-y-5
+                space-y-6
               `}
             >
               <Searchbar placeholderContext="searchBlog" />

@@ -13,6 +13,7 @@ import { dummyArrays } from './dummy-arrays';
 import { votator } from './votator';
 import { scalewayDeployment } from './scaleway-deployement';
 import { customCNN } from './custom_cnn';
+import { eccSae } from './ecc_sae';
 
 /**
  * All projects - maintains array interface for backward compatibility
@@ -27,7 +28,8 @@ export const projects: Retex[] = [
   ecograph,
   dummyArrays,
   votator,
-  customCNN
+  customCNN,
+  eccSae
 ];
 
 // Individual exports for direct access
@@ -40,5 +42,6 @@ export {
   dummyArrays,
   votator,
   scalewayDeployment,
-  customCNN
+  customCNN,
+  eccSae
 };

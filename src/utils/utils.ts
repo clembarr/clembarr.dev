@@ -247,6 +247,28 @@ const RANDOM_TAILWIND_COLORS = [
 ];
 
 /**
+ * @function getMaxPills
+ * @description Defines the number of displayed pills in the sorting bar,
+ * according to the active breakpoint. 
+ * @returns return number of sorting options to display
+ */
+export const getMaxPills = () => {
+    const avbp = getActiveBreakpoint("number") as number;
+    
+    switch (avbp) {
+        case 5:
+        case 4: return 3; //xl
+        case 3:
+        case 2: return 2; //md
+        case 1:
+        case 0:
+        case -1:
+        case -2:
+        default: return 2; //bellow xs
+    }
+};
+
+/**
  * @function getRandomTailwindColor Get a random Tailwind CSS color among a
  * predefined list of colors.
  * @returns a random Tailwind CSS color
@@ -271,9 +293,8 @@ const getCSSBreakpoint = (name: string): number => {
 /**
  * @function getActiveBreakpoint Compare the current screen width with the custom
  * breakpoints defined as CSS custom properties by Tailwind 4 in index.css.
- * Breakpoints checked (descending): 2xl, xl, lg, md, sm, base.
  * @param returnType the type of the return value: 'string' or 'number'
- * @returns the active breakpoint as a label string or a rank number (0-5).
+ * @returns the active breakpoint as a label string (base to 2xl) or a rank number (-2 to 5).
  */
 export const getActiveBreakpoint = (returnType: "string" | "number") => {
     const currentWidth = window.innerWidth;
@@ -293,8 +314,14 @@ export const getActiveBreakpoint = (returnType: "string" | "number") => {
     else if (getCSSBreakpoint("sm") <= currentWidth) {
         return returnType === "number" ? 1 : "sm";
     }
+    else if (getCSSBreakpoint("ss") <= currentWidth) {
+        return returnType === "number" ? 0 : "ss";
+    }
+    else if (getCSSBreakpoint("xs") <= currentWidth) {
+        return returnType === "number" ? -1 : "xs";
+    }
     else {
-        return returnType === "number" ? 0 : "base";
+        return returnType === "number" ? -2 : "base";
     }
 }
 

@@ -812,6 +812,11 @@ input:focus, textarea:focus {
   }
 }
 
+@keyframes swipe-hint {
+  0%, 100% { transform: translateX(-20px) rotate(96deg); }
+  40% { transform: translateX(20px) rotate(80deg); }
+}
+
 /* Utility classes */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

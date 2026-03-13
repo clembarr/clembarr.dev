@@ -6,6 +6,7 @@ import { UNIVERSAL_LANG } from "../../utils/assetsUtils";
 import { BlogCard } from "../blog";
 import { blogSortingOptions, noDataMessages, placeholderMessages } from "../../assets/constants";
 import { ScrollReveal } from "../animations";
+import styles from "../../style";
 
 type BlogListingProps = {
     posts: BlogPost[];
@@ -82,13 +83,14 @@ const BlogListing = ({ posts }: BlogListingProps) => {
 
             <ScrollReveal direction="up" delay={0.4}>
                 {filteredPosts.length > 0 ? (
-                    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    <div className={`${styles.sizeFull} grid md:grid-cols-2 xl:grid-cols-3 gap-8`}>
                         {filteredPosts.map((post, index) => (
                             <BlogCard key={post.slug} post={post} index={index} />
                         ))}
                     </div>
                 ) : (
                     <div className={`
+                            ${styles.sizeFull}
                             text-center 
                             py-30
                             space-y-4

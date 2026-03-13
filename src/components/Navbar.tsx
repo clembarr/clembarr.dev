@@ -79,12 +79,12 @@ const Navbar = () => {
         w-screen
         items-center
         px-[5%]
-        2xl:py-1.5 xl:py-3 lg:py-2.5 md:py-1 py-2
+        2xl:py-1.5 xl:py-2 lg:py-2.5 md:py-1 py-2
         ${styles.flexRow}
         ${styles.contentStartX}
         bg-(--color-navbar-bg)/95
         backdrop-blur-md
-        2xl:text-sm xl:text-md text-base
+        2xl:text-sm xl:text-base text-base
         transition-all
         duration-300
         ease-out

@@ -6,6 +6,8 @@ import { Retex } from "../../assets/dataTypes"
 import { ThemeContext } from "../theme/ThemeEngine"
 import { menuIcons } from "../../assets"
 import { RetexContext } from "./RetexDisplayEngine"
+import { getLinkFromTypedLink } from "../../utils/utils"
+import { UNIVERSAL_LANG } from "../../utils/translationUtils"
 
 /**
  * @component RetexHeader
@@ -23,20 +25,20 @@ const RetexHeader = (relatedProject: Retex) => {
         <header id='retex-header'
             className={`
                 h-fit
-                md:w-3/12 w-full
+                lg:w-3/12 w-full
                 ${styles.flexCol}
                 z-21
                 overflow-hidden
             `}
         >
-            <button
+            <button id="close-retex-button"
                 type="button"
                 aria-label="Close"
                 className={`
                     absolute
-                    md:hidden
-                    top-[30px]
-                    right-[30px]
+                    lg:hidden
+                    md:top-[60px] sm:top-[50px] ss:top-[45px] top-[35px] 
+                    md:right-[45px] ss:right-[35px] right-[30px]
                     z-23
                     ${styles.sizeFit}
                     cursor-pointer
@@ -53,33 +55,34 @@ const RetexHeader = (relatedProject: Retex) => {
                     ${styles.flexCol}
                     color-scheme-secondary
                     rounded-lg
-                    shadow-lg
+                    shadow-lg 
+                    pt-[6%] lg:pt-0
                 `}
             >
                 <h1 className={`
                     w-full
                     font-primary-bold
-                    md:text-3xl text-xl
+                    2xl:text-2xl lg:text-3xl md:text-2xl text-xl
                     tracking-wide
-                    md:py-[6%]
-                    md:pt-[6%]
+                    lg:py-[6%]
+                    lg:pt-[8%]
                     px-[10%]
                     border-dashed
-                    md:space-y-[6%] space-y-[2%]
-                    md:mb-[3%]
+                    lg:space-y-[2%] ss:space-y-0 space-y-[2%]
                 `}>
                     <p className={`
                         ${styles.flexWrap}
                         ${styles.contentStartX}
                         leading-8
-                        md:mr-0 mr-4
+                        lg:mr-0 mr-4
                     `}
                         dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(relatedProject.title[currentLang] || relatedProject.title[0])}}
                     />
 
                     <hr className={`
                         ${styles.line}
-                        md:w-[50%] w-[25%]
+                        lg:w-[50%] w-[25%]
+                        mt-4
                     `}
                     />
 
@@ -96,25 +99,26 @@ const RetexHeader = (relatedProject: Retex) => {
 
                 <div id='retex-skills'
                     className={`
-                        ${styles.flexRowToColAtMd}
+                        ${styles.flexRowToColAtLg}
                         ${styles.sizeFull}
                         ${styles.contentStartX}
                         px-[10%]
                         py-[8%]
                         pt-[6%]
-                        md:space-y-[6%]
-                        md:overflow-hidden overflow-x-scroll
+                        lg:space-y-[6%]
+                        lg:overflow-hidden overflow-x-scroll
                         overflow-y-hidden
+                        space-x-3 md:space-x-6
                     `}
                 >
                     {relatedProject.content.tools.slice(0, 6).map((tool, index) => (
-                        <span key={`retex-skill-${index}`}
+                        <a key={`retex-skill-${index}`}
                             className={`
-                                ${styles.flexColToRowAtMd}
-                                w-fit md:w-full h-full
-                                justify-center items-start md:justify-start md:items-center
-                                space-x-3 md:space-x-[8%]
+                                ${styles.flexColToRowAtLg}
+                                w-fit lg:w-full h-full
+                                justify-center items-start lg:justify-start lg:items-centerlg:space-x-[8%]
                             `}
+                            href={getLinkFromTypedLink(tool.link || "")}
                         >
                             <img src={tool.icon.content[currentTheme]}
                                 alt={tool.icon.alt}
@@ -122,24 +126,24 @@ const RetexHeader = (relatedProject: Retex) => {
                                     object-cover
                                     object-center
                                     aspect-square
-                                    w-8 md:w-[25%]
+                                    w-8 ss:w-10 md:w-12 lg:w-[25%]
                                     max-w-[50px]
                                 `}
                             />
 
                             <span className={`
-                                hidden md:inline
+                                hidden lg:inline
                                 font-primary-regular
-                                2xl:text-lg md:text-sm
+                                2xl:text-lg lg:text-sm
                             `}> {tool.label} </span>
-                        </span>
+                        </a>
                     ))}
                 </div>
             </div>
 
             <div id='retex-header-additional'
                 className={`
-                    ${styles.hiddenToFlexColAtMd}
+                    ${styles.hiddenToFlexColAtLg}
                 `}
             >
                 <ul id='retex-header-additional-ressources'
@@ -164,9 +168,9 @@ const RetexHeader = (relatedProject: Retex) => {
                             >
                                 <a target='_blank'
                                     rel="noopener noreferrer"
-                                    href={resource.link as any}
+                                    href={getLinkFromTypedLink(resource.link)}
                                     className={`${styles.animatedLink} font-bold`}
-                                > → {resource.content[currentLang] || resource.content[0]} </a>
+                                > → {resource.content[currentLang] || resource.content[UNIVERSAL_LANG]} </a>
                             </li>
                         ))
                     : null}

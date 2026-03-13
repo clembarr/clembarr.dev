@@ -9,7 +9,6 @@ export const customCNN: Retex = {
     },
     date: new Date(2026, 1),
     coverImage: customCNNDemo,
-    favorite: false,
     tags: {
         en: ["AI", "Vision", "Teamwork", "University", "Academic", "Mathematics", "Supervised Learning"],
         fr: ["IA", "Vision", "Équipe", "Universitaire", "Mathématiques", "Académique", "Entraînement supervisé"],

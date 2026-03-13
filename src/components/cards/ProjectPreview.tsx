@@ -6,6 +6,7 @@ import { LangContext } from '../language';
 import Card from './Card';
 import { handleMouseLeave, handleMouseMove } from '../../utils/utils';
 import { RetexContext } from '../retex';
+import { UNIVERSAL_LANG } from '../../utils/translationUtils';
 
 /**
  * @component ProjectPreview
@@ -88,7 +89,7 @@ const ProjectPreview = (project: Retex) => {
                 ${styles.flexCol}
                 color-scheme-primary
                 bg-(--color-secondary)
-                w-full md:w-[30%]
+                w-full md:w-[45%] xl:w-[30%]
                 md:h-125 ss:h-125 h-115
                 rounded-md
                 shadow-xl
@@ -105,7 +106,7 @@ const ProjectPreview = (project: Retex) => {
             }}
             onMouseLeave={() => handleMouseLeave(cardRef.current)}
             onMouseMove={(e) => handleMouseMove(e, cardRef.current)}
-            onClick={() => setDisplayedRetex(project.title[currentLang] || project.title[0])}
+            onClick={() => setDisplayedRetex(project.title[currentLang] || project.title[UNIVERSAL_LANG])}
         >
             <div className={`
                     m-[6%]
@@ -115,9 +116,9 @@ const ProjectPreview = (project: Retex) => {
                 {renderMedia(firstMedia)}
             </div>
             
-            <Card title={project.title[currentLang] || project.title[0]} 
+            <Card title={project.title[currentLang] || project.title[UNIVERSAL_LANG]} 
                 content={project.description[currentLang]} 
-                tags={project.tags[currentLang].concat(project.tags[0])} 
+                tags={project.tags[currentLang].concat(project.tags[UNIVERSAL_LANG])} 
                 moreTopClasses=
                 {`
                     px-[8%]
@@ -131,7 +132,7 @@ const ProjectPreview = (project: Retex) => {
                     md:text-base ss:text-sm text-xs
                 `}
                 tagsProps={`
-                    md:text-base ss:text-sm text-xs
+                    2xl:text-base xl:text-sm md:text-base ss:text-sm text-xs
                 `}
             />
         </div>

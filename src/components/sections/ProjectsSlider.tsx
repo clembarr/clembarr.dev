@@ -18,6 +18,13 @@ import { LangContext } from "../language"
 const ProjectsSlider = () => {
   const { currentTheme } = useContext(ThemeContext);
   const { currentLang } = useContext(LangContext);
+  const [cards, setCards] = useState<Array<ReactElement>>([]);
+  const apparitionEnded = useRef<boolean>(false);
+  const topCardTrueAngle = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
   const assignRotation = (index: number, all: number) => {
     return(
@@ -47,10 +54,26 @@ const ProjectsSlider = () => {
     return slides;
   }
 
-  // State to manage the cards 
-  const [cards, setCards] = useState<Array<ReactElement>>([]);
-  const apparitionEnded = useRef<boolean>(false);
-  const topCardTrueAngle = useRef<number>(0);
+  // This effect handles the non-passive touchmove listener to block vertical scroll
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const touchCurrentX = e.touches[0].clientX;
+      const touchCurrentY = e.touches[0].clientY;
+      const diffX = Math.abs(touchStartX.current - touchCurrentX);
+      const diffY = Math.abs(touchStartY.current - touchCurrentY);
+
+      //prevent vertical scrolling while swiping horizontally
+      if (diffX > diffY && diffX > 10) {
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    return () => container.removeEventListener('touchmove', handleTouchMove);
+  }, []);
 
   // This effect occurs only once, it allows to display the stack card by card
   useEffect(() => {
@@ -151,6 +174,30 @@ const ProjectsSlider = () => {
     }
   }
 
+  /**
+   * @function handleTouchStart Record the start position of a touch event
+   * @param e the touch event
+   */
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+    touchStartY.current = e.targetTouches[0].clientY;
+  }
+
+  /**
+   * @function handleTouchEnd Calculate the swipe distance and trigger navigation if it exceeds the threshold
+   * @param e the touch event
+   */
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX.current;
+
+    if (diff > 50) {
+      previousCard();
+    } else if (diff < -50) {
+      nextCard();
+    }
+  }
+
   return (
     <section id='projects-slider'
       className={`
@@ -164,6 +211,7 @@ const ProjectsSlider = () => {
     >
 
       <div id="cards-stack-container"
+        ref={containerRef}
         className={`
           ${styles.sizeFull}
           ${styles.flexRow}
@@ -174,27 +222,43 @@ const ProjectsSlider = () => {
         style={{
           perspective: SLIDER_PERSPECTIVE,
         }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       > 
         {cards.map((card: ReactElement) => (
           card
         ))}
 
-        <hr className={`
-          md:hidden
-          absolute
-          ${styles.line}
-          sm:bottom-11 ss:bottom-20.5 xs:bottom-21.5 bottom-18.5
-          w-6
-          h-2
-          opacity-25
-          rounded-full
-        `} />
+        <div id="mobile-swipe-indicator"
+          className={`
+            md:hidden
+            absolute
+            ${styles.flexCol}
+            ${styles.contentCenter}
+            sm:bottom-6 ss:bottom-14 xs:bottom-20 bottom-15
+            w-full
+            opacity-30
+            pointer-events-none
+            animate-fade-in
+          `}
+        >
+          <span className={`text-[10px] font-mono uppercase tracking-widest`}>
+            Swipe !
+          </span>
+          <img id="swipe-icon"
+            src={menuIcons.double_chevrons_icon.content[currentTheme]}
+            alt={menuIcons.double_chevrons_icon.alt}
+            className={`w-6`}
+            style={{ animation: 'swipe-hint 2s infinite ease-in-out' }}
+          />
+        </div>
 
         <button id="prev-button"
           className={`
+            hidden md:block
             absolute
-            2xl:left-6 xl:-left-6 lg:-left-8 md:left-10 sm:left-[25%] ss:left-[22%] left-[20%]
-            md:top-1/2 sm:top-[88%] ss:top-[81%] top-[80%]
+            2xl:left-6 xl:-left-6 lg:-left-8 md:left-10
+            md:top-1/2
             z-10
             hover:scale-105
             transition-all
@@ -209,16 +273,17 @@ const ProjectsSlider = () => {
             className={`
               object-cover
               -rotate-90
-              lg:w-7.5 md:w-10 w-8.75
+              lg:w-7.5 md:w-10
             `}
           /> 
         </button>
 
         <button id="next-button"
           className={`
+            hidden md:block
             absolute
-            2xl:right-6 xl:-right-6 lg:-right-8 md:right-10 sm:right-[25%] ss:right-[22%] right-[20%]
-            md:top-1/2 sm:top-[88%] ss:top-[81%] top-[80%]
+            2xl:right-6 xl:-right-6 lg:-right-8 md:right-10
+            md:top-1/2
             z-10
             rounded-full
             hover:scale-105
@@ -234,7 +299,7 @@ const ProjectsSlider = () => {
             className={`
               object-cover
               rotate-90
-              lg:w-7.5 md:w-10 w-8.75
+              lg:w-7.5 md:w-10
             `}
           /> 
         </button>
@@ -250,31 +315,28 @@ const ProjectsSlider = () => {
           overflow-y-visible
         `}
       >
-        {/**
-          * Glitch wrapper — in dark mode, two overlay imgs (glitch-slice-1 / glitch-slice-2)
-          * are stacked above the main figure. Displacement only, no color shift.
-          * In light mode, plain static img.
-          */}
-        <div className={`
-          absolute
-          left-0 2xl:left-[3%]
-          ${currentTheme === "dark" ? "-bottom-10" : ""}
-          2xl:w-[80%] xl:w-[88%]
-          overflow-hidden
-        `}>
+        <div id="glitch-effect-wrapper"
+          className={`
+            absolute
+            left-0 2xl:left-[3%]
+            ${currentTheme === "dark" ? "lg:bottom-10 xl:-bottom-10" : ""}
+            2xl:w-[80%] xl:w-[88%]
+            overflow-hidden
+          `}
+        >
           {currentTheme === "dark" && <>
             <img
               src={coreImages.hephaistos.content[currentTheme]}
-              alt=""
+              alt={coreImages.hephaistos.alt}
               aria-hidden="true"
-              className={`absolute inset-0 w-full h-full object-contain pointer-events-none`}
+              className={`absolute inset-0 ${styles.sizeFull} object-contain pointer-events-none`}
               style={{ animation: 'glitch-slice-1 9s infinite' }}
             />
             <img
               src={coreImages.hephaistos.content[currentTheme]}
-              alt=""
+              alt={coreImages.hephaistos.alt}
               aria-hidden="true"
-              className={`absolute inset-0 w-full h-full object-contain pointer-events-none`}
+              className={`absolute inset-0 ${styles.sizeFull} object-contain pointer-events-none`}
               style={{ animation: 'glitch-slice-2 9s infinite 0.25s' }}
             />
           </>}

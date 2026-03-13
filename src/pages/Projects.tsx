@@ -35,9 +35,9 @@ const Projects = () => {
                     h-fit
                     ${styles.flexCol}
                     ${styles.contentStartY}
-                    pl-[11%]
-                    pr-[12%]
-                    py-[6%]
+                    pl-[11%] xl:pl-[8%] 2xl:pl-[11%]
+                    pr-[12%] xl:pr-[9%] 2xl:pr-[12%]
+                    py-[6%] 
                 `}
             >
                 <SearchEngine>

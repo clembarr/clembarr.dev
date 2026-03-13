@@ -181,11 +181,12 @@ const RetexViewer = () => {
     return (
         <div id={`retex-${displayedRetexTitle}`}
             className={`
-                md:w-full md:h-full
-                ${styles.flexColToRowAtMd}
+                lg:w-full lg:h-full
+                ${styles.flexColToRowAtLg}
                 p-[6%]
                 relative
-                md:overflow-hidden overflow-scroll
+                lg:overflow-hidden overflow-scroll
+                lg:space-y-0 md:space-y-4 space-y-2
             `}
         >
             <RetexHeader {...relatedProject} />
@@ -195,19 +196,17 @@ const RetexViewer = () => {
                     ${styles.sizeFull}
                     ${styles.flexCol}
                     color-scheme-secondary
-                    md:py-[3%] py-[6%]
-                    md:px-[3%] px-[8%]
+                    2xl:py-[3%] lg:py-[4%] py-[6%]
+                    lg:px-[3%] px-[8%]
                     rounded-lg
                     shadow-lg
                     overflow-x-hidden
-                    md:overflow-hidden overflow-y-scroll
+                    lg:overflow-hidden overflow-y-scroll
                     z-22
-                    md:ml-[2%]
+                    lg:ml-[2%]
                     relative
-                    transition-all
-                    duration-200
-                    ease-in-out
-                    space-y-4 md:space-y-0
+                    ${styles.defaultTransition}
+                    space-y-4 lg:space-y-0
                 `}
             >
                 {toggleGallery && relatedProject.content.images && relatedProject.content.images.length > 0
@@ -215,16 +214,15 @@ const RetexViewer = () => {
                 : <>
                     <button
                         type="button"
-                        aria-label="Close"
+                        aria-label="Close button"
                         onClick={() => setDisplayedRetex(undefined)}
                         className={`
                             absolute
-                            top-2
-                            -right-6
-                            hidden md:flex
-                            items-center
-                            justify-center
-                            w-30
+                            2xl:top-2 top-1
+                            2xl:-right-6 -right-4
+                            hidden lg:flex
+                            ${styles.contentCenter}
+                            2xl:w-30
                             rounded-full
                             cursor-pointer
                             ${styles.defaultTransition}
@@ -249,7 +247,8 @@ const RetexViewer = () => {
                         <p className={`
                                 ${styles.sizeFull}
                                 text-wrap
-                                text-xs md:text-base
+                                md:text-md sm:text-md text-xs
+                                text-justify
                             `}
                             dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(translate(relatedProject.content.specs, currentLang))}}
                         />
@@ -260,10 +259,11 @@ const RetexViewer = () => {
                             w-full
                             md:h-fit h-full
                             md:max-h-[40%]
-                            ${styles.flexColToRowAtMd}
+                            ${styles.flexColToRowAtLg}
                             ${styles.contentCenter}
                             text-wrap
                             md:space-x-[3%] space-x-0
+                            lg:mt-2 mt-6
                         `}
                     >
                         <span id='notions'
@@ -284,7 +284,7 @@ const RetexViewer = () => {
                                     list-disc
                                     list-inside
                                     space-y-[5%]
-                                    text-2xs md:text-base
+                                    md:text-md sm:text-md text-xs
                                 `}
                             >
                                 {displayedNotions.map((notion: string, index: number) => (
@@ -299,8 +299,8 @@ const RetexViewer = () => {
                             className={`
                                 relative
                                 ${styles.sizeFull}
-                                md:max-w-[44%]
-                                hidden md:flex md:flex-col
+                                lg:max-w-[44%]
+                                hidden lg:flex lg:flex-col
                                 ${styles.contentCenter}
                                 rounded-lg
                                 overflow-hidden
@@ -357,9 +357,7 @@ const RetexViewer = () => {
                                             font-semibold
                                             enabled:hover:text-(--color-quinary)
                                             disabled:text-wrap
-                                            transition-all
-                                            duration-300
-                                            ease-in-out
+                                            ${styles.defaultTransition}
                                             rounded-lg
                                             shadow-lg
                                         `}
@@ -378,22 +376,27 @@ const RetexViewer = () => {
                 </>}
             </div>
 
-            <div id='retex-mobile-additional'
+            <div id='retex-additional'
                 className={`
                     ${styles.flexCol}
+                    lg:space-y-0 md:space-y-10 space-y-5
+                    lg:mb-0 mb-10
                 `}
             >
                 {projectMedia.length > 0 && (
                     <div id='retex-mobile-gallery'
                         className={`
-                            flex flex-col md:hidden
+                            ${styles.flexCol} lg:hidden
                             gap-2
-                            mt-4
+                            rounded-lg
                             overflow-x-auto
+                            bg-(--color-secondary)
+                            py-4
+                            px-4
                         `}
                     >
                         {projectMedia.map((media, index) =>
-                            renderPreviewMedia(media, index, false, index === 0)
+                            renderPreviewMedia(media, index, false, true, `rounded-lg`)
                         )}
                     </div>
                 )}
@@ -406,6 +409,8 @@ const RetexViewer = () => {
                         text-wrap
                         ml-[6%]
                         text-xs
+                        font-bold
+                        text-shadow-2xl
                     `}
                 >
                     {relatedProject.content.additionalRessources ?
@@ -413,7 +418,7 @@ const RetexViewer = () => {
                             <li key={`retex-resource-${index}`}
                                 className={`
                                     ${styles.sizeFull}
-                                    ${styles.flexRowHideDesktopAtMd}
+                                    ${styles.flexRowHideDesktopAtLg}
                                     ${styles.contentStartX}
                                     space-x-[3%]
                                     ${currentTheme === 'dark' ? 'text-(--color-tertiary)' : 'text-(--color-quaternary)'}

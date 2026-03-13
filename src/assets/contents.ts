@@ -265,7 +265,7 @@ export const aboutWidgets: Array<AboutWidget> = [
       },
       {
         label: { fr: "🇪🇸 Espagnol", en: "🇪🇸 Spanish" },
-        level: { fr: "Notions (A2)", en: "Basic (A2)" },
+        level: { fr: "Avancé (B1+)", en: "Advanced (B1+)" },
       }
     ]
   }

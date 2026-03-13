@@ -41,6 +41,35 @@ import custom_cnn_calibration from "./custom_cnn_calibration.png"
 import custom_cnn_demo from "./custom_cnn_demo.mp4"
 import custom_cnn_universe from "./custom_cnn_universe.png"
 import custom_cnn_losses from "./custom_cnn_loses.png"
+import ecc_ecc from "./ecc_ecc.png"
+import ecc_corps_finis from "./ecc_corps_finis.png"
+import ecc_limit_case from "./ecc_limit_case.png"
+import ecc_add from "./ecc_add.png"
+
+
+export const eccEcc: ProjectMedia = {
+    url: ecc_ecc,
+    type: MediaType.IMAGE,
+    alt: "Diagram of ECC based Diffie-Hellman key exchange."
+}
+
+export const eccCorpsFinis: ProjectMedia = {
+    url: ecc_corps_finis,
+    type: MediaType.IMAGE,
+    alt: "Graphical representation of elliptic curve operations adapted to finite corps."
+}
+
+export const eccLimitCase: ProjectMedia = {
+    url: ecc_limit_case,
+    type: MediaType.IMAGE,
+    alt: "Illustration of the limit case in elliptic curve point addition, where the points are inverses of each other."
+}
+
+export const eccAdd: ProjectMedia = {
+    url: ecc_add,
+    type: MediaType.IMAGE,
+    alt: "Visualization of the point addition operation on an elliptic curve, showing the geometric interpretation."
+}
 
 export const veridisquoOutput: ProjectMedia = {
     url: veridisquo_output,

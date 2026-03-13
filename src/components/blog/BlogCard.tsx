@@ -44,14 +44,14 @@ const BlogCard = ({ post, index = 0 }: BlogCardProps) => {
         delay: prefersReducedMotion ? 0 : index * 0.1,
         ease: [0.25, 0.1, 0.25, 1],
       }}
-      className="h-full"
+      className={`${styles.sizeFull}`}
       style={{ perspective: '1000px' }}
     >
       <div
         ref={cardRef}
         className={`
           group
-          h-full
+          ${styles.sizeFull}
           ${styles.flexCol}
           ${styles.easeOutTransition}
           rounded-lg
@@ -92,13 +92,14 @@ const BlogCard = ({ post, index = 0 }: BlogCardProps) => {
               <img
                 src={normalizeMedia(post.coverImage).url}
                 alt={title}
-                className="w-full h-full object-cover"
+                className={`${styles.sizeFull} object-cover`}
                 loading="lazy"
               />
             </div>
           )}
 
           <div className={`
+              ${styles.sizeFull}
               p-4
               ${styles.flexCol}
               grow
@@ -106,11 +107,10 @@ const BlogCard = ({ post, index = 0 }: BlogCardProps) => {
             `}
           >
             <div className={`
-                flex
+                ${styles.flexWrap}
                 items-center
                 justify-between
                 gap-2
-                flex-wrap
                 text-sm
               `}
             >
@@ -140,10 +140,10 @@ const BlogCard = ({ post, index = 0 }: BlogCardProps) => {
             <Card title={title}
               content={description}
               tags={tags}
-              moreTopClasses="space-y-3 grow space-y-4"
-              titleProps="text-md leading-snug mt-4 group-hover:text-(--color-tertiary) transition-colors duration-300"
-              contentProps="text-xs opacity-80 line-clamp-3"
-              tagsProps="text-2xs"
+              moreTopClasses={`${styles.sizeFull} space-y-3 grow space-y-4`}
+              titleProps="text-md leading-snug xl:mt-4 group-hover:text-(--color-tertiary) transition-colors duration-300"
+              contentProps="text-xs opacity-80 line-clamp-3 "
+              tagsProps="text-2xs "
             />
 
             <div id='footer-infos'

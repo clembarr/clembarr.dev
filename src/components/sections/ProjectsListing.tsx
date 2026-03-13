@@ -8,10 +8,11 @@ import Sortingbar from "../search/Sortingbar";
 import { Retex } from "../../assets/dataTypes";
 import { LangContext } from "../language";
 import { RetexViewer, RetexContext } from "../retex";
-import { getActiveBreakpoint, randomNumberBetween } from "../../utils/utils";
+import { getActiveBreakpoint, getMaxPills, randomNumberBetween } from "../../utils/utils";
 import { noDataMessages, sortOptions, PROJECTS_LISTING_PERSPECTIVE } from "../../assets/constants";
 import { ThemeContext } from "../theme/ThemeEngine";
 import { ScrollReveal } from "../animations";
+import { UNIVERSAL_LANG } from "../../utils/translationUtils";
 
 
 /**
@@ -135,7 +136,7 @@ const ProjectsListing = () => {
     const getProjectsPreviews = () => {
         return (displayedProjects.length > 0 ? 
             displayedProjects.map((project) => (
-                <ProjectPreview key={`project-${project.title[currentLang] || project.title[0]}-preview`} {...project} />
+                <ProjectPreview key={`project-${project.title[currentLang] || project.title[UNIVERSAL_LANG]}-preview`} {...project} />
             ))
         : noDataMessages.find((message) => message.context === "projects")!.content[currentLang])
     }
@@ -154,22 +155,17 @@ const ProjectsListing = () => {
                 className={`
                     w-full
                     h-fit
-                    ${styles.flexColToRowAtMd} 
+                    ${styles.flexColToRowAtLg} 
                     ${styles.contentCenter}
-                    md:gap-36
-                    md:space-y-0 space-y-6
-                    md:py-0 ss:py-[2%] py-[8%]
+                    2xl:gap-36 xl:gap-31 lg:gap-25
+                    lg:space-y-0 space-y-6
+                    lg:py-0 ss:py-[2%] py-[8%]
                 `}
             >
                 <Searchbar />
 
                 <Sortingbar options={sortOptions} 
-                    maxPills={
-                        getActiveBreakpoint("number") === 5 ? 0 :
-                        getActiveBreakpoint("number") === 4 ? 1 :
-                        getActiveBreakpoint("number") === 3 ? 1 : 
-                        getActiveBreakpoint("number") === 2 ? 1 : 1
-                    } 
+                    maxPills={getMaxPills()} 
                 />
             </div>
         </ScrollReveal>
@@ -189,7 +185,7 @@ const ProjectsListing = () => {
                 left-0
                 backdrop-blur-md
                 bg-transparent
-                overflow-auto md:overflow-hidden
+                overflow-auto lg:overflow-hidden
             `}
             style={{
                 animation: "fade-in 0.3s ease-in-out",
@@ -209,7 +205,7 @@ const ProjectsListing = () => {
                 ${displayedProjects.length > 0 ? "" : "min-h-[50vh]"}
                 ${displayedProjects.length > 0 ? styles.contentStartAll : `${styles.contentCenter} text-center`}
                 my-[3%]
-                md:ml-[4%] ss:ml-[7.5%] ml-[4%]
+                md:ml-[4%] ss:ml-[7.5%]
                 md:space-y-0 space-y-5
             `}
             style={{

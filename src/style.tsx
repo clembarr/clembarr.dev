@@ -52,23 +52,25 @@ const styles = {
     duration-200
     ease-in-out`,
 
-  // Flexbox utilities
   flexCol: `flex flex-col`,
   flexRow: `flex flex-row`,
   flexWrap: `flex flex-wrap`,
 
-  // Responsive flex direction (col → row at breakpoint)
   flexColToRowAtMd: `flex flex-col md:flex-row`,
   flexColToRowAtLg: `flex flex-col lg:flex-row`,
   flexRowToColAtMd: `flex flex-row md:flex-col`,
 
-  // Responsive visibility + flex
   hiddenToFlexColAtMd: `hidden md:flex md:flex-col`,
   hiddenToFlexColAtLg: `hidden lg:flex lg:flex-col`,
   flexRowHideAtMd: `hidden md:flex md:flex-row`,
   flexRowHideDesktopAtMd: `flex flex-row md:hidden`,
+  flexRowHideDesktopAtLg: `flex flex-row lg:hidden`,
+  
+  flexRowHideAtLg: `hidden lg:flex lg:flex-row`,
   flexColHideAtSm: `flex flex-col sm:hidden`,
   flexColHideAtMd: `flex flex-col md:hidden`,
+
+  flexRowToColAtLg: `flex flex-row lg:flex-col`,
 
   contentCenter: `justify-center items-center`,
   contentStartAll: `justify-start items-start`,
@@ -80,7 +82,6 @@ const styles = {
 
   contentStartYToCenterAtMd: `justify-center items-start md:justify-center md:items-center`,
 
-  // Size utilities
   sizeFull: `w-full h-full`,
   sizeScreen: `h-screen w-auto`,
   sizeFit: `w-fit h-fit`,
