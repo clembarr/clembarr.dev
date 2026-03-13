@@ -11,10 +11,11 @@ import FlowingPath from './FlowingPath';
 import MathSpiral from './MathSpiral';
 import SkillTreeRPG from './SkillTreeRPG';
 import SkillGalaxy from './SkillGalaxy';
+import { SnakeTimeline } from './SnakeTimeline';
 import { TickerTimeline } from './TickerTimeline';
 import { AccordionTimeline } from './AccordionTimeline';
 import { StaircaseTimeline } from './StaircaseTimeline';
-import { SilentTrack } from './SilentTrack';
+import {SilentTrack} from './SilentTrack';
 import { TypographicAxis } from './TypographicAxis';
 import { GhostPath } from './GhostPath';
 import { BreadcrumbSequence } from './BreadcrumbSequence';
@@ -28,6 +29,7 @@ export {
   MathSpiral,
   SkillTreeRPG,
   SkillGalaxy,
+  SnakeTimeline,
   TickerTimeline,
   AccordionTimeline,
   StaircaseTimeline,

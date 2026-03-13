@@ -58,6 +58,7 @@ const Searchbar = ({ placeholderContext = "search" }: SearchbarProps) => {
                 ${styles.flexRow}
                 ${styles.contentCenter}
                 relative
+                md:text-base text-2xs
             `}
         >
             <input type='search'

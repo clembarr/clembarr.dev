@@ -64,8 +64,18 @@ const Home = () => {
         </div>
       </ScrollReveal>
 
-      {/* CareerTimeline manages its own sticky-scroll layout */}
-      <CareerTimeline />
+      <ScrollReveal direction="up" delay={0.3}>
+        <div id="career-timeline-container"
+          className={`
+            ${styles.sectionContainer}
+            overflow-visible
+          `}
+        >
+          <Suspense fallback={<SuspenseFallback />}>
+            <CareerTimeline />
+          </Suspense>
+        </div>
+      </ScrollReveal>
 
       <ScrollReveal direction="up" delay={0.4}>
         <div id="contact-container"

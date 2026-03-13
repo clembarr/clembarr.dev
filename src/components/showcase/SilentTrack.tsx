@@ -1,64 +1,77 @@
 /**
- * @fileoverview SilentTrack - Ultra-minimalist dot-based timeline.
+ * @fileoverview SilentTrack - A vertical minimalist timeline with dots and hover info.
  */
 
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CareerEntry } from '../../assets/dataTypes';
-import { tCustom } from '../../utils/translationUtils';
+import { translate } from '../../utils/translationUtils';
+import { ThemeContext } from '../theme/ThemeEngine';
+import { LangContext } from '../language';
 
 interface SilentTrackProps {
   events: CareerEntry[];
-  lang: string;
 }
 
-export const SilentTrack = ({ events, lang }: SilentTrackProps) => {
-  const t = tCustom(lang);
+/**
+ * @description Ultra-minimalist vertical timeline. Information only appears on hover.
+ */
+export const SilentTrack = ({ events }: SilentTrackProps) => {
+  const { currentLang } = useContext(LangContext);
+  const { currentTheme } = useContext(ThemeContext);
+  const isDark = currentTheme === 'dark';
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  return (
-    <div className="relative w-full py-32 flex flex-col items-center justify-center overflow-visible">
-      {/* ── Main thin axis ── */}
-      <div className="absolute w-full h-[1px] bg-white/10" />
+  const colors = {
+    primary: isDark ? '#7CFFC4' : '#479561',
+    text: isDark ? '#71cbb3' : '#3D3E3C',
+    line: isDark ? 'rgba(124, 255, 196, 0.1)' : 'rgba(71, 149, 97, 0.1)',
+  };
 
-      {/* ── Dots ── */}
-      <div className="relative w-full flex justify-between px-[10%]">
+  const getYears = (period: any) => {
+    const str = translate(period, currentLang);
+    const years = str.match(/\d{4}/g);
+    return years ? years.join(' — ') : str;
+  };
+
+  return (
+    <div 
+      id={`silent-track-container`}
+      className={`relative w-full max-h-[600px] overflow-y-auto overflow-x-hidden flex justify-center py-20 no-scrollbar`}
+    >
+      <div 
+        id={`track-axis`}
+        className={`absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2`}
+        style={{ backgroundColor: colors.line, height: `${events.length * 150}px` }}
+      />
+
+      <div 
+        id={`events-wrapper`}
+        className={`relative w-full max-w-2xl flex flex-col items-center gap-32`}
+        style={{ minHeight: `${events.length * 150}px` }}
+      >
         {events.map((event, i) => (
-          <div 
-            key={i} 
-            className="relative flex flex-col items-center"
+          <div
+            key={i}
+            id={`event-node-${i}`}
+            className={`relative flex items-center justify-center w-full`}
             onMouseEnter={() => setHoveredIndex(i)}
             onMouseLeave={() => setHoveredIndex(null)}
           >
-            {/* The Dot */}
-            <motion.div 
-              animate={{ 
+            <motion.div
+              id={`marker-${i}`}
+              className={`w-2 h-2 rounded-full cursor-crosshair z-10`}
+              style={{ backgroundColor: hoveredIndex === i ? colors.primary : colors.text }}
+              animate={{
                 scale: hoveredIndex === i ? 2 : 1,
-                backgroundColor: hoveredIndex === i ? 'var(--color-tertiary)' : 'rgba(255,255,255,0.2)'
+                boxShadow: hoveredIndex === i ? `0 0 15px ${colors.primary}` : 'none'
               }}
-              className="w-2 h-2 rounded-full cursor-pointer z-20"
             />
 
-            {/* Year Label */}
-            <span className="absolute top-6 text-[10px] font-mono opacity-30 whitespace-nowrap">
-              {t(event.period).split(' ').pop()}
-            </span>
-
-            {/* Floating Tooltip */}
-            <AnimatePresence>
-              {hoveredIndex === i && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute bottom-10 w-[200px] text-center flex flex-col items-center pointer-events-none"
-                >
-                  <h3 className="text-xs font-bold text-(--color-tertiary) mb-1">{t(event.title)}</h3>
-                  <p className="text-[10px] text-white/50 leading-tight">{t(event.organization)}</p>
-                  <div className="w-px h-4 bg-gradient-to-t from-(--color-tertiary) to-transparent mt-2" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div 
+              id={`date-anchor-${i}`}
+              className={`absolute opacity-20 text-[10px] font-mono pointer-events-none whitespace-nowrap right-1/2 mr-8`}
+            > {getYears(event.period)} </div>
           </div>
         ))}
       </div>

@@ -85,9 +85,9 @@ export type SkillGalaxyProps = {
  * @description The career entry types supported by the app.
 */
 export enum CareerEntryType {
-  EDUCATION = "EDUCATION",
-  EXPERIENCE = "EXPERIENCE",
-  CERTIFICATION = "CERTIFICATION",
+  EDUCATION = "EDUC.",
+  EXPERIENCE = "EXP.",
+  CERTIFICATION = "CERTIF.",
   VOLUNTEERING = "VOLUNTEERING",
 }
 
@@ -98,11 +98,12 @@ export enum CareerEntryType {
 export interface CareerEntry {
   type: CareerEntryType;
   title: MultilingualContent;
-  icon?: string;
+  icon?: GraphicAsset;
   organization: MultilingualContent;
   period: MultilingualContent;
   description: MultilingualContent;
-  tags?: string[];
+  tags?: MultilingualContentArray;
+  ressources?: Hyperlink[];
 }
 
 /** The skill categories supported by the app. */

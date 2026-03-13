@@ -89,7 +89,7 @@ const ProjectPreview = (project: Retex) => {
                 color-scheme-primary
                 bg-(--color-secondary)
                 w-full md:w-[30%]
-                h-125
+                md:h-125 ss:h-125 h-115
                 rounded-md
                 shadow-xl
                 overflow-hidden
@@ -128,9 +128,10 @@ const ProjectPreview = (project: Retex) => {
                 `}
                 contentProps={`
                     wrap-break-word
+                    md:text-base ss:text-sm text-xs
                 `}
                 tagsProps={`
-                    text-base
+                    md:text-base ss:text-sm text-xs
                 `}
             />
         </div>

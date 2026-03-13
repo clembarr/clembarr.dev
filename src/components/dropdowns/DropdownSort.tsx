@@ -77,7 +77,7 @@ const DropdownSort = ({alreadyDisplayedItems, options}: DropdownSortProps) => {
             additionalStyles=
             {`
                 font-primary-regular 
-                text-md
+                md:text-md text-sm
                 text-nowrap
                 ${styles.contentEndX}
             `}

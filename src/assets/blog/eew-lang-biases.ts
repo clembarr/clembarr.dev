@@ -84,26 +84,30 @@ export const eewLangBiases: BlogPost = {
                 (e.g types of species), exploration or exploitation of words and even concepts that could emerge</strong>. [[image 1]]",
                 fr:
                 "Ce modèle expérimental manipule des <strong>noms d'espèces animales</strong>, générés et jugés par un LLM. Le modèle \
-                décide qui survit selon un <strong>critère donné</strong> (ex: \"lequel est le plus fort ?\"). À la fin de chaque étape, \
-                les mots ont une chance de muter, permettant la <strong>dérivation sémantique</strong> de la population globale. L'expérience est orchestrée par <strong>quatre prompts spécifiques</strong> :\
+                décide qui survit selon un <strong>critère donné</strong> (ex: \"lequel est le plus fort ?\"). À la fin de chaque itération, \
+                les mots ont une chance de muter, permettant la <strong>dérivation sémantique</strong> globale de la population. L'expérience \
+                est orchestrée par <strong>quatre prompts spécifiques</strong>, un par phase :\
                 <ul> \
                 <li>un prompt de contexte (<i>prefix</i>) pour définir le rôle du modèle,</li>\
                 <li>la génération de la <strong>population initiale</strong>,</li>\
                 <li>le jugement entre deux noms pour déterminer <strong>le gagnant</strong>,</li>\
                 <li>la génération de <strong>possibilités de mutation</strong> pour un mot donné.</li>\
                 </ul> \
-                Ces phases permettent <strong>tout changement d'état au sein de la population</strong>. [[image 0]]\n\
+                Ces phases permettent <strong>tout changement d'état au sein de la population</strong>. [[image 0]]\
                 Le premier type de visuel générable étudie la fréquence des noms les plus présents. On y observe <strong>l'émergence de dynamiques proie-prédateur, de chaînes alimentaires et même de phénomènes épidémiques</strong>. \
                 Le second est un graphique sémantique utilisant <strong>Sentence Transformers</strong> pour vectoriser les noms et <strong>UMAP</strong> pour tracer des trajectoires. \
                 Ces trajectoires <strong>matérialisent la dérivation sémantique de la population initiale vers la population finale</strong>. \
-                Plus les points sont espacés, moins les populations à ces instants translate ont avoir entre elles. Avec ce type de graphique, on \
-                peut identifier des <strong>aires ou champs sémantiques</strong> et ainsi observer des <strong>dynamiques de spécialisation \
-                (ex: types d'espèces), d'exploration ou d'exploitation de mots et même de concepts qui pourraient émerger</strong>. [[image 1]]",
+                Plus les points sont espacés, moins les populations à ces instants T ont avoir entre elles. Avec ce type de graphique, on \
+                peut identifier des <strong>espaces ou champs sémantiques</strong> et ainsi observer des <strong>dynamiques de spécialisation \
+                (ex: types d'espèces), d'exploration ou d'exploitation</strong> de mots et même de <strong>concepts</strong> qui pourraient <strong>émerger</strong>. [[image 1]]\
+                Dérrière la simplicité du concept, ce modèle vise observer, voir maximiser, l'agilité des LLMs et l'émergence de la nouveauté. C'est pourquoi l'analyse\
+                des résultats est concentrée sur des métriques comme le nombre de nouveaux mots apparus ou encore la clusterisation des vecteurs moyens de population durant l'expérience.",
             },
         },
         {
             title: {
                 [UNIVERSAL_LANG]: "Discovery of Language Biases",
+                fr: "Découverte des biais linguistiques",
             },
             content: {
                 [UNIVERSAL_LANG]:
@@ -113,8 +117,10 @@ export const eewLangBiases: BlogPost = {
                 2. <strong>Semantic Divergence</strong>: Different translations of the same word (e.g., 'Blue Whale' in French vs. English) can have significantly different semantic vectors, leading to distinct evolutionary paths. [[image 2]]\n\n\
                 These observations led to the development of a new metric: the <strong>Emergence Score</strong>. It measures the ratio between new mutations and the total population, allowing us to quantify the 'innovation' rate of a language model.",
                 fr:
-                "Partant du postulat qu'une langue est imprégnée de sa culture d'origine, j'ai émis l'hypothèse que changer la langue des prompts \
-                pourrait ouvrir des champs sémantiques différents. Mes expériences ont révélé des points majeurs sur le comportement du LLM :\n\n\
+                "Les LLMs traitent le language naturel comme un espace vectoriel, où les mots sont des vecteurs dits 'sémantiques', dont les \
+                propiétés transcrivent le sens. Partant du postulat qu'une langue est imprégnée de sa culture d'origine, j'ai émis l'hypothèse que changer\
+                la langue des prompts pourrait ouvrir sur des champs sémantiques plus ou moins différents. \
+                Mes expériences ont révélé des points majeurs sur le comportement du LLM :\n\n\
                 1. <strong>Trajectoires uniques par langue</strong> : Plutôt que de simples traductions, chaque langue pousse le LLM à explorer des zones totalement différentes de l'espace sémantique. Si certaines langues peuvent montrer des trajectoires plus \"plates\" lorsqu'elles sont moins maîtrisées par le modèle (comme le chinois dans mes tests), d'autres, comme le français, ont donné parmi les meilleurs résultats en termes de diversité.\n\
                 2. <strong>Divergence sémantique</strong> : Différentes traductions d'un même mot (ex: \"Baleine bleue\" en français vs anglais) peuvent avoir des vecteurs sémantiques très différents, menant à des chemins évolutifs distincts. [[image 2]]\n\n\
                 Ces observations ont mené au développement d'une nouvelle métrique : le <strong>Emergence Score</strong>. Il mesure le ratio entre les nouvelles mutations et la population totale, permettant de quantifier le taux d'innovation d'un modèle.",

@@ -8,7 +8,7 @@ import Sortingbar from "../search/Sortingbar";
 import { Retex } from "../../assets/dataTypes";
 import { LangContext } from "../language";
 import { RetexViewer, RetexContext } from "../retex";
-import { randomNumberBetween } from "../../utils/utils";
+import { getActiveBreakpoint, randomNumberBetween } from "../../utils/utils";
 import { noDataMessages, sortOptions, PROJECTS_LISTING_PERSPECTIVE } from "../../assets/constants";
 import { ThemeContext } from "../theme/ThemeEngine";
 import { ScrollReveal } from "../animations";
@@ -26,6 +26,21 @@ const ProjectsListing = () => {
     const [ displayedProjects, setDisplayedProjects ] = useState(projects);
     const { displayedRetexTitle } = useContext(RetexContext);
     const {currentTheme} = useContext(ThemeContext);
+    const [isMobile, setIsMobile] = useState((getActiveBreakpoint("number") as number >= 2));
+    
+    useEffect(() => {
+        const handleResize = () => {
+            const avbp = getActiveBreakpoint("number") as number;
+            if (!isMobile && avbp >= 2) {
+                setIsMobile(true);
+            }
+            else if (isMobile && avbp < 2) {
+                setIsMobile(false);
+            }
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, [isMobile])
 
     useEffect(() => {
         const matchingProjects: Retex[] = [];
@@ -139,13 +154,23 @@ const ProjectsListing = () => {
                 className={`
                     w-full
                     h-fit
-                    ${styles.flexColToRowAtMd} md:gap-36
+                    ${styles.flexColToRowAtMd} 
                     ${styles.contentCenter}
+                    md:gap-36
+                    md:space-y-0 space-y-6
+                    md:py-0 ss:py-[2%] py-[8%]
                 `}
             >
                 <Searchbar />
 
-                <Sortingbar options={sortOptions} maxPills={3} />
+                <Sortingbar options={sortOptions} 
+                    maxPills={
+                        getActiveBreakpoint("number") === 5 ? 0 :
+                        getActiveBreakpoint("number") === 4 ? 1 :
+                        getActiveBreakpoint("number") === 3 ? 1 : 
+                        getActiveBreakpoint("number") === 2 ? 1 : 1
+                    } 
+                />
             </div>
         </ScrollReveal>
         
@@ -177,14 +202,15 @@ const ProjectsListing = () => {
         <div id="projects-container"
             className={`
                 ${styles.flexWrap}
-                ${displayedProjects.length > 0 ?  styles.contentStartX : styles.contentCenter}
+                ${displayedProjects.length > 0 ? styles.contentStartX : styles.contentCenter}
                 gap-x-[3%]
-                w-full
+                w-full md:w-full ss:w-[85%] ]
                 h-fit
                 ${displayedProjects.length > 0 ? "" : "min-h-[50vh]"}
                 ${displayedProjects.length > 0 ? styles.contentStartAll : `${styles.contentCenter} text-center`}
                 my-[3%]
-                ml-[4%]
+                md:ml-[4%] ss:ml-[7.5%] ml-[4%]
+                md:space-y-0 space-y-5
             `}
             style={{
                 perspective: PROJECTS_LISTING_PERSPECTIVE,

@@ -9,6 +9,9 @@ import sysiphus_working from "./sysiphus_working.png";
 import sysiphus_boulder from "./sysiphus_boulder.png";
 import hero_figure_light from "./sysiphus_working.png";
 import hero_figure_dark from "./hero_figure_dark.webp";
+import career_figure_light from "./career_figure_light.webp";
+import career_figure_dark from "./career_figure_dark.webp";
+
 const sysiphus: GraphicAsset = {
   label: "sysiphus",
   content: {
@@ -54,6 +57,18 @@ const portrait: GraphicAsset = {
   alt: "Portrait of the author",
 };
 
+export const careerFigure: GraphicAsset = {
+  label: "career_figure",
+  content: {
+    'light': career_figure_light,
+    'dark': career_figure_dark,
+  },
+  alt: "Career Figure",
+}
+
+/**
+ * @deprecated This file is deprecated and should not be used anymore. Please import illustrations individually.
+ */
 export const coreImages = {
 
   portrait,
@@ -62,6 +77,5 @@ export const coreImages = {
   hephaistos,
   heroFigure,
   placeholder_retex_image,
-
 };
 

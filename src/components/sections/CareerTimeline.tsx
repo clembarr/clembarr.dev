@@ -1,265 +1,318 @@
+import { useContext, useState } from "react";
+import { careerFigure } from "../../assets/illustrations";
+import styles from "../../style";
+import { ThemeContext } from "../theme/ThemeEngine";
+import { careerTimeline } from "../../assets/contents";
+import { LangContext } from "../language";
+import DOMPurify from "dompurify"
+
+/** @constant DATE_COLUMN_WIDTH Width of the date label column, left of the axis (px). */
+const DATE_COLUMN_WIDTH = 72;
+
+/** @constant DATE_DOT_GAP Gap between date column and dot column (px) — matches gap-2 = 8px. */
+const DATE_DOT_GAP = 8;
+
+/** @constant DOT_COLUMN_WIDTH Width of the dot column centered on the axis (px). */
+const DOT_COLUMN_WIDTH = 52;
+
 /**
- * @fileoverview CareerTimeline section — 'Meandering Path' design.
- * Breaks the rectilinear slider look with organic waves and floating milestones.
+ * @constant AXIS_LEFT Left offset (px) of the 2px axis line so its center falls exactly
+ * on the dot center: date_col + gap + half_dot_col - half_line_width.
  */
+const AXIS_LEFT = DATE_COLUMN_WIDTH + DATE_DOT_GAP + Math.floor(DOT_COLUMN_WIDTH / 2) - 1;
 
-import { useRef, useContext, useState, useMemo } from 'react';
-import {
-  motion,
-  useScroll,
-  useSpring,
-} from 'framer-motion';
-import { LangContext } from '../language';
-import { careerTimeline } from '../../assets/contents';
-import { CareerEntry, CareerEntryType } from '../../assets/dataTypes';
-import styles from '../../style';
-import { tCustom } from '../../utils/translationUtils';
-
-// ─── Config ───────────────────────────────────────────────────────────────────
-
-const TYPE_CONFIG: Record<
-  CareerEntryType,
-  { icon: string; accent: string; label: { fr: string; en: string } }
-> = {
-  [CareerEntryType.EDUCATION]:     { icon: '🎓', accent: '#7CFFC4', label: { fr: 'Formation', en: 'Education' } },
-  [CareerEntryType.EXPERIENCE]:    { icon: '💼', accent: '#71cbb3', label: { fr: 'Expérience', en: 'Experience' } },
-  [CareerEntryType.CERTIFICATION]: { icon: '🏆', accent: '#a8ffe5', label: { fr: 'Certification', en: 'Certification' } },
-  [CareerEntryType.VOLUNTEERING]:  { icon: '🤝', accent: '#5ab578', label: { fr: 'Bénévolat', en: 'Volunteering' } },
-};
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-const MeanderingCard = ({
-  entry,
-  index,
-  lang,
-  isAbove,
-}: {
-  entry: CareerEntry;
-  index: number;
-  lang: string;
-  isAbove: boolean;
-}) => {
-  const t = tCustom(lang);
-  const config = TYPE_CONFIG[entry.type];
-  const [hovered, setHovered] = useState(false);
-
-  // Subtle random rotation to break the "perfect" look
-  const randomRot = useMemo(() => (Math.random() - 0.5) * 4, []);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9, y: isAbove ? 20 : -20 }}
-      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className={`relative shrink-0 w-[300px] md:w-[350px] flex flex-col ${isAbove ? 'justify-end' : 'justify-start'} px-6`}
-      style={{ height: '100%' }}
-    >
-      {/* ── Floating Card ── */}
-      <motion.div
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        animate={{ 
-          rotate: hovered ? 0 : randomRot,
-          y: hovered ? (isAbove ? -10 : 10) : 0 
-        }}
-        className={`
-          relative p-6 rounded-2xl border backdrop-blur-xl transition-all duration-500
-          ${hovered ? 'z-50 shadow-2xl' : 'z-10'}
-        `}
-        style={{
-          background: hovered 
-            ? `linear-gradient(135deg, var(--color-surface) 0%, ${config.accent}15 100%)` 
-            : 'var(--color-surface)',
-          borderColor: hovered ? config.accent : 'var(--color-border)',
-          boxShadow: hovered ? `0 20px 40px -15px ${config.accent}33` : 'none',
-        }}
-      >
-        {/* Decor: Type Icon Floating outside */}
-        <div 
-          className="absolute -top-3 -left-3 w-10 h-10 rounded-xl bg-(--color-secondary) border border-(--color-border) flex items-center justify-center text-lg shadow-lg"
-          style={{ borderColor: `${config.accent}44` }}
-        >
-          {config.icon}
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] font-mono opacity-50 tracking-tighter uppercase">
-              {t(entry.period)}
-            </span>
-          </div>
-
-          <h3 className="font-primary-bold text-sm md:text-md text-(--color-quaternary) leading-tight group-hover:text-(--color-tertiary)">
-            {t(entry.title)}
-          </h3>
-          
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: config.accent }} />
-            <p className="text-[11px] font-primary-semibold text-(--color-tertiary) truncate">
-              {t(entry.organization)}
-            </p>
-          </div>
-
-          <motion.p 
-            animate={{ height: hovered ? 'auto' : '3.2em', opacity: hovered ? 1 : 0.7 }}
-            className="text-[11px] text-(--color-quaternary) leading-relaxed overflow-hidden"
-          >
-            {t(entry.description)}
-          </motion.p>
-
-          {entry.tags && (
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {entry.tags.slice(0, 3).map((tag) => (
-                <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full bg-(--color-tertiary)/10 text-(--color-tertiary) border border-(--color-tertiary)/20">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      </motion.div>
-
-      {/* ── Connector Line to Wave ── */}
-      <div 
-        className={`absolute left-1/2 -translate-x-1/2 w-[2px] ${isAbove ? 'bottom-1/2 h-[50%]' : 'top-1/2 h-[50%]'} bg-gradient-to-b from-transparent via-(--color-tertiary)/20 to-transparent pointer-events-none`}
-        style={{ 
-          background: isAbove 
-            ? `linear-gradient(to top, ${config.accent}44, transparent)` 
-            : `linear-gradient(to bottom, ${config.accent}44, transparent)` 
-        }}
-      />
-    </motion.div>
-  );
-};
-
-// ─── Main Component ───────────────────────────────────────────────────────────
-
+/**
+ * @description Career timeline section.
+ */
 const CareerTimeline = () => {
+  const { currentTheme } = useContext(ThemeContext);
   const { currentLang } = useContext(LangContext);
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  /**@constant hoveredIndex index of the currently hovered entry, or null. */
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const { scrollXProgress } = useScroll({ container: containerRef });
-  const scaleX = useSpring(scrollXProgress, { stiffness: 100, damping: 30 });
-
-  // ── Drag Logic ──
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    setIsDragging(true);
-    setStartX(e.pageX - containerRef.current.offsetLeft);
-    setScrollLeft(containerRef.current.scrollLeft);
-  };
-  const stopDragging = () => setIsDragging(false);
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !containerRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 1.8;
-    containerRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  // ── SVG Path Generation ──
-  const pathData = useMemo(() => {
-    const points = careerTimeline.length;
-    const step = 350; // card width
-    let d = `M 0 250`;
-    for (let i = 0; i <= points + 2; i++) {
-      const x = i * step + 400;
-      const y = i % 2 === 0 ? 150 : 350; // Wavy oscillation
-      d += ` Q ${x - step/2} ${i % 2 === 0 ? 350 : 150}, ${x} ${y}`;
-    }
-    return d;
-  }, []);
+  /** @constant isDark Is the current theme dark? */
+  const isDark: boolean = currentTheme === 'dark';
 
   return (
-    <section id="career" className="relative py-32 overflow-hidden bg-transparent">
-      {/* ── Section Header ── */}
-      <div className={`${styles.sectionContainer} relative z-20 mb-16`}>
-        <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-          <h2 className={styles.heading2}>
-            {currentLang === 'fr' ? 'Le Fil de mes Chroniques' : 'Chronicle Threads'}
-          </h2>
-          <span className={styles.line} />
-        </motion.div>
+    <div id='career'
+      className={`
+        w-full
+        h-[75vh]
+        relative
+        overflow-hidden
+      `}
+    >
+      <div id='illustration-container'
+        className={`
+          absolute 
+          ${isDark ? 
+            `
+              top-40
+              -left-15
+              opacity-100
+              max-w-lg
+            ` 
+          : 
+            `
+              top-20
+              left-0 
+              opacity-95
+              max-w-100
+            `
+          }
+          ${styles.sizeFull}
+          ${styles.flexCol}
+        `}
+      >
+        <img id="career-illustration"
+          src={careerFigure.content[currentTheme]}
+          alt={careerFigure.alt}
+          className={`object-cover w-full h-auto`}
+        />
       </div>
 
-      {/* ── Meandering Track ── */}
-      <div className="relative h-[600px] group">
-        {/* SVG Background Path */}
-        <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
-          <svg width="100%" height="100%" viewBox="0 0 4000 500" preserveAspectRatio="none" className="w-full">
-            <defs>
-              <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="transparent" />
-                <stop offset="20%" stopColor="var(--color-tertiary)" />
-                <stop offset="80%" stopColor="var(--color-tertiary)" />
-                <stop offset="100%" stopColor="transparent" />
-              </linearGradient>
-            </defs>
-            <motion.path
-              d={pathData}
-              fill="none"
-              stroke="url(#waveGrad)"
-              strokeWidth="2"
-              strokeDasharray="10 10"
-              animate={{ strokeDashoffset: [0, -100] }}
-              transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
-            />
-          </svg>
-        </div>
+      <div id='timeline-wrapper'
+        className={`
+          ${styles.flexCol}
+          w-full
+          h-full
+          min-h-0
+          relative
+          py-6
+          ml-112
+          overflow-y-scroll
+          overflow-x-hidden
+          mask-[linear-gradient(to_bottom,transparent,black_5%,black_88%,transparent)]
+        `}
+      >
+        <div id='entries-content' className={`relative ${styles.flexCol} w-full`}>
 
-        {/* Scrollable Area */}
-        <div
-          ref={containerRef}
-          onMouseDown={handleMouseDown}
-          onMouseUp={stopDragging}
-          onMouseLeave={stopDragging}
-          onMouseMove={handleMouseMove}
-          className="h-full flex items-center overflow-x-auto no-scrollbar cursor-grab active:cursor-grabbing select-none px-[15vw]"
-          style={{ maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)' }}
-        >
-          <div className="flex h-[500px] items-center">
-            {careerTimeline.map((entry, i) => (
-              <MeanderingCard
-                key={i}
-                index={i}
-                entry={entry}
-                lang={currentLang}
-                isAbove={i % 2 === 0}
-              />
-            ))}
-            
-            {/* End Milestone */}
-            <div className="shrink-0 w-[400px] flex items-center justify-center">
-               <div className="w-4 h-4 rounded-full bg-(--color-tertiary) shadow-[0_0_20px_var(--color-tertiary)]" />
-               <span className="ml-4 font-mono text-[10px] opacity-30 uppercase tracking-widest">
-                 {currentLang === 'fr' ? 'À suivre...' : 'To be continued...'}
-               </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress Bar (at the bottom) */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[300px] h-[1px] bg-(--color-border)">
-          <motion.div 
-            className="h-full bg-(--color-tertiary) shadow-[0_0_10px_var(--color-tertiary)]"
-            style={{ scaleX, originX: 0 }}
+          <div id='timeline-axis'
+            className={`
+              absolute
+              top-6
+              bottom-0
+              w-0.75
+              opacity-20
+              bg-(--color-tertiary)
+            `}
+            style={{ left: `${AXIS_LEFT}px` }}
           />
+
+        {careerTimeline.map((entry, i) => {
+          const isHovered = hoveredIndex === i;
+
+          return (
+            <div key={i}
+              id={`timeline-entry-${i}`}
+              className={`
+                ${styles.flexRow}
+                ${styles.contentStartY}
+                group
+                gap-4
+                mb-5
+                last:mb-0
+              `}
+              onMouseEnter={() => setHoveredIndex(i)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              <div id={`left-area-${i}`}
+                className={`
+                  ${styles.flexRow} 
+                  items-start 
+                  gap-2 
+                  shrink-0
+                `}
+              >
+                <div id={`date-col-${i}`}
+                  className={`
+                    ${styles.flexCol}
+                    ${styles.contentEndX}
+                    pt-2
+                    font-mono
+                    text-3xs
+                    leading-tight
+                    text-right
+                    ${styles.defaultTransition}
+                  `}
+                  style={{
+                    width:   `${DATE_COLUMN_WIDTH}px`,
+                    opacity: isHovered ? 0.9 : 0.3,
+                  }}
+                >
+                  {entry.period[currentLang]}
+                </div>
+
+                <div id={`dot-col-${i}`}
+                  className={`
+                    ${styles.flexCol}
+                    ${styles.contentStartX}
+                    shrink-0
+                    pt-2
+                  `}
+                  style={{ width: `${DOT_COLUMN_WIDTH}px` }}
+                >
+                  <div id={`dot-${i}`}
+                    className={`
+                      relative
+                      z-10
+                      rounded-lg
+                      border-[2.5px]
+                      ${styles.defaultTransition}
+                    `}
+                    style={{
+                      width:           isHovered ? '16px' : '13px',
+                      height:          isHovered ? '16px' : '13px',
+                      borderColor:     'var(--color-tertiary)',
+                      backgroundColor: isHovered ? 'var(--color-tertiary)' : 'var(--color-secondary)',
+                      marginTop:       isHovered ? '-1.5px' : '0',
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div id={`card-${i}`}
+                className={`
+                  ${styles.sizeFull}
+                  ${styles.flexCol}
+                  ${styles.contentStartY}
+                  flex-1
+                  relative
+                  overflow-hidden
+                  rounded-lg
+                  border border-(--color-tertiary)/15
+                  group-hover:border-(--color-tertiary)/50
+                  px-5 py-4
+                  mr-[35%]
+                  ml-12
+                  bg-(--color-secondary)
+                  ${styles.defaultTransition}
+                  space-y-3
+                  shadow-lg
+                `}
+              >
+                <div className={`
+                    absolute top-0 left-0 right-0
+                    h-[2px]
+                    opacity-0 group-hover:opacity-100
+                    ${styles.defaultTransition}
+                    bg-gradient-to-r from-transparent via-(--color-tertiary) to-transparent
+                  `} 
+                />
+
+                <div id={`card-header-${i}`}
+                  className={`
+                    ${styles.sizeFull}
+                    ${styles.flexRow}
+                    last:items-end
+                  `}
+                >
+                  <div id={`header-info-${i}`}
+                    className={`
+                      ${styles.sizeFull}
+                      ${styles.flexCol}
+                    `}
+                  >
+                    <p id={`card-title-${i}`}
+                      className={`
+                        font-primary-bold
+                        text-xl
+                        leading-snug
+                        text-(--color-quaternary)
+                        group-hover:text-(--color-tertiary)
+                        transition-colors duration-300
+                      `}
+                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.title[currentLang]) }}
+                    />
+
+                    <p id={`card-orga-${i}`} 
+                      className={`
+                        text-md
+                        opacity-80
+                        mt-1
+                        font-primary-semibold
+                        text-(--color-quaternary)
+                      `}
+                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.organization[currentLang]) }}
+                    />
+                  </div>
+
+                  {entry.icon && (
+                    <div id={`icon-container-${i}`}
+                      className={`
+                        ${styles.sizeFit}
+                        ${styles.contentEndAll}
+                        relative
+                        py-2
+                        px-2
+                      `}
+                    >
+                      <img id={`card-icon-${i}`}
+                        src={entry.icon?.content[currentTheme]}
+                        alt={entry.icon?.alt}
+                        className={`
+                          ${styles.sizeFull}
+                          object-cover
+                          max-w-14
+                        `}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <p id={`card-description-${i}`} 
+                  className={`
+                    text-base
+                    opacity-55
+                    leading-relaxed 
+                    font-primary-regular
+                  `}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.description[currentLang]) }}
+                />
+
+                <div id={`tags-container-${i}`}
+                  className={`
+                    ${styles.flexWrap}
+                    gap-3 
+                    mt-3
+                  `}
+                >
+                  <span id={`type-badge-${i}`}
+                    className={`
+                      ${styles.tag}
+                      text-3xs
+                      font-primary-semibold
+                      ${styles.defaultTransition}
+                      bg-(--color-xp-type)/10
+                      hover:bg-(--color-xp-type)/20
+                      border-(--color-xp-type)/30
+                      text-(--color-xp-type)
+                    `}
+                  > {entry.type.valueOf()} </span>
+
+                  {entry.tags && entry.tags[currentLang] && entry.tags[currentLang].length > 0 
+                    && entry.tags[currentLang]?.map((tag, j) => (
+                      <span id={`tag-${j}-${i}`}
+                        key={tag}
+                        className={`
+                          ${styles.tag}
+                          text-3xs
+                          font-primary-semibold
+                          ${styles.defaultTransition}
+                          hover:bg-(--color-tertiary)/20
+                        `}
+                      > {tag} </span>
+                    ))}
+                  </div>
+              </div>
+            </div>
+          );
+        })}
         </div>
       </div>
-
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-(--color-tertiary)/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-(--color-accent-cyber)/5 rounded-full blur-[100px] pointer-events-none" />
-    </section>
+    </div>
   );
 };
 
 export default CareerTimeline;
-
-

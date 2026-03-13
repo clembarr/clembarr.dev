@@ -19,6 +19,7 @@ import {
   MathSpiral,
   SkillTreeRPG,
   SkillGalaxy,
+  SnakeTimeline,
   TickerTimeline,
   AccordionTimeline,
   StaircaseTimeline,
@@ -448,7 +449,17 @@ const Showcase = () => {
           <SkillGalaxy nodes={galaxyNodes} links={galaxyLinks} />
         </Section>
 
-        {/* 9. Ticker Timeline */}
+        {/* 9. Snake Timeline (New Design) */}
+        <Section
+          title={currentLang === 'fr' ? 'Timeline en Serpent' : 'Snake Timeline'}
+          subtitle={currentLang === 'fr'
+            ? 'Un nouveau design compact et épuré pour visualiser le parcours professionnel avec un mouvement fluide.'
+            : 'A new compact and clean design to visualize the career journey with a fluid movement.'}
+        >
+          <SnakeTimeline events={careerTimeline} lang={currentLang} />
+        </Section>
+
+        {/* 10. Ticker Timeline */}
         <Section
           title={currentLang === 'fr' ? 'Ticker de Terminal' : 'Terminal Ticker'}
           subtitle={currentLang === 'fr'
@@ -458,7 +469,7 @@ const Showcase = () => {
           <TickerTimeline events={careerTimeline} lang={currentLang} />
         </Section>
 
-        {/* 10. Accordion Timeline */}
+        {/* 11. Accordion Timeline */}
         <Section
           title={currentLang === 'fr' ? 'Accordéon de Fiches' : 'Card Accordion'}
           subtitle={currentLang === 'fr'
@@ -468,7 +479,7 @@ const Showcase = () => {
           <AccordionTimeline events={careerTimeline} lang={currentLang} />
         </Section>
 
-        {/* 11. Staircase Timeline */}
+        {/* 12. Staircase Timeline */}
         <Section
           title={currentLang === 'fr' ? 'Escalier Architectural' : 'Architectural Staircase'}
           subtitle={currentLang === 'fr'
@@ -478,7 +489,7 @@ const Showcase = () => {
           <StaircaseTimeline events={careerTimeline} lang={currentLang} />
         </Section>
 
-        {/* 12. Silent Track */}
+        {/* 13. Silent Track */}
         <Section
           title={currentLang === 'fr' ? 'Axe de Points (Silent Track)' : 'Silent Track'}
           subtitle={currentLang === 'fr'
@@ -488,7 +499,7 @@ const Showcase = () => {
           <SilentTrack events={careerTimeline} lang={currentLang} />
         </Section>
 
-        {/* 13. Typographic Axis */}
+        {/* 14. Typographic Axis */}
         <Section
           title={currentLang === 'fr' ? 'Axe Typographique' : 'Typographic Axis'}
           subtitle={currentLang === 'fr'
@@ -498,7 +509,7 @@ const Showcase = () => {
           <TypographicAxis events={careerTimeline} lang={currentLang} />
         </Section>
 
-        {/* 14. Ghost Path */}
+        {/* 15. Ghost Path */}
         <Section
           title={currentLang === 'fr' ? 'Chemin Filaire (Ghost Path)' : 'Ghost Path'}
           subtitle={currentLang === 'fr'
@@ -508,7 +519,7 @@ const Showcase = () => {
           <GhostPath events={careerTimeline} lang={currentLang} />
         </Section>
 
-        {/* 15. Breadcrumb Sequence */}
+        {/* 16. Breadcrumb Sequence */}
         <Section
           title={currentLang === 'fr' ? 'Séquence de Mots' : 'Word Sequence'}
           subtitle={currentLang === 'fr'

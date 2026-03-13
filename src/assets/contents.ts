@@ -8,6 +8,7 @@ import {
   CareerEntryType,
 } from "./dataTypes";
 import { navLinks, creditsMentions } from "./constants";
+import { CGILogo, FNMNSLogo, IUTInfoLogo, JDBLogo, LGPLogo, NagoyaULogo } from "./orga_icons";
 
 // Re-export skills from its new dedicated file
 export { skills } from './skills';
@@ -275,164 +276,150 @@ export const careerTimeline: Array<CareerEntry> = [
   {
     type: CareerEntryType.EXPERIENCE,
     title: {
-      fr: "Stage développeur full-stack",
-      en: "Full-stack developer internship",
+      fr: "Ingénieur logiciel en Alternance",
+      en: "Software Engineer in Apprenticeship",
     },
     organization: {
-      fr: "Entreprise Tech",
-      en: "Tech Company",
+      fr: "CGI",
+      en: "CGI",
     },
+    icon: CGILogo,
     period: {
-      fr: "Avr. 2025 — Juil. 2025",
-      en: "Apr. 2025 — Jul. 2025",
+      fr: "Sept. 2025\nJuil. 2025",
+      en: "Apr. 2025\nJul. 2025",
     },
     description: {
-      fr: "Développement d'une application web interne avec React, TypeScript et Node.js. Mise en place de tests unitaires et d'intégration continue.",
-      en: "Development of an internal web application with React, TypeScript and Node.js. Implementation of unit tests and continuous integration.",
+      fr: "R&D sur le projet Grand Angle, ERP à destination des collectivités territoriales. Affecté au module de gestion du cycle de vie des flux financiers \
+      et des échanges PES.",
+      en: "R&D on Grand Angle, an ERP for local governments. Assigned to the financial flow lifecycle management module and PES exchanges.",
     },
-    tags: ["React", "TypeScript", "Node.js", "Docker"],
+    tags: {
+      fr: ["Alt.", "Agile", "Conception"],
+      en: ["Apprenticeship", "Agile", "Design"],
+    }
   },
   {
-    type: CareerEntryType.CERTIFICATION,
+    type: CareerEntryType.EXPERIENCE,
     title: {
-      fr: "Certification Cloud Fundamentals",
-      en: "Cloud Fundamentals Certification",
+      fr: "Chercheur ALife en Stage",
+      en: "ALife Researcher Intern",
     },
+    icon: NagoyaULogo,
     organization: {
-      fr: "Fournisseur Cloud",
-      en: "Cloud Provider",
+      fr: "ALIFE-CORE, Nagoya University, Japon",
+      en: "ALIFE-CORE, Nagoya University, Japan",
     },
     period: {
-      fr: "Fév. 2025",
-      en: "Feb. 2025",
+      fr: "Avr. 2025\nJuin 2025",
+      en: "Apr. 2025\nJun. 2025",
     },
     description: {
-      fr: "Certification couvrant les fondamentaux du cloud computing : virtualisation, conteneurisation, services managés et bonnes pratiques de sécurité.",
-      en: "Certification covering cloud computing fundamentals: virtualization, containerization, managed services and security best practices.",
+      fr: "Évaluation d'un modèle d'expérience utilisant des LLMs, pour mesurer l'émergence de nouveautés. Étude de cas sur les biais de langage existant \
+      dans ce modèle, dans le cadre de la recherche sur le non-déterminisme des systèmes artificiels.",
+      en: "Evaluation of an experience model using LLMs, to measure the emergence of novelties. Case study on existing language biases \
+      in this model, within the context of research on the non-determinism of artificial systems.",
     },
-    tags: ["Cloud", "DevOps", "Docker"],
-  },
-
-  {
-    type: CareerEntryType.CERTIFICATION,
-    title: {
-      fr: "Certification Cloud Fundamentals",
-      en: "Cloud Fundamentals Certification",
-    },
-    organization: {
-      fr: "Fournisseur Cloud",
-      en: "Cloud Provider",
-    },
-    period: {
-      fr: "Fév. 2025",
-      en: "Feb. 2025",
-    },
-    description: {
-      fr: "Certification couvrant les fondamentaux du cloud computing : virtualisation, conteneurisation, services managés et bonnes pratiques de sécurité.",
-      en: "Certification covering cloud computing fundamentals: virtualization, containerization, managed services and security best practices.",
-    },
-    tags: ["Cloud", "DevOps", "Docker"],
-  },
-
-  {
-    type: CareerEntryType.CERTIFICATION,
-    title: {
-      fr: "Certification Cloud Fundamentals",
-      en: "Cloud Fundamentals Certification",
-    },
-    organization: {
-      fr: "Fournisseur Cloud",
-      en: "Cloud Provider",
-    },
-    period: {
-      fr: "Fév. 2025",
-      en: "Feb. 2025",
-    },
-    description: {
-      fr: "Certification couvrant les fondamentaux du cloud computing : virtualisation, conteneurisation, services managés et bonnes pratiques de sécurité.",
-      en: "Certification covering cloud computing fundamentals: virtualization, containerization, managed services and security best practices.",
-    },
-    tags: ["Cloud", "DevOps", "Docker"],
-  },
-
-  {
-    type: CareerEntryType.CERTIFICATION,
-    title: {
-      fr: "Certification Cloud Fundamentals",
-      en: "Cloud Fundamentals Certification",
-    },
-    organization: {
-      fr: "Fournisseur Cloud",
-      en: "Cloud Provider",
-    },
-    period: {
-      fr: "Fév. 2025",
-      en: "Feb. 2025",
-    },
-    description: {
-      fr: "Certification couvrant les fondamentaux du cloud computing : virtualisation, conteneurisation, services managés et bonnes pratiques de sécurité.",
-      en: "Certification covering cloud computing fundamentals: virtualization, containerization, managed services and security best practices.",
-    },
-    tags: ["Cloud", "DevOps", "Docker"],
+    tags: {
+      fr: ["Stage", "Recherche", "ALife", "Modelisation", "International"],
+      en: ["Internship", "Research", "ALife", "Modeling", "Abroad"],
+    }
   },
   {
     type: CareerEntryType.EDUCATION,
     title: {
       fr: "BUT Informatique",
-      en: "Bachelor of Technology in Computer Science",
+      en: "Bachlor's degree in Computer Science",
     },
+    icon: IUTInfoLogo,
     organization: {
       fr: "IUT de Bordeaux",
       en: "IUT of Bordeaux",
     },
     period: {
-      fr: "Sept. 2022 — Juin 2025",
-      en: "Sep. 2022 — Jun. 2025",
+      fr: "2023\n2026",
+      en: "2023\n2026",
     },
     description: {
-      fr: "Formation couvrant le développement logiciel, le web, les bases de données, l'algorithmique, la gestion de projet et le travail en équipe.",
-      en: "Program covering software development, web, databases, algorithms, project management and teamwork.",
+      fr: "Bachelor Universitaire de Technologie en Informatique, parcours \"développement d'applications\" (A).",
+      en: "University Bachelor of Technology in Computer Science, specialized in \"application development\".",
     },
-    tags: ["Java", "Python", "SQL", "Web", "Agile"],
+    tags: {
+      fr: ["Conception", "FullStack", "Management"],
+      en: ["Design", "FullStack", "Management"],
+    }
   },
   {
-    type: CareerEntryType.VOLUNTEERING,
+    type: CareerEntryType.EXPERIENCE,
     title: {
-      fr: "Bénévole — Initiation au code",
-      en: "Volunteer — Coding introduction",
+      fr: "Sauveteur Aquatique",
+      en: "Aquatic Lifeguard",
     },
+    icon: LGPLogo,
     organization: {
-      fr: "Association locale",
-      en: "Local association",
+      fr: "Le Grand Périgueux",
+      en: "Le Grand Périgueux",
     },
     period: {
-      fr: "Jan. 2023 — Juin 2023",
-      en: "Jan. 2023 — Jun. 2023",
+      fr: "Juin 2023\nAoût 2023",
+      en: "Jun. 2023\nAug. 2023",
     },
     description: {
-      fr: "Animation d'ateliers d'initiation à la programmation pour des lycéens. Création de supports pédagogiques adaptés et accompagnement individuel.",
-      en: "Running introductory programming workshops for high school students. Creating adapted educational materials and individual mentoring.",
+      fr: "Secourisme et surveillance de la baignade en équipe, bobologie, prévention et sensibilisation du public.\
+      Contrôle qualité sur les équipements et infrastructures.",
+      en: "First aid and swimming surveillance in a team, first aid, prevention and public awareness.\
+      Quality control on equipments and infrastructures.",
     },
-    tags: ["Python", "Scratch"],
+    tags: {
+      fr: ["Secourisme", "Équipe", "Décision"],
+      en: ["First Aid", "Teamwork", "Awareness"],
+    }
+  },
+  {
+    type: CareerEntryType.CERTIFICATION,
+    title: {
+      fr: "BNSSA",
+      en: "BNSSA",
+    },
+    icon: FNMNSLogo,
+    organization: {
+      fr: "Fédération Nationale des Maîtres Nageurs Sauveteurs",
+      en: "National Federation of Swimming Instructors and Lifeguards",
+    },
+    period: {
+      fr: "2022",
+      en: "2022",
+    },
+    description: {
+      fr: "Brevet National de Secourisme et de Sauvetage Aquatique, niveau de secoursisme PSE1 : bobologie, réanimation cardio-pulmonaire, problèmes \
+      respiratoires, circulatoires, neurologiques, traumatismes, etc. Sauvetage à la nage de victimes et législation relative à la sécurité en milieu aquatique.",
+      en: "National Certificate of First Aid and Aquatic Rescue, level of first aid PSE1: first aid, cardiopulmonary resuscitation, respiratory, circulatory, \
+      neurological problems, trauma, etc. Swimming rescue of victims and legislation related to safety in aquatic environments.",
+    },
+    tags: {
+      fr: ["Natation", "Équipe"],
+      en: ["Swimming", "Teamwork"],
+    }
   },
   {
     type: CareerEntryType.EDUCATION,
     title: {
-      fr: "Baccalauréat général",
-      en: "High School Diploma",
+      fr: "BAC Général Maths et Informatique",
+      en: "BAC Mathematics and Computer Science",
     },
+    icon: JDBLogo,
     organization: {
-      fr: "Lycée",
-      en: "High School",
+      fr: "Lycée Jay de Beaufort, Périgueux",
+      en: "Lycée Jay de Beaufort, Périgueux, France",
     },
     period: {
-      fr: "Sept. 2019 — Juin 2022",
-      en: "Sep. 2019 — Jun. 2022",
+      fr: "2020\n2023",
+      en: "2020\n2023",
     },
     description: {
-      fr: "Baccalauréat général avec spécialités Mathématiques et Numérique & Sciences Informatiques (NSI).",
-      en: "General diploma with Mathematics and Computer Science specialties.",
+      fr: "BAC général maths, phhysique-chimie, et informatique (NSI), puis spécialité maths et informatique (NSI) en terminale. \
+      Mention Bien obtenue, option maths expertes.",
+      en: "Highschool degree in maths, physics-chemistry, and computer science (NSI), then specialization in maths and computer science (NSI) \
+      in the final year. Graduated with honors, with advanced maths option.",
     },
-    tags: ["Python", "C"],
   },
 ];

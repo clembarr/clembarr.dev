@@ -250,17 +250,41 @@ const ProjectsSlider = () => {
           overflow-y-visible
         `}
       >
-        <img id="hephaistos-statue"
+        {/**
+          * Glitch wrapper — in dark mode, two overlay imgs (glitch-slice-1 / glitch-slice-2)
+          * are stacked above the main figure. Displacement only, no color shift.
+          * In light mode, plain static img.
+          */}
+        <div className={`
+          absolute
+          left-0 2xl:left-[3%]
+          ${currentTheme === "dark" ? "-bottom-10" : ""}
+          2xl:w-[80%] xl:w-[88%]
+          overflow-hidden
+        `}>
+          {currentTheme === "dark" && <>
+            <img
+              src={coreImages.hephaistos.content[currentTheme]}
+              alt=""
+              aria-hidden="true"
+              className={`absolute inset-0 w-full h-full object-contain pointer-events-none`}
+              style={{ animation: 'glitch-slice-1 9s infinite' }}
+            />
+            <img
+              src={coreImages.hephaistos.content[currentTheme]}
+              alt=""
+              aria-hidden="true"
+              className={`absolute inset-0 w-full h-full object-contain pointer-events-none`}
+              style={{ animation: 'glitch-slice-2 9s infinite 0.25s' }}
+            />
+          </>}
+          <img id="hephaistos-statue"
             src={coreImages.hephaistos.content[currentTheme]}
             alt={coreImages.hephaistos.alt}
-            className={`
-              object-contain
-              2xl:w-[80%] xl:w-[88%]
-              absolute
-              left-0 2xl:left-[3%]
-              ${currentTheme === "dark" ? "-bottom-10" : ""}
-            `}
+            className={`relative w-full object-contain`}
+            style={ currentTheme === "dark" ? { animation: 'glitch-flicker 9s infinite' } : undefined }
           />
+        </div>
       </div>
     </section>
   )

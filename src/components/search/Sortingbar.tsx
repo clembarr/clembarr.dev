@@ -32,7 +32,7 @@ const SortingBar = ({ options, maxPills = 4 }: SortingBarProps) => {
     const { toMatch, updateSearch, setSearchInput } = useContext(SearchContext);
     const { currentLang } = useContext(LangContext);
     const { currentTheme } = useContext(ThemeContext);
-    const [isMobile, setIsMobile] = useState((getActiveBreakpoint("number") as number <= 1));
+    const [isMobile, setIsMobile] = useState((getActiveBreakpoint("number") as number >= 2));
 
     const isDark = currentTheme === 'dark';
 
@@ -57,10 +57,10 @@ const SortingBar = ({ options, maxPills = 4 }: SortingBarProps) => {
     useEffect(() => {
         const handleResize = () => {
             const avbp = getActiveBreakpoint("number") as number;
-            if (!isMobile && avbp <= 1) {
+            if (!isMobile && avbp >= 2) {
                 setIsMobile(true);
             }
-            else if (isMobile && avbp > 1) {
+            else if (isMobile && avbp < 2) {
                 setIsMobile(false);
             }
         };
@@ -106,7 +106,7 @@ const SortingBar = ({ options, maxPills = 4 }: SortingBarProps) => {
         px-2.5 py-1
         rounded-md
         text-nowrap
-        text-sm
+        md:text-sm text-xs
         font-primary-regular
         cursor-pointer
         transition-all duration-250 ease-out
@@ -144,53 +144,49 @@ const SortingBar = ({ options, maxPills = 4 }: SortingBarProps) => {
                 gap-4
             `}
         >
-            {!isMobile && (
-                <>
-                    <button
-                        onClick={() => { setSearchInput(""); updateSearch(["ALL"]); }}
-                        className={`
-                            ${pillBase}
-                            ${isActive("ALL") ? pillActive : pillInactive}
-                        `}
-                    > {translate(allOption.content, currentLang).toUpperCase()} </button>
+            <button
+                onClick={() => { setSearchInput(""); updateSearch(["ALL"]); }}
+                className={`
+                    ${pillBase}
+                    ${isActive("ALL") ? pillActive : pillInactive}
+                `}
+            > {translate(allOption.content, currentLang).toUpperCase()} </button>
 
-                    <button
-                        onClick={handleDateClick}
+            <button
+                onClick={handleDateClick}
+                className={`
+                    ${pillBase}
+                    ${styles.flexRow}
+                    ${styles.contentCenter}
+                    ${dateState !== null ? pillActive : pillInactive}
+                `}
+            >
+                DATE
+                {dateState !== null && (
+                    <img
+                        src={menuIcons.chevron_icon.content[currentTheme]}
+                        alt={menuIcons.chevron_icon.alt}
                         className={`
-                            ${pillBase}
-                            ${styles.flexRow}
-                            ${styles.contentCenter}
-                            ${dateState !== null ? pillActive : pillInactive}
+                            w-4
+                            md:ml-1 ml-0.5    
+                            ${styles.easeOutTransition}
+                            ${dateState === "OLDEST" ? 'rotate-180' : 'rotate-0'}
                         `}
-                    >
-                        DATE
-                        {dateState !== null && (
-                            <img
-                                src={menuIcons.chevron_icon.content[currentTheme]}
-                                alt={menuIcons.chevron_icon.alt}
-                                className={`
-                                    w-4
-                                    ml-1    
-                                    ${styles.easeOutTransition}
-                                    ${dateState === "OLDEST" ? 'rotate-180' : 'rotate-0'}
-                                `}
-                            />
-                        )}
-                    </button>
+                    />
+                )}
+            </button>
 
-                    {regularPills.slice(0, maxPills).map((option, index) => (
-                        <button key={index}
-                            onClick={() => { setSearchInput(""); updateSearch([option.context]); }}
-                            data-tooltip={option.abreviation ? translate(option.content, currentLang) : undefined}
-                            className={`
-                                ${pillBase}
-                                ${isActive(option.context) ? pillActive : pillInactive}
-                                ${(option.abreviation && (translate(option.abreviation.content, currentLang) !== '')) ? 'pill-tooltip' : ''}
-                            `}
-                        > {getPillLabel(option)} </button>
-                    ))}
-                </>
-            )}
+            {regularPills.slice(0, maxPills).map((option, index) => (
+                <button key={index}
+                    onClick={() => { setSearchInput(""); updateSearch([option.context]); }}
+                    data-tooltip={option.abreviation ? translate(option.content, currentLang) : undefined}
+                    className={`
+                        ${pillBase}
+                        ${isActive(option.context) ? pillActive : pillInactive}
+                        ${(option.abreviation && (translate(option.abreviation.content, currentLang) !== '')) ? 'pill-tooltip' : ''}
+                    `}
+                > {getPillLabel(option)} </button>
+            ))}
 
             <div id="dropdown-sort-container"
                 className=
@@ -198,7 +194,7 @@ const SortingBar = ({ options, maxPills = 4 }: SortingBarProps) => {
                     ${styles.sizeFit}
                     ${styles.flexRow}
                     ${styles.contentStartX}
-                    md:ml-6
+                    ml-6
                 `}
             >
                 <DropdownSort alreadyDisplayedItems={alreadyDisplayedItems} options={options} />
