@@ -77,7 +77,7 @@ const Footer = () => {
               credit.link ? getLinkFromTypedLink(credit.link, currentLang)
               : (Array.isArray(credit.contentRef) ?
                 getLinkFromTypedLink(credit.contentRef[0].content[currentTheme], currentLang)
-                : getLinkFromTypedLink(credit.contentRef.content[currentTheme], currentLang)
+                : credit.contentRef ? getLinkFromTypedLink(credit.contentRef.content[currentTheme], currentLang) : "#"
               )
             }
             className={`

@@ -176,6 +176,9 @@ const Skills = () => {
     const resolvedNodes = resolveCircleCollisions(galaxyNodes, VIRTUAL_W, VIRTUAL_H);
     return { nodes: resolvedNodes, links: galaxyLinks };
   }, [currentTheme, currentLang]);
+  
+  nodes.forEach(() => {}); 
+  links.forEach(() => {});
 
   return (
     <section id="skills"

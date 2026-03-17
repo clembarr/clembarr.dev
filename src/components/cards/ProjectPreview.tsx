@@ -118,7 +118,7 @@ const ProjectPreview = (project: Retex) => {
             
             <Card title={project.title[currentLang] || project.title[UNIVERSAL_LANG]} 
                 content={project.description[currentLang]} 
-                tags={project.tags[currentLang].concat(project.tags[UNIVERSAL_LANG])} 
+                tags={(project.tags[currentLang] ? project.tags[currentLang] : project.tags[UNIVERSAL_LANG]).concat(project.tags[UNIVERSAL_LANG])} 
                 moreTopClasses=
                 {`
                     px-[8%]

@@ -19,7 +19,7 @@ export default defineConfig({
       manifest: {
         name: 'clembarr.dev',
         short_name: 'clembarr',
-        description: 'clembarr.dev',
+        description: 'clembarr.dev portfolio',
         theme_color: '#479561',
         background_color: '#f4f4f4',
         display: 'standalone',
@@ -102,20 +102,13 @@ export default defineConfig({
       'prismjs/components/prism-sql',
     ],
   },
-  base: "/",
+  base: "/clembarr.github.io",
   build: {
     rollupOptions: {
       output: {
         manualChunks: {
           // React core
           'vendor-react': ['react', 'react-dom', 'react-router'],
-
-          // Three.js and 3D libraries
-          'vendor-three': [
-            'three',
-            '@react-three/fiber',
-            '@react-three/drei',
-          ],
 
           // Animation libraries
           'vendor-animation': ['framer-motion'],
