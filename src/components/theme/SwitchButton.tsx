@@ -1,64 +1,103 @@
 import { useContext, useEffect, useState } from "react";
-import styles from "../../style"
+import styles from "../../style";
 import { ThemeContext } from "./ThemeEngine";
 
+/**
+ * @description Modern theme toggle with animated sun/moon icons
+ */
 const SwitchButton = () => {
-    const { setCurrentTheme } = useContext(ThemeContext);
-    const [toggleSwitch, setToggleSwitch] = useState(localStorage.getItem("theme") === "dark");
+  const { setCurrentTheme } = useContext(ThemeContext);
+  const [toggleSwitch, setToggleSwitch] = useState(localStorage.getItem("theme") === "dark");
 
-    useEffect(() => {
-        if (toggleSwitch) {
-            setCurrentTheme("dark");
-        } else {
-            setCurrentTheme("light");
-        }
-    }, [toggleSwitch]);
+  useEffect(() => {
+    if (toggleSwitch) {
+      setCurrentTheme("dark");
+    } else {
+      setCurrentTheme("light");
+    }
+  }, [toggleSwitch, setCurrentTheme]);
+
+  const isDark = toggleSwitch;
 
   return (
-    <label id="switch-container"
-        className=
-        {`
-            ${styles.sizeFit}
-            ${styles.flexRow}
-            ${styles.contentCenter}
-            z-[10]
-            relative 
-            cursor-pointer
-        `}
+    <button
+      id="switch-container"
+      type="button"
+      role="switch"
+      aria-checked={isDark}
+      aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+      onClick={() => setToggleSwitch(!toggleSwitch)}
+      className={`
+        ${styles.sizeFit}
+        ${styles.flexRow}
+        ${styles.contentCenter}
+        z-10
+        relative
+        cursor-pointer
+        p-1 md:p-1.5
+        rounded-full
+        transition-all
+        duration-300
+        hover:scale-105
+        active:scale-95
+        focus:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-(--color-tertiary)
+      `}
     >
-        <input id="switch" 
-            type="checkbox" 
-            className="peer sr-only" 
-            checked={toggleSwitch}
-            onChange={() => setToggleSwitch(!toggleSwitch)}
-        />
+      <div id="switch-track"
+        className={`
+          relative
+          h-5 w-10 md:h-7 md:w-14
+          rounded-full
+          transition-all
+          duration-500
+          ease-(--ease-smooth)
+          bg-(--color-secondary)
+          border
+          border-(--color-border-strong)
+        `}
+      >
+        <div id="stars-container" 
+          className={`absolute inset-0 transition-opacity duration-500 ${isDark ? 'opacity-100' : 'opacity-0'}`}
+        >
+          <span className="absolute w-1 h-1 bg-(--color-quaternary) rounded-full top-1.5 left-2" />
+          <span className="absolute w-0.5 h-0.5 bg-(--color-quaternary)/70 rounded-full top-3 left-4" />
+          <span className="absolute w-0.5 h-0.5 bg-(--color-quaternary)/50 rounded-full bottom-2 left-3" />
+        </div>
 
-        <div id="switch-ruler"
-            className=
-            {`
-                peer 
-                2xl:h-[14px] xl:h-[12px] lg:h-3 md:h-[14px] h-[14px]
-                2xl:w-[45px] xl:w-[40px] lg:w-8 md:w-[40px] sm:w-[40px] w-[38px]
-                rounded-full 
-                bg-[--color-quaternary]
+        <div id="clouds-container"
+          className={`absolute z-(--z-dropdown) inset-0 transition-opacity duration-500 ${isDark ? 'opacity-0' : 'opacity-100'}`}
+        >
+          <span className="absolute w-3 h-1.5 bg-(--color-muted)/30 rounded-full top-1.5 left-5" />
+          <span className="absolute w-2 h-1 bg-(--color-muted)/20 rounded-full bottom-2 left-7" />
+        </div>
 
-                after:absolute 
-                lg:after:-left-0 after:-left-1
-                2xl:after:-bottom-[5px] xl:after:-bottom-[6px] lg:after:-bottom-[4px] md:after:-bottom-1 after:-bottom-[5px]
-                2xl:after:h-[23px] xl:after:h-[22px] lg:after:h-[20px] md:after:h-5 sm:after:h-[24px] after:h-[24px]
-                2xl:after:w-[23px] xl:after:w-[22px] lg:after:w-[20px] md:after:w-5 sm:after:w-[24px] after:w-[24px]
-                after:rounded-full 
-                after:bg-[--color-quaternary]
-                after:transition-all 
-                after:content-['']
+        <div id="toggle-knob"
+          className={`
+            absolute
+            top-1/2
+            -translate-y-1/2
+            w-3.5 h-3.5 md:w-5 md:h-5
+            rounded-full
+            transition-all
+            duration-500
+            ease-(--ease-bounce)
+            ${isDark ? 'translate-x-5 md:translate-x-8' : 'translate-x-1'}
+            ${isDark ? 'bg-(--color-tertiary)' : 'bg-(--color-quinary)'}
+            shadow-[0_0_12px_var(--color-tertiary)]/40
+          `}
+        >
+          <div id="moon-craters"
+            className={`absolute inset-0 transition-opacity duration-300 ${isDark ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <span className="absolute w-1 h-1 bg-(--color-primary)/50 rounded-full top-1 left-1" />
+            <span className="absolute w-0.5 h-0.5 bg-(--color-primary)/40 rounded-full bottom-1.5 right-1" />
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+};
 
-                peer-checked:bg-[--color-quaternary]
-                peer-checked:after:translate-x-full 
-                peer-focus:ring-[--color-quaternary]
-            `}
-        />
-    </label>
-  )
-}
-
-export default SwitchButton
+export default SwitchButton;

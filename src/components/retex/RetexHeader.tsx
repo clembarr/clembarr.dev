@@ -2,193 +2,179 @@ import { useContext } from "react"
 import styles from "../../style"
 import DOMPurify from "dompurify"
 import { LangContext } from "../language"
-import { Hyperlink, Skill } from "../../assets/dataTypes"
+import { Retex } from "../../assets/dataTypes"
 import { ThemeContext } from "../theme/ThemeEngine"
-import { getActiveBreakpoint } from "../../utils"
 import { menuIcons } from "../../assets"
 import { RetexContext } from "./RetexDisplayEngine"
+import { getLinkFromTypedLink } from "../../utils/utils"
+import { UNIVERSAL_LANG } from "../../utils/translationUtils"
 
-type RetexHeaderProps = {
-    title: {[lang: string]: string},
-    date: Date,
-    tools: Skill[],
-    additionalRessources?: Hyperlink[]
-}
-
-const RetexHeader = (relatedProject: RetexHeaderProps) => {
+/**
+ * @component RetexHeader
+ * @description Left-side panel of the retex viewer. Displays the project title,
+ * date, tool icons, and additional resource links. On mobile, renders a close
+ * button and a horizontal scrollable tool strip instead of the sidebar layout.
+ * @param relatedProject - The retex project data to display
+ */
+const RetexHeader = (relatedProject: Retex) => {
     const { currentLang } = useContext(LangContext);
     const { currentTheme } = useContext(ThemeContext);
     const { setDisplayedRetex } = useContext(RetexContext);
 
     return (
         <header id='retex-header'
-            className=
-            {`
+            className={`
                 h-fit
-                md:w-3/12 w-full
+                lg:w-3/12 w-full
                 ${styles.flexCol}
-                z-[21]
+                z-21
                 overflow-hidden
             `}
         >
-            <img src={menuIcons.close_menu_icon.content[currentTheme]}
-                id='close-button'
-                alt={menuIcons.close_menu_icon.alt}
-                className=
-                {`
+            <button id="close-retex-button"
+                type="button"
+                aria-label="Close"
+                className={`
                     absolute
-                    ${getActiveBreakpoint('number') as number < 2 ? "" : "hidden"}
-                    top-[30px]
-                    right-[30px]
-                    z-[23]
+                    lg:hidden
+                    md:top-[60px] sm:top-[50px] ss:top-[45px] top-[35px] 
+                    md:right-[45px] ss:right-[35px] right-[30px]
+                    z-23
                     ${styles.sizeFit}
                     cursor-pointer
                 `}
                 onClick={() => setDisplayedRetex(undefined)}
-            />
+            >
+                <img src={menuIcons.close_menu_icon.content[currentTheme]}
+                    alt={menuIcons.close_menu_icon.alt}
+                />
+            </button>
 
             <div id='retex-header-main'
-                className=
-                {`
+                className={`
                     ${styles.flexCol}
                     color-scheme-secondary
                     rounded-lg
-                    shadow-lg
+                    shadow-lg 
+                    pt-[6%] lg:pt-0
                 `}
             >
-                <h1 className=
-                    {`
-                        w-full
-                        font-primary-bold
-                        md:text-3xl text-xl
-                        tracking-wide
-                        md:py-[6%] 
-                        md:pt-[6%]
-                        px-[10%]
-                        border-dashed
-                        md:space-y-[6%] space-y-[2%]
-                        md:mb-[3%]
+                <h1 className={`
+                    w-full
+                    font-primary-bold
+                    2xl:text-2xl xl:text-xl lg:text-lg md:text-2xl text-xl
+                    text-wrap
+                    tracking-wide
+                    lg:py-[6%]
+                    lg:pt-[8%]
+                    px-[10%]
+                    border-dashed
+                    lg:space-y-[2%] ss:space-y-0 space-y-[2%]
+                `}>
+                    <p className={`
+                        ${styles.flexWrap}
+                        ${styles.contentStartX}
+                        leading-8
+                        lg:mr-0 mr-4
                     `}
-                > 
-                    <p className=
-                        {`
-                            ${styles.flexWrap}
-                            ${styles.contentStartX}
-                            leading-8
-                            md:mr-0 mr-4
-                        `}
                         dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(relatedProject.title[currentLang] || relatedProject.title[0])}}
                     />
 
-                    <hr className=
-                        {`
-                            ${styles.line}
-                            md:w-[50%] w-[25%]
-
-                        `}
+                    <hr className={`
+                        ${styles.line}
+                        lg:w-[50%] w-[25%]
+                        mt-4 lg:mt-2 xl:mt-4
+                    `}
                     />
 
-                    <span className=
-                        {`
-                            font-primary-regular
-                            text-[60%]
-                        `}
-                    > 
+                    <span className={`
+                        font-primary-regular
+                        text-[60%]
+                    `}>
                     {relatedProject.date.toLocaleDateString(
-                        currentLang === 'fr' ? 'fr' : 'en', 
+                        currentLang === 'fr' ? 'fr' : 'en',
                         {month: 'numeric', year: 'numeric'}
-                    )} 
+                    )}
                     </span>
                 </h1>
 
                 <div id='retex-skills'
-                    className=
-                    {`
-                        ${getActiveBreakpoint('number') as number < 2 ? styles.flexRow : styles.flexCol}
+                    className={`
+                        ${styles.flexRowToColAtLg}
                         ${styles.sizeFull}
                         ${styles.contentStartX}
                         px-[10%]
                         py-[8%]
                         pt-[6%]
-                        md:space-y-[6%]
-                        md:overflow-hidden overflow-x-scroll
+                        lg:space-y-[6%]
+                        lg:overflow-hidden overflow-x-scroll
                         overflow-y-hidden
+                        space-x-3 md:space-x-6 lg:space-x-0
                     `}
                 >
-                    {relatedProject.tools.slice(0, 6).map((tool, index) => (
-                        <span key={`retex-skill-${index}`}
-                            className=
-                            {`
-                                ${getActiveBreakpoint('number') as number < 2 ? styles.flexCol : styles.flexRow}
+                    {relatedProject.content.tools.slice(0, 6).map((tool, index) => (
+                        <a key={`retex-skill-${index}`}
+                            className={`
+                                ${styles.flexColToRowAtLg}
                                 ${styles.sizeFull}
-                                ${getActiveBreakpoint('number') as number < 2 ? styles.contentStartY : styles.contentStartX}
-                                space-x-[8%]
+                                ${styles.contentStartX}
+                                lg:space-x-[8%]
+                                ${styles.defaultTransition}
+                                hover:translate-x-[3px]
                             `}
-                        >   
+                            href={getLinkFromTypedLink(tool.link || "")}
+                        >
                             <img src={tool.icon.content[currentTheme]}
                                 alt={tool.icon.alt}
-                                className=
-                                {`
+                                className={`
                                     object-cover
                                     object-center
                                     aspect-square
-                                    md:w-[25%] w-[80%]
+                                    w-8 ss:w-10 md:w-12 lg:w-[25%]
                                     max-w-[50px]
                                 `}
                             />
 
-                            <label className=
-                                {`
-                                    ${getActiveBreakpoint('number') as number < 2 ? "hidden" : ""}
-                                    font-primary-regular
-                                    2xl:text-lg md:text-sm
-                                `}
-                            > {tool.label} </label>
-                        </span>
+                            <span className={`
+                                hidden lg:inline
+                                font-primary-regular
+                                2xl:text-lg xl:text-base lg:text-2xs
+                            `}> {tool.label} </span>
+                        </a>
                     ))}
                 </div>
             </div>
 
             <div id='retex-header-additional'
-                className=
-                {`
-                    ${getActiveBreakpoint('number') as number < 2 ? "hidden" : styles.flexCol}
+                className={`
+                    ${styles.hiddenToFlexColAtLg}
                 `}
             >
                 <ul id='retex-header-additional-ressources'
-                    className=
-                    {`
+                    className={`
                         ${styles.sizeFull}
                         ${styles.flexCol}
                         list-none
                         text-wrap
                         ml-[6%]
                         mt-[8%]
-                        text-[90%]
+                        2xl:text-base
                         space-y-[3%]
                     `}
                 >
-                    {relatedProject.additionalRessources ? 
-                        relatedProject.additionalRessources.map((resource, index) => (
+                    {relatedProject.content.additionalRessources ?
+                        relatedProject.content.additionalRessources.map((resource, index) => (
                             <li key={`retex-resource-${index}`}
-                                className=
-                                {`
+                                className={`
                                     ${styles.sizeFull}
-                                    ${styles.flexRow}
-                                    ${styles.contentStartX}
                                     space-x-[3%]
-                                    ${currentTheme === 'dark' ? 'text-[--color-tertiary]' : 'text-[--color-primary]'}
-                                    hover:text-white
-                                    hover:cursor-pointer
-                                    hover:translate-x-[2%]
-                                    transition-all
-                                    duration-400
-                                    ease-in-out
                                 `}
-                            >   
+                            >
                                 <a target='_blank'
-                                    href={resource.link}
-                                > → {resource.content[currentLang]} </a>
+                                    rel="noopener noreferrer"
+                                    href={getLinkFromTypedLink(resource.link)}
+                                    className={`${styles.animatedLink} font-bold`}
+                                > → {resource.content[currentLang] || resource.content[UNIVERSAL_LANG]} </a>
                             </li>
                         ))
                     : null}

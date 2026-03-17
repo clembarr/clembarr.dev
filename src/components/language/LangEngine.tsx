@@ -1,5 +1,5 @@
 import { createContext, useState, ReactNode, useEffect } from "react";
-import { getLocalLanguage } from "../../utils";
+import { getLocalLanguage } from "../../utils/utils";
 
 interface LangContextType {
     currentLang: string;

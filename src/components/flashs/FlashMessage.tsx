@@ -28,7 +28,7 @@ const FlashMessage = ({context}: FlashMessageProps) => {
                 rounded-md
                 shadow-lg
                 border-2
-                z-[80]
+                z-80
                 px-[4%]
                 py-[0.5%]
                 overflow-hidden
@@ -43,7 +43,7 @@ const FlashMessage = ({context}: FlashMessageProps) => {
                 {`
                     text-2xl
                     font-secondary-semibold
-                    text-[--color-tertiary]
+                    text-(--color-tertiary)
                 `}
             >
                 !

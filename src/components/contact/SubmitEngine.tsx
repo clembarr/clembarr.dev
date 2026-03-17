@@ -1,5 +1,5 @@
 import { createContext, useState, ReactNode, useEffect, useContext } from "react";
-import { getLocalTentativeCooldown } from "../../utils";
+import { getLocalTentativeCooldown } from "../../utils/utils";
 import { contactForm } from "../../assets/constants";
 import { LangContext } from "../language";
 
@@ -21,8 +21,6 @@ const SubmitEngine = ({ children }: { children: ReactNode }) => {
     const [canSubmit, setCanSubmit] = useState<boolean>(true);
 
     useEffect(() => {
-        setCanSubmit(false);
-
         if (localStorage.getItem("reachedLimit") !== null
             && parseInt(getLocalTentativeCooldown()) <= Date.now()
         ) {
@@ -31,6 +29,7 @@ const SubmitEngine = ({ children }: { children: ReactNode }) => {
             setCanSubmit(true);
         }
         else if (tentativesCount > contactForm.tentativeLimit) {
+            setCanSubmit(false);
             alert(contactForm.alert.find(alert => alert.context === "cooldown")!.content[currentLang]);
 
             if (localStorage.getItem("reachedLimit") === null) {
@@ -38,12 +37,10 @@ const SubmitEngine = ({ children }: { children: ReactNode }) => {
             }
         }
         else if (tentativesCount > 0) {
+            setCanSubmit(false);
             setTimeout(() => {
                 setCanSubmit(true);
             }, contactForm.submitCooldown);
-        }
-        else {
-            setCanSubmit(true);
         }
     }, [tentativesCount]);
 

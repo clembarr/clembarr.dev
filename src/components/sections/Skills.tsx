@@ -1,169 +1,209 @@
-import { useContext, useEffect, useRef, useState } from "react"
-import { skills } from "../../assets/contents"
-import { AvailableSkillCategories, SkillCategorie} from "../../assets/dataTypes"
-import styles from "../../style"
-import { ForceGraph2D, ForceGraphMethods$1 } from "react-force-graph"
-import {TextureLoader, SRGBColorSpace, SpriteMaterial, Sprite} from "three"
-import { skillCategories } from "../../assets/constants"
-import { ThemeContext } from "../theme/ThemeEngine"
+import { useContext, useMemo } from "react";
+import { skills } from "../../assets/contents";
+import styles from "../../style";
+import { ThemeContext } from "../theme/ThemeEngine";
+import SkillGalaxy from "../showcase/SkillGalaxy";
+import { LangContext } from "../language";
+import { translate } from "../../utils/assetsUtils";
+import { GalaxyLink, SkillNode } from "../../assets/dataTypes";
 
-type GraphData = {
-  nodes: {id: string, name: string, img: string, val: number, group: SkillCategorie}[];
-  links: {source: string, target: string}[];
-}
+/**
+ * @function assignGridJitterPositions Distribute nodes evenly across the virtual
+ * canvas using a uniform grid, then add per-cell jitter for organic variance.
+ * Nodes are sorted by cluster first so same-cluster skills land in adjacent cells,
+ * preserving a loose grouping without forcing tight clusters.
+ * @param nodes Nodes to position in-place (x/y are overwritten).
+ * @param vw Virtual canvas width (px).
+ * @param vh Virtual canvas height (px).
+ * @param jitter Fraction of cell size used as jitter radius (0–1).
+ */
+const assignGridJitterPositions = (
+  nodes: SkillNode[],
+  vw: number,
+  vh: number,
+  jitter = 0.55,
+) => {
+  const n = nodes.length;
+  if (n === 0) return;
 
-const Skills = () => {
-  const { currentTheme } = useContext(ThemeContext)
-  const [selectedCategory, setSelectedCategory] = useState(AvailableSkillCategories.LANGUAGE)
-  const [graphData, setGraphData] = useState<GraphData>()
-  const graph = useRef<ForceGraphMethods$1<{ id: string; name: string; img: string; val: number; group: SkillCategorie; }, { source: string; target: string }> | undefined>(undefined)
-  const distance = 500
-  
-  useEffect(() => {
-    const initGraphData: GraphData = {nodes: [], links: []}
+  // Match grid aspect ratio to the canvas so cells are roughly square.
+  const cols = Math.max(1, Math.round(Math.sqrt(n * (vw / vh))));
+  const rows = Math.ceil(n / cols);
+  const cellW = vw / cols;
+  const cellH = vh / rows;
 
-    skills//.filter((skill) => skill.category.context === selectedCategory)
-    .sort((a) => a.framework ? -1 : 1)
-    .sort((a,b) => a.framework === b.framework ? -1 : 1)
-    .map((skill, _index, all) => {
-      initGraphData.nodes.push({
-        id: skill.label,
-        name: skill.label,
-        img: skill.icon.content[currentTheme],
-        val: skill.weight ?? 1,
-        group: skill.category!
-      })
+  // Sort by cluster so same-category nodes occupy adjacent grid cells.
+  const sorted = [...nodes].sort((a, b) => a.cluster.localeCompare(b.cluster));
 
-      const verifiedTarget = (
-        initGraphData.links.find((l) => l.target === skill.label) ? null 
-        : skill.framework ? all.find((s) => s.label === skill.framework)
-        : all.find((s) => 
-          s.subcategory === skill.subcategory 
-          && !s.framework
-          && s.label !== skill.label
-        ) ?? null
-      )
-      if (verifiedTarget !== null) {
-        initGraphData.links.push({
-          source: skill.label,
-          target: verifiedTarget!.label
-        })
+  sorted.forEach((node, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const px = (col + 0.5) * cellW + (Math.random() - 0.5) * cellW * jitter;
+    const py = (row + 0.5) * cellH + (Math.random() - 0.5) * cellH * jitter;
+    // Mutations propagate to the original `nodes` array (shared object refs).
+    node.x = Math.max(0.05, Math.min(0.95, px / vw));
+    node.y = Math.max(0.05, Math.min(0.95, py / vh));
+  });
+};
+
+/** Virtual canvas used for pixel-space collision resolution before normalizing back to 0–1. */
+const VIRTUAL_W = 900;
+const VIRTUAL_H = 580;
+
+/**
+ * @function resolveCircleCollisions Push overlapping skill nodes apart iteratively
+ * (relaxation algorithm) until no two circles overlap. Works in a virtual pixel
+ * space so radii are meaningful, then re-normalizes positions to [0, 1].
+ * @param nodes Initial nodes with normalized x/y positions and pixel size.
+ * @param vw Virtual canvas width in px.
+ * @param vh Virtual canvas height in px.
+ * @param gap Extra gap to enforce between circle edges (px).
+ * @param iterations Maximum relaxation passes.
+ * @returns New array of nodes with collision-free normalized positions.
+ */
+const resolveCircleCollisions = (
+  nodes: SkillNode[],
+  vw: number,
+  vh: number,
+  gap = 12,
+  iterations = 200,
+): SkillNode[] => {
+  const pts = nodes.map(n => ({
+    x: n.x * vw,
+    y: n.y * vh,
+    r: Math.max(20, n.size),
+  }));
+
+  for (let iter = 0; iter < iterations; iter++) {
+    let moved = false;
+
+    // Phase 1 — separation only, no clamping yet.
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[j].x - pts[i].x;
+        const dy = pts[j].y - pts[i].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const minDist = pts[i].r + pts[j].r + gap;
+        if (dist < minDist) {
+          const overlap = (minDist - dist) / 2;
+          // Unit vector from i toward j, or random if nodes are exactly co-located.
+          const nx = dist > 0.01 ? dx / dist : (Math.random() - 0.5) * 2;
+          const ny = dist > 0.01 ? dy / dist : (Math.random() - 0.5) * 2;
+          pts[i].x -= nx * overlap;
+          pts[i].y -= ny * overlap;
+          pts[j].x += nx * overlap;
+          pts[j].y += ny * overlap;
+          moved = true;
+        }
       }
+    }
 
-      setGraphData(initGraphData)
-    })
-  }, [selectedCategory])
+    // Phase 2 — clamp every node after all pairs have been resolved.
+    for (const p of pts) {
+      const margin = p.r + 6;
+      p.x = Math.max(margin, Math.min(vw - margin, p.x));
+      p.y = Math.max(margin, Math.min(vh - margin, p.y));
+    }
 
-  useEffect(() => {
-    graph.current?.cameraPosition({ z: distance });
+    if (!moved) break;
+  }
 
-    let angle = 0;
-    setInterval(() => {
-      graph.current?.cameraPosition({
-        x: distance * Math.sin(angle),
-        z: distance * Math.cos(angle)
+  return nodes.map((n, i) => ({ ...n, x: pts[i].x / vw, y: pts[i].y / vh }));
+};
+
+/**
+ * @component Skills
+ * @description Skills section rendering a galaxy visualization of the developer's
+ * skills. Nodes are laid out with a grid-jitter algorithm then collision-resolved,
+ * and re-computed when the theme or language changes.
+ */
+const Skills = () => {
+  const { currentTheme } = useContext(ThemeContext);
+  const { currentLang } = useContext(LangContext);
+
+  const { nodes, links } = useMemo(() => {
+    const galaxyNodes: SkillNode[] = [];
+    const galaxyLinks: GalaxyLink[] = [];
+
+    skills.forEach((skill) => {
+      galaxyNodes.push({
+        id: skill.label,
+        label: skill.label,
+        x: 0, // set by assignGridJitterPositions below
+        y: 0,
+        size: (skill.weight ?? 5) * 3,
+        cluster: translate(skill.category.content, currentLang)?.toUpperCase() || skill.category.context,
+        color: currentTheme === 'dark' ? '#71cbb3' : '#3D3E3C',
+        icon: skill.icon.content[currentTheme]
       });
-      angle += Math.PI / 300;
-    }, 10);
-  }, []);
 
+      // Create links for frameworks
+      if (skill.framework) {
+        // Ensure the framework exists in our skills list to avoid broken links
+        const targetExists = skills.some(s => s.label === skill.framework);
+        if (targetExists) {
+          galaxyLinks.push({
+            source: skill.label,
+            target: skill.framework,
+            type: 'framework'
+          });
+        }
+      }
+    });
+
+    // Create additional links for related subcategories within the same category
+    // This makes the constellation look more connected
+    skills.forEach((skill, i) => {
+      if (!skill.subcategory) return;
+      
+      // Find another skill with the same subcategory to connect to
+      const relatedSkill = skills.find((s, j) => 
+        j > i && // Avoid duplicate links and self-links
+        s.subcategory?.context === skill.subcategory?.context &&
+        !s.framework && !skill.framework // Don'translate over-connect framework items
+      );
+
+      if (relatedSkill) {
+        galaxyLinks.push({
+          source: skill.label,
+          target: relatedSkill.label,
+          type: 'career'
+        });
+      }
+    });
+
+    assignGridJitterPositions(galaxyNodes, VIRTUAL_W, VIRTUAL_H);
+    const resolvedNodes = resolveCircleCollisions(galaxyNodes, VIRTUAL_W, VIRTUAL_H);
+    return { nodes: resolvedNodes, links: galaxyLinks };
+  }, [currentTheme, currentLang]);
 
   return (
     <section id="skills"
-      className=
-      {`
+      className={`
         ${styles.sizeFull}
         ${styles.flexCol}
         ${styles.contentCenter}
       `}
     >
-      <div id="section-controls"
-        className=
-        {`
-          ${styles.flexRow}
+      <div id="galaxy-container"
+        className={`
           w-full
-          h-fit        
-        `}
-      >
-        {skillCategories.map((categorie) => (
-          <button key={`${categorie}`}
-            className=
-            {`
-              ${selectedCategory === categorie.context ? "text-[--color-tertiary]" : ""}
-              hover:text-[--color-tertiary]
-            `}
-            onClick={() => setSelectedCategory(categorie.context)}
-          > {categorie.content['fr']} </button>
-          
-        ))}
-        {selectedCategory}
-      </div>
-
-      <div id="graph-container"
-        className=
-        {`
-          ${styles.sizeFull}
-          ${styles.flexCol}
+          min-h-[500px]
+          md:min-h-[600px]
+          relative
           ${styles.contentCenter}
-          border-red-500
-          border-2
+          rounded-2xl
+          overflow-hidden
         `}
       >
-        <ForceGraph2D //ref={graph}
-          graphData={graphData}
-          backgroundColor={
-            getComputedStyle(document.documentElement)
-            .getPropertyValue("--color-primary")
-          }
-          width={document.querySelector("#graph-container")?.clientWidth ?? 0}
-          height={ document.querySelector("#graph-container")?.clientHeight ?? 0}
-          enableNodeDrag={false}
-          enableZoomInteraction={false}
-          enablePointerInteraction={true}
-          
-          //showNavInfo={false}
-          //enableNavigationControls={true}
-          
-          nodeCanvasObject={(node) => {
-            const imgTexture = new TextureLoader().load(node.img);
-            imgTexture.colorSpace = SRGBColorSpace;
-            const material = new SpriteMaterial({ map: imgTexture });
-            const sprite = new Sprite(material);
-            sprite.scale.set(24, 24, 1);
-            return sprite;
-          }}
-          // nodeThreeObject={({ img }) => {
-          //     const imgTexture = new TextureLoader().load(img);
-          //     imgTexture.colorSpace = SRGBColorSpace;
-          //     const material = new SpriteMaterial({ map: imgTexture });
-          //     const sprite = new Sprite(material);
-          //     sprite.scale.set(24, 24, 1);
-          //     return sprite;
-          // }}
-          nodeLabel={(node) => `${node.name}`}
-          nodeVal={(node) => node.val}
-          nodeRelSize={5}
-          //nodeResolution={10}
-
-          linkColor={() =>
-            getComputedStyle(document.documentElement)
-            .getPropertyValue("--color-tertiary")
-          }
-          linkVisibility={true}
-          linkLabel={"bonjour"}
-          linkWidth={1}
-          //linkOpacity={0.5}
-          //linkResolution={10}
-
-          linkDirectionalParticles={1}
-          linkDirectionalParticleSpeed={0.001}
-          linkDirectionalParticleWidth={0.8}
-          
-          onEngineStop={() => graph.current?.zoomToFit(400, 400)}
+        <SkillGalaxy 
+          nodes={nodes} 
+          links={links} 
+          className="w-full h-full"
         />
       </div>
     </section>
-  )  
-}
+  );
+};
 
-export default Skills
+export default Skills;

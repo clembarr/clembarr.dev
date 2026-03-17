@@ -1,5 +1,6 @@
 import Home from './Home.tsx'
 import Projects from './Projects.tsx'
-import Err404 from './Err404.tsx'
-
-export {Home, Projects, Err404}
+import Blog from './Blog.tsx'
+import BlogPost from './BlogPost.tsx'
+import ErrPage from './ErrPage.tsx'
+export { Home, Projects, Blog, BlogPost, ErrPage }

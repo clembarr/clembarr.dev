@@ -1,5 +1,5 @@
 import { createContext, useState, ReactNode, useEffect } from "react";
-import { getLocalTheme } from "../../utils";
+import { getLocalTheme } from "../../utils/utils";
 
 interface ThemeContextType {
     currentTheme: string;

@@ -5,5 +5,5 @@ import ProjectCard from "./ProjectCard";
 export {
     Card,
     ProjectPreview,
-    ProjectCard
+    ProjectCard,
 }

@@ -1,4 +1,110 @@
+import { MultilingualContent, MultilingualContentArray } from "../utils/translationUtils";
+export type { MultilingualContent, MultilingualContentArray };
 
+/**
+ * @interface PlacedTag
+ * @description Stores the computed position and measured dimensions of a placed tag.
+ * @property tag - The original tag string.
+ * @property x - The x-coordinate of the top-left corner of the tag.
+ * @property y - The y-coordinate of the top-left corner of the tag.
+ * @property w - The width of the tag.
+ * @property h - The height of the tag.
+ */
+export interface PlacedTag {
+  tag: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/**
+ * @interface SkillNode
+ * @description Represents a skill in the SkillGalaxy, with position, size, cluster, color and icon information for visualization.
+ * @property id - The unique identifier of the skill.
+ * @property label - The label or name of the skill.
+ * @property x - The x-coordinate of the skill's position.
+ * @property y - The y-coordinate of the skill's position.
+ * @property size - The size of the skill's circle.
+ * @property cluster - The cluster or category to which the skill belongs.
+ * @property color - The color of the skill's circle.
+ * @property icon - The icon associated with the skill.
+ */
+export interface SkillNode {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  size: number;
+  cluster: string;
+  color: string;
+  icon?: string;
+};
+
+/**
+ * @interface SkillLink
+ * @description Represents a link between two skills in the SkillGalaxy, with source and target skill IDs and a type for categorization.
+ * @property source - The ID of the source skill.
+ * @property target - The ID of the target skill.
+ * @property type - The type of the link, which can be 'framework' or 'career' to indicate the nature of the relationship between the skills.
+ */
+export interface SkillLink {
+  source: string;
+  target: string;
+  type: string;
+}
+
+/**
+ * @interface GalaxyLink
+ * @description The props expected by the SkillGalaxy component, including arrays of skill nodes and links, and an optional className for styling.
+ * @property source - The ID of the source skill.
+ * @property target - The ID of the target skill.
+ * @property type - The type of the link, which can be 'framework' or 'career' to indicate the nature of the relationship between the skills.
+ */
+export type GalaxyLink = {
+  source: string;
+  target: string;
+  type: 'framework' | 'career';
+};
+
+/**
+ * @interface SkillGalaxyProps
+ * @description The props expected by the SkillGalaxy component, including arrays of skill nodes and links, and an optional className for styling.
+ * @property nodes - An array of SkillNode objects representing the skills to be displayed in the galaxy.
+ * @property links - An array of GalaxyLink objects representing the relationships between the skills.
+ * @property className - An optional string for additional CSS classes to style the component.
+ */
+export type SkillGalaxyProps = {
+  nodes: SkillNode[];
+  links: GalaxyLink[];
+  className?: string;
+};
+
+/**
+ * @enum CareerEntryType
+ * @description The career entry types supported by the app.
+*/
+export enum CareerEntryType {
+  EDUCATION = "EDUC.",
+  EXPERIENCE = "EXP.",
+  CERTIFICATION = "CERTIF.",
+  VOLUNTEERING = "VOLUNTEERING",
+}
+
+/**
+ * @interface CareerEntry
+ * @description Structure of a career timeline entry.
+ */
+export interface CareerEntry {
+  type: CareerEntryType;
+  title: MultilingualContent;
+  icon?: GraphicAsset;
+  organization: MultilingualContent;
+  period: MultilingualContent;
+  description: MultilingualContent;
+  tags?: MultilingualContentArray;
+  ressources?: Hyperlink[];
+}
 
 /** The skill categories supported by the app. */
 export enum AvailableSkillCategories {
@@ -38,17 +144,30 @@ export enum AvailableSortOptions {
   DATA = "DATA",
   WEB = "WEB",
   FP = "FP",
+  AI = "AI",
+  RESEARCH = "RESEARCH",
+  SOFTWARE = "SOFTWARE",
+  FAVORITE = "FAVORITE",
+  HARDWARE = "HARDWARE",  
 }
-export interface SortOption extends Omit<Message, "context"> {
-  context: AvailableSortOptions;
+
+/**
+ * Generic filter option used by Sortingbar and DropdownSort.
+ */
+export interface FilterOption extends Omit<Message, "context"> {
+  context: string;
   abreviation?: Message;
 }
 
 /**
+ * Project-specific sort option with a narrower context type.
+ */
+export interface SortOption extends FilterOption {
+  context: AvailableSortOptions;
+}
+
+/**
  * Available information for a graphic asset.
- * @param label - name of the graphic asset
- * @param content - content of the graphic asset, with light and dark versions
- * @param alt - alternative text for the graphic asset
  */
 export interface GraphicAsset {
   label: string;
@@ -58,43 +177,61 @@ export interface GraphicAsset {
 
 export enum Errors {
   NOT_FOUND = 404,
+  MEDIA_TYPE_NOT_SUPPORTED = 500,
+}
+
+/** Identifiers for project media types. */
+export enum MediaType {
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
+  GIF = "GIF"
 }
 
 /**
- * Structure of a retex and available information. 
- * A retex is the detailed review of a project overview.
- * @param specs - specifications of the project
- * @param notions - notions used in the project
- * @param tools - list of tools used in the project
+ * Structure of a project media asset.
  */
-export interface Retex extends Project {
-  specs: {[lang: string]: string};
-  notions: {[lang: string]: string[]};
-  tools: Skill[];
-  additionalRessources?: Hyperlink[];
+export interface ProjectMedia {
+  url: string;
+  type: MediaType;
+  alt?: string;
+  poster?: string;
 }
 
 /**
  * Structure of a project overview and available information. 
- * @param title - title of the project
- * @param content - short description of the project
- * @param tags - list of tags related to the project
- * @param img - url of the main image of the project and images for the retex
- * @param date - date of the project
+ * These are the metadata needed for listings and sliders.
  */
 export interface Project {
-  title: {[lang: string]: string};
-  description: {[lang: string]: string};
-  tags: {[lang: string]: string[]};
-  img?: string[];
+  title: MultilingualContent;
+  description: MultilingualContent;
+  tags: MultilingualContentArray;
+  coverImage: string | ProjectMedia;
   date: Date;
+  favorite?: boolean;
+  img?: string[] | ProjectMedia[]; // Kept for backward compatibility
+}
+
+/**
+ * Detailed content of a project/retex.
+ */
+export interface RetexContent {
+  specs: MultilingualContent;
+  notions: MultilingualContentArray;
+  tools: Skill[];
+  images: string[] | ProjectMedia[];
+  additionalRessources?: Hyperlink[];
+  relatedPosts?: string[];
+}
+
+/**
+ * Complete project structure combining metadata and detailed content.
+ */
+export interface Retex extends Project {
+  content: RetexContent;
 }
 
 /**
  * Data structure to represent a country
- * @param symbol - abreaviation of the country
- * @param label - name of the country
- * @param phoneCode - phone code of the country
 */
 export interface Country {
   symbol: string;
@@ -104,10 +241,6 @@ export interface Country {
 
 /**
  * Available information for a social media link.
- * @param label - name of the social media
- * @param icon - icon to display
- * @param link - url to share
- * @param at - username or account name on the social media
  */
 export interface SocialMedia {
   label: string;
@@ -118,25 +251,14 @@ export interface SocialMedia {
 
 /**
  * Available properties for a biography text.
- * @param title - title of the biography text
- * @param content - biography text
- * @param active - true if the biography is displayed, else false
  */
-export interface Biography {
-  title: {[lang: string]: string};
-  content: {[lang: string]: string};
+export interface Biography extends Message {
+  title: MultilingualContent;
   active: boolean;
 }
 
 /**
  * Available properties for a displayed skill.
- * @param label - name of the skill
- * @param icon - icon to display
- * @param category - category of the skill
- * @param subcategory - optional subcategory of the skill
- * @param framework - if the skill is a framework, the name of the original technology
- * @param link - link to the documentation of the skill
- * @param weight - a mark reflecting the affinity with the skill (from 0 to 10)
  */
 export interface Skill {
   label: string;
@@ -150,29 +272,21 @@ export interface Skill {
 
 /**
  * Pattern of a credit mention.
- * @param contentRef - name(s) of the credited content(s)
- * @param author - author of the content, if known
  */
 export interface CreditMention extends Hyperlink{
-  contentRef: GraphicAsset | GraphicAsset[];
+  contentRef?: GraphicAsset | GraphicAsset[];
   author?: Author;
 }
 
 /**
  * Available properties for a message with a hyperlink.
- * @param link - url to redirect to
  */
 export interface Hyperlink extends Message {
-  link: string;
+  link: string | MultilingualContent | Hyperlink;
 }
 
 /**
- * Represent the available information on the email API to use to send the 
- * contact form (on an EmailJS API basis).
- * @param apiName - name of the email API
- * @param serviceId - service id of the email API
- * @param templateId - template id of the email API
- * @param publicKey - public key of the email API
+ * Represent the available information on the email API
  */
 export interface EmailAPI {
   apiName: string;
@@ -183,18 +297,9 @@ export interface EmailAPI {
 
 /**
  * Represent the structure of a contact form for the app.
- * @param title - title of the contact form
- * @param messageMinLength - minimum length of the message to be sent
- * @param fields - list of the fields contained in the form
- * @param mendatoryFields - among the present fields, the ones that are mendatory
- * @param alert - message(s) to display in case of error
- * @param emailAPI - email API to use to send the form
- * @param submitCooldown - cooldown time before the user can submit the form again
- * @param tentativeLimit - number of attempts before blocking the user
- * @param tentativeCooldown - cooldown time before the user can try again after being blocked
  */
 export interface ContactForm {
-  title: {[lang: string]: string};
+  title: MultilingualContent;
   messageMinLength?: number;
   fields: {[field: string]: Message};
   mendatoryFields: string[];
@@ -207,8 +312,6 @@ export interface ContactForm {
 
 /**
  * Information on a navbar pattern
- * @param route - route for which the navbar is displayed
- * @param links - list of the links to display in the navbar
  */
 export interface NavbarPattern {
   route: string | string[];
@@ -217,11 +320,6 @@ export interface NavbarPattern {
 
 /**
  * Displayable information about an author
- * @param firstName - first name of the author
- * @param lastName - last name of the author
- * @param mail - email of the author
- * @param phone - phone number of the author
- * @param location - location of the author
  */
 export interface Author {
   firstName: string;
@@ -233,17 +331,14 @@ export interface Author {
 
 /** 
  * Stored message pattern 
- * @param context - optional context indication for the message
- * @param content - message content in different languages
 */
 export interface Message {
   context?: string;
-  content: {[lang: string]: string};
+  content: MultilingualContent;
 }
 
 /**
  * Displayable information about an error.
- * @param error - the caught error 
  */
 export interface ErrorMessage extends Message {
   error: Errors;
@@ -251,10 +346,113 @@ export interface ErrorMessage extends Message {
 
 /**
  * Displayable information about a flash message in a particular context.
- * @param context - context of the message
- * @param type - type of the message (error, info, ok)
  */
 export interface FlashMessage extends Message {
   context: string;
   type: "error" | "info" | "ok";
+}
+
+/**
+ * Structure of a footer column.
+ */
+export interface FooterColumn {
+  title: MultilingualContent;
+  context: string;
+  content: Hyperlink[] | CreditMention[] | NavbarPattern[];
+}
+
+/** Identifiers for gallery viewer actions. */
+export enum GalleryAction {
+  NAVIGATE_NEXT = "NAVIGATE_NEXT",
+  NAVIGATE_PREV = "NAVIGATE_PREV",
+  ZOOM_IN = "ZOOM_IN",
+  ZOOM_OUT = "ZOOM_OUT",
+  RESET = "RESET",
+  CLOSE = "CLOSE",
+}
+
+/**
+ * A keyboard/UI control for the gallery viewer.
+ */
+export interface GalleryControl {
+  action: GalleryAction;
+  label: string;
+  binding: string;
+  keys: string[];
+}
+
+/** Blog post categories supported by the app. */
+export enum BlogCategory {
+  RESEARCH = "RESEARCH",
+  DEVELOPMENT = "DEVELOPMENT",
+  TUTORIAL = "TUTORIAL",
+  ALGORITHM = "ALGORITHM",
+  OPINION = "OPINION",
+}
+
+/**
+ * Structure of a table of contents item.
+ */
+export interface TableOfContentsItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+/**
+ * A paragraph/section of a blog post.
+ */
+export interface PostParagraph {
+  title?: MultilingualContent;
+  content: MultilingualContent;
+}
+
+/**
+ * Complete blog post structure.
+ */
+export interface BlogPost extends Project {
+  slug: string;
+  coverImage: string | ProjectMedia;
+  readingTime?:number;
+  category: BlogCategory;
+  paragraphs: PostParagraph[];
+  tableOfContents?: boolean;
+  relatedProjects?: string[];
+}
+
+/**
+ * Structure of SEO constants for a page.
+ */
+export interface SEOConstants {
+  title: string;
+  description: string;
+  keywords: string[];
+  ogUrl: string;
+  canonical: string;
+}
+
+/**
+ * A spoken language with multilingual label and proficiency level.
+ */
+export interface LanguageLevel {
+  label: MultilingualContent;
+  level: MultilingualContent;
+}
+
+/**
+ * Structure of a widget in the about section.
+ */
+export interface AboutWidget {
+  id: string;
+  title: MultilingualContent;
+  content: MultilingualContent | MultilingualContentArray | LanguageLevel[];
+}
+
+/**
+ * Context type for the retex display engine.
+ * Holds the title of the currently displayed retex and its setter.
+ */
+export interface RetexContextType {
+  displayedRetexTitle: string | undefined;
+  setDisplayedRetex: React.Dispatch<React.SetStateAction<string | undefined>>;
 }

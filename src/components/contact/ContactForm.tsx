@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, FormEvent, useContext } from 'react';
+import { useState, createContext, FormEvent, useContext } from 'react';
 import { contactForm } from '../../assets/constants';
 import styles from '../../style'
 import DropdownPhone from '../dropdowns/DropdownPhone'
@@ -29,9 +29,6 @@ const ContactForm = () => {
   const [phoneCode, setPhoneCode] = useState<string>('');
   const [formMessage, setFormMessage] = useState<string>('');
 
-  useEffect(() => {
-    setFormPhone(formPhone.replace(' ', ''))
-  }, [formPhone])
 
   const verifyForm = () => {
     if (!formFistName || !formLastName) {
@@ -39,8 +36,6 @@ const ContactForm = () => {
       return false;
     }
     
-    console.log('formPhone: ', formPhone);
-    console.log('phoneCode: ', phoneCode);
     if (!formPhone || formPhone === '' || formPhone === ' ') {
       setFormPhone('');
     } 
@@ -64,26 +59,25 @@ const ContactForm = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!verifyForm()) return ;  
+    if (!verifyForm()) return;
     if (!contactForm.emailAPI) return;
-
-    setTentiativesCount(tentativesCount+1)
     if (!canSubmit) return;
 
+    setTentiativesCount(tentativesCount + 1);
+
     emailjs
-      .send(contactForm.emailAPI!.serviceId, 
-        contactForm.emailAPI!.templateId, 
+      .send(contactForm.emailAPI!.serviceId,
+        contactForm.emailAPI!.templateId,
         {
           from_firstname: formFistName,
           from_lastname: formLastName,
           from_email: formEmail,
-          from_phone: formPhone,
+          from_phone: formPhone ? `${phoneCode} ${formPhone}` : '',
           message: formMessage
         },
         contactForm.emailAPI!.publicKey
       ).then(() => {
           alert(contactForm.alert.find(alert => alert.context === "apiOK")!.content[currentLang]);
-
         },
         (error) => {
           alert(contactForm.alert.find(alert => alert.context === "apiError")!.content[currentLang]);
@@ -97,9 +91,10 @@ const ContactForm = () => {
       onSubmit={(e) => handleSubmit(e)}
       className=
       {`
+        rounded-md
         ${styles.sizeFull}
-        md:max-h-[75%] 
-        lg:max-w-[500px]
+        md:max-h-[75%]
+        lg:max-w-125 md:max-w-100 sm:max-w-[82%] 
         ${styles.flexCol}
         ${styles.contentCenter}
         font-primary-regular
@@ -118,11 +113,11 @@ const ContactForm = () => {
           h-1/5
           ${styles.contentStartAll}
           font-primary-bold
-          base:text-base
+          ss:text-xl text-base
           ${styles.heading2}
-          tracking-wider
-          
-          xl:mb-[5%] base:mb-[8%]
+          sm:tracking-wider tracking-normal
+          leading-8
+          mb-[8%] xl:mb-[10%]
         `}
         dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(contactForm.title[currentLang])}}
       />
@@ -136,7 +131,7 @@ const ContactForm = () => {
           space-x-2
           resize-none
           relative
-          text-xxs
+          text-2xs sm:text-sm
         `}
       >
         <input type="text"
@@ -153,6 +148,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
+            md:py-1 py-1 xl:py-1
             resize-none
             border-2
           `}
@@ -173,13 +169,14 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
+            md:py-1 py-1 xl:py-1
             border-2
             resize-none
           `}
           onChange={(e) => setFormFirstName(e.target.value)}
         />
-        {contactForm.mendatoryFields && contactForm.mendatoryFields.includes('name') 
-          ? <a key="names-asterisk" className='absolute text-[--color-tertiary] top-0 -right-3'>*</a>
+        {contactForm.mendatoryFields && contactForm.mendatoryFields.includes('lastname')
+          ? <a key="names-asterisk" className='absolute text-(--color-tertiary) top-0 -right-3'>*</a>
           : ""
         }
       </div>
@@ -189,7 +186,7 @@ const ContactForm = () => {
           w-full
           h-1/5
           relative
-          text-xxs
+          text-2xs sm:text-sm
         `}
       >
         <input type="email"
@@ -206,13 +203,14 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
+            md:py-1 py-1 xl:py-1
             border-2
             resize-none
           `}
           onChange={(e) => setFormEmail(e.target.value)}
         />
         {contactForm.mendatoryFields && contactForm.mendatoryFields.includes('email') 
-          ? <a key="email-asterisk" id="email-asterisk" className='absolute text-[--color-tertiary] self-end px-2'>*</a>
+          ? <a key="email-asterisk" id="email-asterisk" className='absolute text-(--color-tertiary) self-end px-2'>*</a>
           : ""
         }
       </div>
@@ -222,18 +220,16 @@ const ContactForm = () => {
           w-full
           h-1/5
           ${styles.flexRow}
-          ${styles.contentCenter}
+          items-center
           space-x-[3%]
           pl-[4%]
           border-2
           resize-none
           relative
-          text-xxs
+          text-2xs sm:text-sm
           rounded-md
-          transition-all
-          duration-300
-          ease-in-out
-          focus-within:border-[--color-tertiary]
+          ${styles.defaultTransition  }
+          focus-within:border-(--color-tertiary)
         `}
       >
         <PhoneCodeContext.Provider value={{phoneCode, setPhoneCode}}>
@@ -254,13 +250,14 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
+            md:py-1 py-1 xl:py-1
             resize-none
           `}
           style={{border: 'none'}}
-          onChange={(e) => setFormPhone(e.target.value)}
+          onChange={(e) => setFormPhone(e.target.value.replace(/\s/g, ''))}
         />
         {contactForm.mendatoryFields && contactForm.mendatoryFields.includes('phone') 
-          ? <a key="phone-asterisk" id="message-asterisk" className='absolute text-[--color-tertiary] self-end px-2'>*</a>
+          ? <a key="phone-asterisk" id="message-asterisk" className='absolute text-(--color-tertiary) self-end px-2'>*</a>
           : ""
         }
       </div>
@@ -269,8 +266,9 @@ const ContactForm = () => {
         {`
           w-full
           h-3/5
+          min-h-30
           relative
-          text-xxs
+          text-2xs sm:text-sm
         `}
       >
         <textarea name="message"
@@ -281,7 +279,7 @@ const ContactForm = () => {
             color-scheme-primary
             rounded-md
             px-4
-            py-2
+            md:py-1 py-2 xl:py-1
             overflow-y-scroll
             resize-none
             border-2
@@ -295,7 +293,7 @@ const ContactForm = () => {
           onChange={(e) => setFormMessage(e.target.value)}
         />
         {contactForm.mendatoryFields && contactForm.mendatoryFields.includes('message') 
-          ? <a key="message-asterisk" id="message-asterisk" className='absolute text-[--color-tertiary] self-end px-2'>*</a>
+          ? <a key="message-asterisk" id="message-asterisk" className='absolute text-(--color-tertiary) self-end px-2'>*</a>
           : ""
         }
       </div>
@@ -304,7 +302,7 @@ const ContactForm = () => {
         <label id="indication-label"
           className=
           {`
-            lg:text-[70%]
+            lg:text-[70%] text-2xs
             self-baseline
           `}
         ><strong>*</strong>: {contactForm.alert.find(alert => alert.context === "mendatory")!.content[currentLang]}</label>
@@ -316,16 +314,18 @@ const ContactForm = () => {
         className=
         {`
           rounded-md
+          ss:text-base text-xs
           ${canSubmit ? 
             'color-scheme-quaternary \
-            hover:bg-[--color-quinary] \
-            focus:scale-[0.96]'
+            hover:bg-(--color-quinary) \
+            focus:scale-[0.96] \
+            hover:scale-105'
             : 
             'border-2 \
-            border-[--color-quaternary] \
-            bg-[--color-secondary] \
+            border-(--color-quaternary) \
+            bg-(--color-secondary) \
             cursor-wait \
-            disabled'
+            disabled '
           }
           transition-all
           duration-150

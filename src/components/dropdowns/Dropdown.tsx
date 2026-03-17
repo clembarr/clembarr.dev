@@ -13,12 +13,13 @@ type DropdownProps = {
     itemState: [string, (arg: string) => void];
     additionalStyles?: string;
     additionalButtonStyles?: string;
+    additionalMenuStyles?: string;
 }
 
 /**
  * @description This component is the base for specialized dropdown components.
  */
-const Dropdown = ({items, animationStyle, menuState, itemState, additionalStyles, additionalButtonStyles}: DropdownProps) => {    
+const Dropdown = ({items, animationStyle, menuState, itemState, additionalStyles, additionalButtonStyles, additionalMenuStyles}: DropdownProps) => {    
     const [toggleMenu, setToggleMenu] = menuState;
     const [selectedItem] = itemState;
     const {currentTheme} = useContext(ThemeContext);
@@ -66,7 +67,7 @@ const Dropdown = ({items, animationStyle, menuState, itemState, additionalStyles
                     className=
                     {`
                         object-cover 
-                        w-3
+                        w-4
                         rounded-full
                     `}
                 />
@@ -77,17 +78,18 @@ const Dropdown = ({items, animationStyle, menuState, itemState, additionalStyles
                 className=
                 {`
                     ${toggleMenu ? 'block' : 'hidden'}
-                    z-[10]
+                    z-10
                     absolute
                     px-4
-                    2xl:pb-1       
+                    pb-1    
                     2xl:pt-2 pt-1
-                    bg-[--color-secondary]
+                    bg-(--color-secondary)
                     rounded-md
                     shadow-md
                     -top-1
                     max-h-[125px]
                     overflow-y-scroll
+                    ${additionalMenuStyles}
                 `}
                 style={animationStyle}
             >

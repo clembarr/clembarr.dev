@@ -3,19 +3,21 @@ import { navLinks } from "../assets/constants";
 import DropdownLang from "./dropdowns/DropdownLang";
 import SwitchButton from "./theme/SwitchButton";
 import styles from "../style";
-import { getActiveBreakpoint, getCurrentNavigation } from "../utils";
+import { getCurrentNavigation, getLinkFromTypedLink } from "../utils/utils";
 import { Link } from "react-router";
 import { LangContext } from "./language";
 import { menuIcons } from "../assets";
 import { ThemeContext } from "./theme/ThemeEngine";
 
 /**
-* @description This component renders the navigation bar of the website, from the info in the constants file.
-*/
+ * @component Navbar
+ * @description Navigation bar rendered from the navLinks constants. Highlights the
+ * active route, hides/shows on scroll, and collapses into a burger menu on mobile.
+ */
 const Navbar = () => {
-  /**@constant toggleBurger true if the burger menu is clicked, else false.*/
+  // true if the burger menu is closed, false if open.
   const [toggleBurger, setToggleBurger] = useState(true);
-  /**@constant currentNavigation the current navigation, used to colorize the related label in the navbar. */
+  // Current navigation link, used to colorize the active label in the navbar.
   const [currentNavigation, setCurrentNavigation] = useState(getCurrentNavigation());
   const [scrollData, setScrollData] = useState({current: 0, last: 0});
   const navbar = useRef<HTMLDivElement>(null);
@@ -26,8 +28,7 @@ const Navbar = () => {
     setScrollData(prev => {return {current: window.scrollY, last: prev.current}});
   }
 
-  /** If rather the currently used langage or the current navigation link changed, actualize
-   * the current navigation label in the navbar.*/
+  // Update the active nav label when the route or hash changes.
   useEffect(() => {
     setCurrentNavigation(getCurrentNavigation());
 
@@ -67,78 +68,89 @@ const Navbar = () => {
     }
   }, [scrollData]);
 
+  const isDark = currentTheme === 'dark';
+
   return (
     <nav id="navbar"
       ref={navbar}
-      className=
-      {`
+      className={`
         fixed
         top-0
         w-screen
         items-center
         px-[5%]
-        xl:py-[1%] lg:py-[1%] py-1
+        2xl:py-1.5 xl:py-2 lg:py-2.5 md:py-1 py-2
         ${styles.flexRow}
         ${styles.contentStartX}
-        bg-[--color-secondary]
-        2xl:text-lg  xl:text-md  text-base
-        transition-transform
+        bg-(--color-navbar-bg)/95
+        backdrop-blur-md
+        2xl:text-sm xl:text-base text-base
+        transition-all
         duration-300
-        ease-in-out
+        ease-out
+        z-(--z-fixed)
+        ${isDark ? 'shadow-[0_1px_20px_rgba(0,0,0,0.3)]' : 'shadow-[0_1px_8px_rgba(0,0,0,0.1)]'}
       `}
     >
       <ul id="navbar-items"
         className="
-          space-x-10
-          list-none 
-          lg:flex hidden"
+          space-x-8
+          list-none
+          lg:flex hidden
+          items-center"
       >
-        {/**Map the navigation links from the data file according to the current URL.*/
-        navLinks.find(
+        {(navLinks.find(
           (nav) => nav.route.includes(window.location.pathname.split('/')[1])
-        )?.links.map((nav, index) => {
-          let thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
+        ) ?? navLinks.find((nav) => nav.route === '')!).links.map((nav, index) => {
+          const thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
+          const isActive = getLinkFromTypedLink(nav.link, currentLang).toLowerCase() === currentNavigation;
           return (
-            <>
-              <li key={`navlink-${index}`}
-                className=
-                {`
-                    font-secondary-regular
-                    tracking-widest
-                    cursor-pointer
-                    hover:text-[--color-tertiary]
-                    transition-all
-                    duration-300
-                    ease-in-out
-                    text-nowrap
-                    ${(nav.link).toLowerCase() === currentNavigation ? 'text-[--color-tertiary]' : ""}
-                `}
-              >
-                {/** If the navigation link is an anchor on the page, it become an <a>. Else if it
-                 * is supposed to redirect on another page, it become a React <Link>. */
-                nav.link.includes('#') ?
-                  <a href={nav.link}
-                    onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
-                  > {thisNav} </a>
-                  :
-                  <Link to={nav.link}
-                    onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
-                  > {thisNav} </Link>
+            <li key={`navlink-${index}`}
+              className={`
+                font-secondary-regular
+                tracking-wider
+                cursor-pointer
+                relative
+                py-1
+                transition-all
+                duration-300
+                ease-out
+                text-nowrap
+                ${isActive
+                  ? `text-(--color-tertiary) ${isDark ? 'drop-shadow-[0_0_8px_rgba(124,255,196,0.5)]' : ''}`
+                  : 'text-(--color-quaternary) hover:text-(--color-tertiary)'
                 }
-              </li>
-            </>
+              `}
+            >
+              {getLinkFromTypedLink(nav.link, currentLang).includes('#') ?
+                <a id={`page-navigation-link-${getLinkFromTypedLink(nav.link, currentLang)}`}
+                  href={getLinkFromTypedLink(nav.link, currentLang).toLowerCase()}
+                  onClick={() => setCurrentNavigation(getLinkFromTypedLink(nav.link, currentLang).toLowerCase())}
+                > {thisNav} </a>
+              : nav.context === "1" ?
+                <a id={`external-link-${getLinkFromTypedLink(nav.link, currentLang)}`}
+                  href={getLinkFromTypedLink(nav.link, currentLang)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                > {thisNav} </a>
+              :
+                <Link id={`page-link-${getLinkFromTypedLink(nav.link, currentLang)}`}
+                  to={getLinkFromTypedLink(nav.link, currentLang)}
+                  onClick={() => setCurrentNavigation(getLinkFromTypedLink(nav.link, currentLang).toLowerCase())}
+                > {thisNav} </Link>
+              }
+            </li>
           )
         })}
       </ul>
 
       <div id="navbar-options"
-        className=
-        {`
+        className={`
           ${styles.sizeFull}
           ${styles.flexRow}
-          ${getActiveBreakpoint('number') as number < 3 ? styles.contentStartX : styles.contentEndX}
+          justify-start items-center lg:justify-end
           font-primary-regular
-          lg:space-x-[3%] space-x-[10%] 
+          space-x-4
         `}
       >
 
@@ -149,21 +161,17 @@ const Navbar = () => {
       </div>
 
       <div id="burger-container"
-        className=
-        {`
+        className={`
           ${styles.sizeFull}
-          min-h-[60px]
+          md:min-h-15 min-h-9
           ${styles.contentEndX}
-          ${getActiveBreakpoint('number') as number < 3 ?
-            `${styles.flexRow}` : `hidden`
-          }
+          flex flex-row lg:hidden
           relative
           mr-[3%]
         `}
       >
         <button id="burger"
-          className=
-          {`
+          className={`
             ${styles.sizeFull}
             ${styles.flexRow}
             ${styles.contentEndX}
@@ -184,14 +192,13 @@ const Navbar = () => {
               : menuIcons.close_menu_icon.content[currentTheme]} 
             alt={toggleBurger ? menuIcons.burger_menu_icon.alt
               : menuIcons.close_menu_icon.alt}
-            className=
-            {`
+            className={`
               object-cover
               object-center
-              ${toggleBurger ? 
-                "sm:w-[26px] w-[24px]" 
+              ${toggleBurger ?
+                "sm:w-[26px] w-[24px]"
                 : "sm:w-[24px] w-[22px]"
-              } 
+              }
               transition-all
               duration-300
               ease-in-out
@@ -200,8 +207,7 @@ const Navbar = () => {
         </button>
 
         <div id="burger-menu"
-          className=
-          {`
+          className={`
             ${toggleBurger ? 'hidden' : 'flex'}
             ${styles.sizeFull}
             ${styles.flexCol}
@@ -217,55 +223,60 @@ const Navbar = () => {
             animation: 'burger-menu-apparition 0.5s ease-in-out'
           }}
         >
-          <ul className=
-            {`
+          <ul className={`
               list-none
               absolute
-              color-scheme-secondary
               -top-5
               -right-5
-              px-[20px]
-              pt-[45px]
-              pb-[15px]
-              space-y-[10%]
-              shadow-md
-              rounded-md
+              px-5
+              pt-12
+              pb-4
+              space-y-3
+              rounded-xl
+              bg-(--color-surface)
+              border border-(--color-border)
+              ${isDark ? 'shadow-[0_8px_30px_rgba(0,0,0,0.4)]' : 'shadow-lg'}
+              backdrop-blur-lg
             `}
           >
-            {/**Map the navigation links from the data file according to the current URL.*/
-            navLinks.find(
+            {navLinks.find(
               (nav) => nav.route.includes(window.location.pathname.split('/')[1])
             )?.links.map((nav, index) => {
-              let thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
+              const thisNav = nav.content[currentLang] ? nav.content[currentLang] : nav.content[0];
+              const isActive = getLinkFromTypedLink(nav.link, currentLang).toLowerCase() === currentNavigation;
               return (
-                <>
-                  <li key={`navlink-${index}`}
-                    className=
-                    {`
-                        font-secondary-regular
-                        tracking-widest
-                        cursor-pointer
-                        hover:text-[--color-tertiary]
-                        transition-all
-                        duration-300
-                        ease-in-out
-                        text-nowrap
-                        ${(nav.link).toLowerCase() === currentNavigation ? 'text-[--color-tertiary]' : ""}
-                    `}
-                  >
-                    {/** If the navigation link is an anchor on the page, it become an <a>. Else if it
-                     * is supposed to redirect on another page, it become a React <Link>. */
-                    nav.link.includes('#') ?
-                      <a href={nav.link}
-                        onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
-                      > {thisNav} </a>
-                      :
-                      <Link to={nav.link}
-                        onClick={() => setCurrentNavigation((nav.link).toLowerCase())}
-                      > {thisNav} </Link>
+                <li key={`navlink-${index}`}
+                  className={`
+                    font-secondary-regular
+                    tracking-wider
+                    cursor-pointer
+                    px-3 py-1.5
+                    rounded-lg
+                    transition-all
+                    duration-300
+                    ease-(--ease-out)
+                    text-nowrap
+                    ${isActive
+                      ? `text-(--color-tertiary) bg-(--color-tertiary)/10 ${isDark ? 'shadow-(--glow-sm)' : ''}`
+                      : 'text-(--color-quaternary) hover:text-(--color-tertiary) hover:bg-(--color-tertiary)/5'
                     }
-                  </li>
-                </>
+                  `}
+                >
+                  {getLinkFromTypedLink(nav.link, currentLang).includes('#') ?
+                    <a href={getLinkFromTypedLink(nav.link, currentLang)}
+                      onClick={() => setCurrentNavigation(getLinkFromTypedLink(nav.link, currentLang).toLowerCase())}
+                    > {thisNav} </a>
+                  : nav.context === "1" ?
+                    <a href={getLinkFromTypedLink(nav.link, currentLang)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    > {thisNav} </a>
+                  :
+                    <Link to={getLinkFromTypedLink(nav.link, currentLang)}
+                      onClick={() => setCurrentNavigation(getLinkFromTypedLink(nav.link, currentLang).toLowerCase())}
+                    > {thisNav} </Link>
+                  }
+                </li>
               )
             })}
           </ul>

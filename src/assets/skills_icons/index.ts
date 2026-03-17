@@ -74,6 +74,39 @@ import axios_light from "./axios_icon_light.svg"
 import axios_dark from "./axios_icon_dark.svg"
 import unittest_light from "./unittest_icon_light.svg"
 import unittest_dark from "./unittest_icon_dark.svg"
+import terraform_light from "./terraform_icon_light.svg";
+import terraform_dark from "./terraform_icon_dark.svg";
+import opencv_light from "./opencv_icon_light.svg";
+import opencv_dark from "./opencv_icon_dark.svg";
+import yolo_light from "./yolo_icon_light.svg";
+import yolo_dark from "./yolo_icon_dark.svg";
+
+export const yolo_icon: GraphicAsset = {
+  label: "yolo_icon",
+  content: {
+    'light': yolo_light,
+    'dark': yolo_dark,
+  },
+  alt: "YOLO Icon"
+}
+
+export const opencv_icon: GraphicAsset = {
+  label: "opencv_icon",
+  content: {
+    'light': opencv_light,
+    'dark': opencv_dark,
+  },
+  alt: "OpenCV Icon"
+}
+
+export const terraform_icon: GraphicAsset = {
+  label: "terraform_icon",
+  content: {
+    'light': terraform_light,
+    'dark': terraform_dark,
+  },
+  alt: "Terraform Icon"
+}
 
 export const unittest_icon: GraphicAsset = {
   label: "unittest_icon",
@@ -409,7 +442,6 @@ export const matplotlib_icon: GraphicAsset = {
 };
 
 export const skillsIcons = {
-
   unittest_icon,
   axios_icon,
   twig_icon,
@@ -446,6 +478,8 @@ export const skillsIcons = {
   js_icon,
   gnupg_icon,
   csharp_icon,
-  customtkinter_icon
-
+  customtkinter_icon,
+  terraform_icon,
+  opencv_icon,
+  yolo_icon,
 };

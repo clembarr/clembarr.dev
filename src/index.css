@@ -1,57 +1,164 @@
-@import url('https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@300;400;600&family=Montserrat:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@300;400;600&family=Montserrat:wght@100..900&display=swap')
+layer(base);
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400&display=swap')
+layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
-/* App global style variables */
+@theme {
+  --font-family-montserrat: "Montserrat", sans-serif;
+  --font-family-hind_vadodara: "Hind Vadodara", sans-serif;
+  --font-family-kanit: "Kanit", sans-serif;
+
+  --text-3xs: 60%;
+  --text-2xs: 80%;
+  --text-xs: 90%;
+  --text-sm: 95%;
+  --text-base: 100%;
+  --text-md: 110%;
+  --text-lg: 120%;
+  --text-xl: 140%;
+  --text-2xl: 160%;
+  --text-3xl: 180%;
+  --text-4xl: 200%;
+  --text-5xl: 240%;
+  --text-6xl: 280%;
+  --text-7xl: 320%;
+  --text-8xl: 360%;
+  --text-9xl: 400%;
+
+  --breakpoint-xs: 400px;
+  --breakpoint-ss: 500px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  --breakpoint-hxs: 720px;
+  --breakpoint-hsm: 850px;
+  --breakpoint-hmd: 1080px;
+  --breakpoint-hlg: 1280px;
+  --breakpoint-hxl: 1440px;
+  --breakpoint-h2xl: 2160px;
+}
+
 :root {
-   /* App font families */
-   --font-primary: "Montserrat", sans-serif;
-   --font-secondary: "Hind Vadodara", sans-serif;
-   --font-tertiary: "Kanit", sans-serif;
-   --base-font-size: 20px;
+  --font-primary: var(--font-family-montserrat);
+  --font-secondary: var(--font-family-hind_vadodara);
+  --font-tertiary: var(--font-family-kanit);
+  --base-font-size: 20px;
+
+  --max-page-width: 1920px;
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-tooltip: 600;
+
+  --section-padding-y: clamp(3rem, 8vh, 6rem);
+  --section-padding-x: 12%;
 }
 
 .light {
-  /* App light theme colors */
   --color-primary: #f4f4f4;
   --color-secondary: #f1f1f1;
-  --color-tertiary: #479561;
+  --color-tertiary: #479561; 
   --color-quaternary: #3D3E3C;
-  --color-quinary: #4F4F4F;
-  --color-mobile-navbar: rgba(244, 244, 244, 0.9);
+  --color-quinary: #4f4f4f;
+  --color-mobile-navbar: rgba(244, 244, 244, 0.95);
+  --color-link: #36bbf4;
 
-  /* RGBA version of the primary color */
-  --color-layout-bg: rgba(244, 244, 244, 0.9);
+  --color-surface: #f4f4f4;
+  --color-surface-elevated: #FFFFFF;
+  --color-muted: #6B7280;
+  --color-border: rgba(209, 205, 205, 0.7);
+  --color-border-strong: rgba(59, 59, 59, 0.15);
+  --color-accent-hover: #3d8054;
+  --color-navbar-bg: #f1f1f1;
+  --color-layout-bg: rgba(244, 244, 244, 0.97);
+
+  --color-xp-type: #fbbf24;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-card: 2px 6px 20px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 8px 25px rgba(0, 0, 0, 0.1);
 
   --background-image: url('./assets/illustrations/background_landscape_light.webp');
 }
 
 .dark {
-  /* App dark theme colors */
-  --color-primary: #2F2F2F;
-  --color-secondary: #282929;
-  --color-tertiary: #7CFFC4;
-  --color-quaternary: #71cbb3;
+  --color-primary: #1a1a1f;
+  --color-secondary: #232328;
+  --color-tertiary: #7CFFC4; /* 71CBB3 */
+  --color-quaternary: #E5E5E5;
   --color-quinary: #3c3c3c;
+  --color-link: #36bbf4;
 
-  --color-mobile-navbar: rgba(47, 47, 47, 0.9);
+  --color-mobile-navbar: rgba(26, 26, 31, 0.95);
 
-  /* RGBA version of the primary color */
-  --color-layout-bg: rgba(47, 47, 47, 0.9);
+  --color-surface: #2a2a30;
+  --color-surface-elevated: #32323a;
+  --color-muted: #9CA3AF;
+  --color-border: rgba(124, 255, 196, 0.1);
+  --color-border-strong: rgba(124, 255, 196, 0.25);
+  --color-accent-hover: #9EFFD6;
+  --color-accent-cyber: #53e9a6;
+  --color-accent-purple: #A855F7;
+
+  --color-xp-type: #fbbf24;
+
+  --color-layout-bg: rgba(26, 26, 31, 0.92);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.4);
+
+  --glow-sm: 0 0 10px rgba(124, 255, 196, 0.3);
+  --glow-md: 0 0 20px rgba(124, 255, 196, 0.4);
+  --glow-lg: 0 0 30px rgba(124, 255, 196, 0.5);
+  --glow-text: 0 0 10px rgba(124, 255, 196, 0.6), 0 0 20px rgba(124, 255, 196, 0.3);
 
   --background-image: url('./assets/illustrations/background_landscape_dark.webp');
 }
 
-/* App global styles */
-* {
-  scroll-behavior: smooth;
-  border-color: var(--color-quinary);
+@layer base {
+  * {
+    scroll-behavior: smooth;
+    border-color: var(--color-quinary);
+  }
 }
 
-/* sauf body */
+/* except body */
 .root, #root {
   width: 100%;
   height: fit-content;
@@ -83,6 +190,14 @@ strong {
   margin: 0;
   padding: 0;
   color: var(--color-tertiary); 
+}
+
+link {
+  margin: 0;
+  padding: 0;
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 button {
@@ -189,6 +304,80 @@ input:focus, textarea:focus {
   color: var(--color-secondary);
 }
 
+/* Glitch effect — ProjectsSlider figure (dark theme only) */
+
+/**
+ * glitch-flicker: subtle opacity instability on the main image during burst windows.
+ * No color shift — pure signal flicker.
+ */
+@keyframes glitch-flicker {
+  0%, 77%, 84%, 100% { opacity: 1; }
+  78%, 80%           { opacity: 0.85; }
+  79%, 81%           { opacity: 0.97; }
+  85%, 87%           { opacity: 0.88; }
+  86%, 88%           { opacity: 1; }
+}
+
+/**
+ * glitch-slice-1: first displacement overlay — slices horizontal bands and shifts
+ * them left/right. Only brightness/contrast — no color drift.
+ */
+@keyframes glitch-slice-1 {
+  0%, 77%, 82%, 100% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  78% {
+    opacity: 0.65;
+    clip-path: inset(10% 0 60% 0);
+    transform: translateX(-9px);
+    filter: brightness(1.35) contrast(1.1);
+  }
+  79% {
+    opacity: 0.65;
+    clip-path: inset(65% 0 6% 0);
+    transform: translateX(8px);
+    filter: brightness(0.8) contrast(1.2);
+  }
+  80% {
+    opacity: 0.45;
+    clip-path: inset(38% 0 36% 0);
+    transform: translateX(-4px);
+    filter: brightness(1.15);
+  }
+  81% { opacity: 0; }
+}
+
+/**
+ * glitch-slice-2: second displacement overlay — different slice positions and timing
+ * to avoid lockstep with slice-1. Same brightness-only approach.
+ */
+@keyframes glitch-slice-2 {
+  0%, 84%, 89%, 100% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  85% {
+    opacity: 0.55;
+    clip-path: inset(48% 0 26% 0);
+    transform: translateX(11px);
+    filter: brightness(1.3) contrast(1.15);
+  }
+  86% {
+    opacity: 0.55;
+    clip-path: inset(4% 0 80% 0);
+    transform: translateX(-7px);
+    filter: brightness(0.85);
+  }
+  87% {
+    opacity: 0.35;
+    clip-path: inset(74% 0 2% 0);
+    transform: translateX(5px);
+    filter: brightness(1.1);
+  }
+  88% { opacity: 0; }
+}
+
 /* App animations */
 
 @keyframes lang-dropdown-menu {
@@ -263,6 +452,7 @@ input:focus, textarea:focus {
     opacity: 100;
     rotate: 0deg;
     transform: translate3d(0, 0, 0);
+    pointer-events: none;
   }
 
   20% {
@@ -309,6 +499,7 @@ input:focus, textarea:focus {
   100% {
     opacity: 100;
     transform: rotate(0deg);
+    pointer-events: auto;
   }
 }
 
@@ -318,6 +509,7 @@ input:focus, textarea:focus {
     opacity: 100;
     rotate: 0deg;
     transform: translate3d(0, 0, 0);
+    pointer-events: none;
   }
 
   10% {
@@ -342,6 +534,7 @@ input:focus, textarea:focus {
     opacity: 100;
     z-index: 10;
     transform: translate3d(0, 0);
+    pointer-events: auto;
   }
 }
 
@@ -399,4 +592,454 @@ input:focus, textarea:focus {
   to {
     transform: translateY(0);
   }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes graph-widget-float {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(3px, -4px); }
+  50%  { transform: translate(-2px, 2px); }
+  75%  { transform: translate(4px, 3px); }
+  100% { transform: translate(0, 0); }
+}
+
+.graph-widget-float {
+  animation-name: graph-widget-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+@keyframes boulder-roll {
+  0%   { transform: rotate(0deg); }
+  12%  { transform: rotate(46deg) translate(0.5px, -0.3px); }
+  25%  { transform: rotate(90deg) translate(0, 0); }
+  37%  { transform: rotate(138deg) translate(-0.4px, 0.3px); }
+  50%  { transform: rotate(180deg) translate(0, 0); }
+  62%  { transform: rotate(226deg) translate(0.3px, -0.4px); }
+  75%  { transform: rotate(270deg) translate(0, 0); }
+  87%  { transform: rotate(318deg) translate(-0.3px, 0.3px); }
+  100% { transform: rotate(360deg) translate(0, 0); }
+}
+
+@keyframes ascii-glitch {
+  0%, 85% {
+    transform: translate(0, 0);
+    filter: none;
+    opacity: 1;
+  }
+
+  86% {
+    transform: translate(-3px, 2px) skewX(-1deg);
+    filter: drop-shadow(2px 0 0 rgba(124, 255, 196, 0.8))
+            drop-shadow(-2px 0 0 rgba(0, 212, 255, 0.8));
+    opacity: 0.9;
+  }
+
+  87% {
+    transform: translate(2px, -1px) skewX(1deg);
+    filter: drop-shadow(-3px 0 0 rgba(124, 255, 196, 0.7))
+            drop-shadow(3px 0 0 rgba(168, 85, 247, 0.7));
+    opacity: 0.95;
+  }
+
+  88% {
+    transform: translate(-1px, 1px) skewX(-0.5deg);
+    filter: drop-shadow(1px 0 0 rgba(0, 212, 255, 0.9))
+            drop-shadow(-1px 0 0 rgba(124, 255, 196, 0.6));
+    opacity: 0.85;
+  }
+
+  89% {
+    transform: translate(1px, 0) skewX(0.5deg);
+    filter: drop-shadow(-2px 0 0 rgba(168, 85, 247, 0.8))
+            drop-shadow(2px 0 0 rgba(0, 212, 255, 0.7));
+    opacity: 0.92;
+  }
+
+  90%, 100% {
+    transform: translate(0, 0);
+    filter: none;
+    opacity: 1;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0.2;
+  }
+}
+
+@keyframes ascii-pulse {
+  0%, 100% {
+    filter: brightness(1) contrast(1);
+  }
+  50% {
+    filter: brightness(1.15) contrast(1.1) drop-shadow(0 0 20px rgba(124, 255, 196, 0.3));
+  }
+}
+
+@keyframes hologram-flicker {
+  0%, 100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  10% {
+    opacity: 0.8;
+    transform: translateY(-1px);
+  }
+  20% {
+    opacity: 0.95;
+    transform: translateY(0.5px);
+  }
+  30% {
+    opacity: 0.85;
+    transform: translateY(-0.5px);
+  }
+  40% {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  60% {
+    opacity: 0.88;
+    transform: translateY(0.8px);
+  }
+  70% {
+    opacity: 0.92;
+    transform: translateY(-0.3px);
+  }
+  80% {
+    opacity: 0.87;
+    transform: translateY(0.5px);
+  }
+  90% {
+    opacity: 0.93;
+    transform: translateY(0);
+  }
+}
+
+@keyframes data-corruption {
+  0%, 100% {
+    clip-path: inset(0 0 0 0);
+  }
+  10% {
+    clip-path: inset(15% 0 70% 0);
+  }
+  15% {
+    clip-path: inset(45% 0 30% 0);
+  }
+  20% {
+    clip-path: inset(70% 0 15% 0);
+  }
+  25% {
+    clip-path: inset(25% 0 60% 0);
+  }
+  30%, 100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes noise {
+  0% { background-position: 0 0; }
+  10% { background-position: -5% -5%; }
+  20% { background-position: -10% 5%; }
+  30% { background-position: 5% -10%; }
+  40% { background-position: -5% 15%; }
+  50% { background-position: -15% 5%; }
+  60% { background-position: 15% 0; }
+  70% { background-position: 0 10%; }
+  80% { background-position: -10% 10%; }
+  90% { background-position: 10% 5%; }
+  100% { background-position: 5% 0; }
+}
+
+@keyframes matrix-rain {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes swipe-hint {
+  0%, 100% { transform: translateX(20px) rotate(-96deg); }
+  40% { transform: translateX(-20px) rotate(-80deg); }
+}
+
+/* Utility classes */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.neon-text {
+  text-shadow: var(--glow-text);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.dark .cyber-grid {
+  background-image:
+    linear-gradient(rgba(124, 255, 196, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 255, 196, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Pill tooltip — fast-appearing custom tooltip for abbreviated filter labels */
+.pill-tooltip {
+  position: relative;
+}
+.pill-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 80%;
+  white-space: nowrap;
+  background: var(--color-secondary);
+  color: var(--color-quaternary);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease-out;
+}
+.pill-tooltip:hover::after {
+  opacity: 1;
+}
+
+/* ───────────────────────────────────────────────
+Prism.js — VS Code "Dark Modern" theme
+Always dark regardless of the app's light/dark
+theme, matching VS Code's default dark palette.
+
+All token rules are scoped under #article-content
+to beat Tailwind Typography specificity.
+   ─────────────────────────────────────────────── */
+
+/* ── Inline code (not inside code blocks) ── */
+#article-content code:not(pre code) {
+  color: #d4d4d4;
+  background: #1e1e1e;
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 80%;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+/*
+The <pre> gets .not-prose so Typography won't touch it.
+Default text color is #9cdcfe (cyan) — the VS Code color for
+variables/identifiers, which Prism leaves as bare text. */
+#article-content pre[class*="language-"] {
+  background: #1e1e1e;
+  color: #9cdcfe;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.7em;
+  line-height: 1.7;
+  tab-size: 2;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  hyphens: none;
+  overflow-x: auto;
+  padding: 1.2em 1.4em;
+  margin: 1.5em 0;
+  border-radius: 0.5rem;
+  border: 1px solid #2d2d2d;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+#article-content pre[class*="language-"] code {
+  background: none;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: inherit;
+}
+
+/* ── Indentation guide lines (per-line, applied via JS inline styles) ── */
+#article-content .code-line {
+  display: inline-block;
+  width: 100%;
+}
+
+/* ── Declaration keywords: const, let, var, function, class ── (blue) */
+#article-content .token.keyword {
+  color: #569cd6;
+}
+/* ── Control-flow keywords: if, return, else, import, export… ── (magenta) */
+#article-content .token.keyword.control-flow {
+  color: #c586c0;
+}
+
+/* ── Functions & method calls ── (yellow) */
+#article-content .token.function,
+#article-content .token.function-variable {
+  color: #dcdcaa;
+}
+
+/* ── Built-in types: string, number, boolean… ── (green) */
+#article-content .token.builtin,
+#article-content .token.class-name {
+  color: #4ec9b0;
+}
+
+/* ── Strings ── (orange) */
+#article-content .token.string,
+#article-content .token.template-string {
+  color: #ce9178;
+}
+#article-content .token.interpolation {
+  color: #9cdcfe;
+}
+
+/* ── Numbers ── (light green) */
+#article-content .token.number {
+  color: #b5cea8;
+}
+
+/* ── Booleans & null ── (blue) */
+#article-content .token.boolean,
+#article-content .token.constant {
+  color: #569cd6;
+}
+
+/* ── Comments & doc-blocks ── (green, italic) */
+#article-content .token.comment,
+#article-content .token.prolog,
+#article-content .token.doctype,
+#article-content .token.cdata {
+  color: #6a9955;
+  font-style: italic;
+}
+
+/* ── Operators: =, =>, ===, +, -, ? ── */
+#article-content .token.operator {
+  color: #d4d4d4;
+}
+
+/* ── Punctuation: ( ) { } [ ] ; , . ── */
+#article-content .token.punctuation {
+  color: #d4d4d4;
+}
+
+/* ── Properties & parameters ── (cyan) */
+#article-content .token.property,
+#article-content .token.parameter {
+  color: #9cdcfe;
+}
+
+/* ── Regex ── */
+#article-content .token.regex {
+  color: #d16969;
+}
+
+/* ── Decorators / annotations ── */
+#article-content .token.decorator,
+#article-content .token.annotation {
+  color: #dcdcaa;
+}
+
+/* ── Tags (HTML/JSX) ── */
+#article-content .token.tag {
+  color: #569cd6;
+}
+#article-content .token.tag .token.punctuation {
+  color: #808080;
+}
+#article-content .token.attr-name {
+  color: #9cdcfe;
+}
+#article-content .token.attr-value,
+#article-content .token.attr-value .token.punctuation {
+  color: #ce9178;
+}
+
+/* ── CSS-specific ── */
+#article-content .token.selector {
+  color: #d7ba7d;
+}
+#article-content .token.atrule {
+  color: #c586c0;
+}
+
+/* ── Misc ── */
+#article-content .token.important,
+#article-content .token.bold {
+  font-weight: bold;
+}
+#article-content .token.italic {
+  font-style: italic;
+}
+#article-content .token.entity {
+  cursor: help;
+}
+#article-content .token.inserted {
+  color: #b5cea8;
+}
+#article-content .token.deleted {
+  color: #ce9178;
 }

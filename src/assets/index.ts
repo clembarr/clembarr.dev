@@ -4,6 +4,7 @@ import { coreImages } from "./illustrations";
 import { menuIcons } from "./menu_icons";
 import { skillsIcons } from "./skills_icons";
 import { projectsImages } from "./projects_images";
+import { blogImages } from "./blog_images";
 
 export {
   documents,
@@ -11,5 +12,6 @@ export {
   coreImages,
   menuIcons,
   skillsIcons,
-  projectsImages
+  projectsImages,
+  blogImages
 };
