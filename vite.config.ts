@@ -102,7 +102,7 @@ export default defineConfig({
       'prismjs/components/prism-sql',
     ],
   },
-  base: "/clembarr.dev/",
+  base: "/",
   build: {
     rollupOptions: {
       output: {
