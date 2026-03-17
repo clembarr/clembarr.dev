@@ -12,7 +12,7 @@ export const personSchema = {
   jobTitle: 'Software Developer & Researcher',
   url: authorUrl,
   sameAs: [
-    'https://github.com/B-a-r-r',
+    'https://github.com/clembarr',
     'https://www.linkedin.com/in/clement-barriere',
   ],
   knowsAbout: [
