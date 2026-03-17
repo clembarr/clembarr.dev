@@ -1,4 +1,4 @@
-import{j as n}from"./vendor-animation-NadEQFtp.js";import{L as T,T as S,h as L,a as I,b as M,s as r,C as z,S as A,c as P,d as F,m as p,e as h,p as D,r as b}from"./index-BEh1hwV0.js";import{r as o,L as X}from"./vendor-react-DxOmqXaI.js";import"./vendor-utils-D24pSdc9.js";const Y=({project:s,additionalStyles:g,onanimationend:d})=>{const{currentLang:l}=o.useContext(T),{currentTheme:f}=o.useContext(S),c=o.useRef(null),x=f==="dark";return n.jsxs("div",{ref:c,id:`card-${s.title[l]}-container`,className:`
+import{j as n}from"./vendor-animation-NadEQFtp.js";import{L as T,T as S,h as L,a as I,b as M,s as r,C as z,S as A,c as P,d as F,m as p,e as h,p as D,r as b}from"./index-CMoIAzu1.js";import{r as o,L as X}from"./vendor-react-DxOmqXaI.js";import"./vendor-utils-D24pSdc9.js";const Y=({project:s,additionalStyles:g,onanimationend:d})=>{const{currentLang:l}=o.useContext(T),{currentTheme:f}=o.useContext(S),c=o.useRef(null),x=f==="dark";return n.jsxs("div",{ref:c,id:`card-${s.title[l]}-container`,className:`
         group
         ${r.sizeFull}
         xl:max-h-[75%] lg:max-h-[65%] md:max-h-[65%] sm:max-h-[70%] ss:max-h-[65%] xs:max-h-[60%] max-h-[60%]
