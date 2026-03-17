@@ -26,9 +26,9 @@ dist-ssr
 *.sw?
 
 # Assistance
-CLAUDE.md
-GEMINI.md
-.claude
+CLAUDE.*
+GEMINI.*
+.claude/*
 docs/*
 *.txt
 

@@ -1,6 +1,6 @@
 {
-  "name": "b-a-r-r.github.io",
-  "homepage": "https://B-a-r-r.github.io",
+  "name": "clembarr.dev",
+  "homepage": "https://clembarr.dev",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "sitemap": "node scripts/generate-sitemap.js",
-    "predeploy": "npm run build && npm run sitemap",
+    "predeploy": "npm run sitemap && npm run build",
     "deploy": "gh-pages -d dist",
     "deploy:full": "bash scripts/deploy.sh"
   },

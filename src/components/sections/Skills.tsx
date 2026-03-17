@@ -2,7 +2,7 @@ import { useContext, useMemo } from "react";
 import { skills } from "../../assets/contents";
 import styles from "../../style";
 import { ThemeContext } from "../theme/ThemeEngine";
-import SkillGalaxy from "../showcase/SkillGalaxy";
+// import SkillGalaxy from "../showcase/SkillGalaxy";
 import { LangContext } from "../language";
 import { translate } from "../../utils/assetsUtils";
 import { GalaxyLink, SkillNode } from "../../assets/dataTypes";
@@ -196,11 +196,11 @@ const Skills = () => {
           overflow-hidden
         `}
       >
-        <SkillGalaxy 
+        {/* <SkillGalaxy 
           nodes={nodes} 
           links={links} 
           className="w-full h-full"
-        />
+        /> */}
       </div>
     </section>
   );
