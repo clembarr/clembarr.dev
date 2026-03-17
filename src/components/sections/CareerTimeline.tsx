@@ -5,6 +5,7 @@ import { ThemeContext } from "../theme/ThemeEngine";
 import { careerTimeline } from "../../assets/contents";
 import { LangContext } from "../language";
 import DOMPurify from "dompurify"
+import { menuIcons } from "../../assets";
 
 /** @constant DATE_COLUMN_WIDTH Width of the date label column, left of the axis (px). */
 const DATE_COLUMN_WIDTH = 72;
@@ -42,21 +43,44 @@ const CareerTimeline = () => {
     return match ? match[0] : str;
   }
 
+  /** @constant sortedCareerTimeline Entries sorted from most recent to oldest by start year. */
+  const sortedCareerTimeline = [...careerTimeline].sort((a, b) => {
+    const yearA = parseInt(a.period['fr'].match(/\d{4}/)?.[0] ?? '0');
+    const yearB = parseInt(b.period['fr'].match(/\d{4}/)?.[0] ?? '0');
+    return yearB - yearA;
+  });
+
   return (
-    <div id={`career-section`}
+    <div id="career"
       className={`
         w-full
-        h-[80vh] md:h-[75vh]
+        h-[75vh]
+        md:mb-20 lg:mb-10
         relative
         overflow-hidden
       `}
     >
-      {/* ── Desktop Illustration ── */}
       <div id={`illustration-container`}
         className={`
-          hidden md:flex
+          hidden lg:flex
           absolute 
-          ${isDark ? `top-40 -left-15 opacity-100 max-w-lg` : `top-20 left-0 opacity-95 max-w-100`}
+          ${isDark ? 
+          `
+            top-40 lg:top-60 xl:top-40
+            -left-15 lg:left-0 xl:-left-15
+            opacity-100 lg:opacity-30 xl:opacity-100
+            max-w-lg
+            lg:w-80 xl:w-120 2xl:w-auto
+          ` 
+          : 
+          `
+            top-20 lg:top-35 xl:top-20
+            left-0 
+            opacity-95 lg:opacity-30 xl:opacity-95
+            max-w-100
+            lg:w-80 xl:w-90 2xl:w-auto
+          `
+        }
           ${styles.sizeFull}
           ${styles.flexCol}
         `}
@@ -68,7 +92,6 @@ const CareerTimeline = () => {
         />
       </div>
 
-      {/* ── Vertical View (Desktop) ── */}
       <div id={`career-vertical-view`}
         className={`
           hidden md:flex
@@ -78,7 +101,7 @@ const CareerTimeline = () => {
           min-h-0
           relative
           py-6
-          md:ml-112
+          lg:ml-30 xl:ml-[23vw]
           overflow-y-scroll
           overflow-x-hidden
           mask-[linear-gradient(to_bottom,transparent,black_5%,black_88%,transparent)]
@@ -89,8 +112,8 @@ const CareerTimeline = () => {
           <div id={`vertical-timeline-axis`}
             className={`
               absolute
-              top-6
-              bottom-0
+              -top-10
+              -bottom-10
               w-0.75
               opacity-20
               bg-(--color-tertiary)
@@ -98,7 +121,7 @@ const CareerTimeline = () => {
             style={{ left: `${AXIS_LEFT}px` }}
           />
 
-          {careerTimeline.map((entry, i) => {
+          {sortedCareerTimeline.map((entry, i) => {
             const isHovered = hoveredIndex === i;
 
             return (
@@ -119,7 +142,7 @@ const CareerTimeline = () => {
                   <div id={`v-date-col-${i}`}
                     className={`
                       ${styles.flexCol}
-                      ${styles.contentEndX}
+                      ${styles.contentEndY}
                       pt-2
                       font-mono
                       text-3xs
@@ -136,7 +159,7 @@ const CareerTimeline = () => {
                   </div>
 
                   <div id={`v-dot-col-${i}`}
-                    className={`flex flex-col items-start shrink-0 pt-2`}
+                    className={`flex flex-col items-center shrink-0 pt-2`}
                     style={{ width: `${DOT_COLUMN_WIDTH}px` }}
                   >
                     <div id={`v-dot-${i}`}
@@ -169,7 +192,7 @@ const CareerTimeline = () => {
                     border border-(--color-tertiary)/15
                     group-hover:border-(--color-tertiary)/50
                     px-5 py-4
-                    mr-[35%]
+                    xl:mr-[35%] lg:mr-[20%] mr-4
                     ml-12
                     bg-(--color-secondary)
                     ${styles.defaultTransition}
@@ -227,20 +250,19 @@ const CareerTimeline = () => {
         </div>
       </div>
 
-      {/* ── Horizontal View (Mobile) ── */}
       <div id={`career-horizontal-view`}
         className={`
           flex md:hidden
           ${styles.sizeFull}
           ${styles.flexCol}
-          ${styles.contentCenter}
+          ${styles.contentStartX}
           px-4
         `}
       >
         <div id={`horizontal-scroll-container`}
           ref={horizontalScrollRef}
           className={`
-            w-full
+            ${styles.sizeFull}
             flex
             overflow-x-auto
             snap-x
@@ -250,19 +272,18 @@ const CareerTimeline = () => {
             py-10
           `}
         >
-          {careerTimeline.map((entry, i) => (
+          {sortedCareerTimeline.map((entry, i) => (
             <div key={`h-entry-${i}`}
               id={`h-entry-wrapper-${i}`}
               className={`
                 snap-center
                 shrink-0
-                w-[85vw]
+                xs:w-[66vw] w-[65vw]
                 max-w-[320px]
                 ${styles.flexCol}
                 gap-4
               `}
             >
-              {/* Horizontal Dot Indicator */}
               <div id={`h-indicator-row-${i}`} className={`flex items-center gap-4`}>
                 <div id={`h-year-label-${i}`} className={`font-mono text-xs text-(--color-tertiary)`}>
                   {getYear(entry.period)}
@@ -271,11 +292,10 @@ const CareerTimeline = () => {
                 <div id={`h-dot-${i}`} className={`w-3 h-3 rounded-full bg-(--color-tertiary)`} />
               </div>
 
-              {/* Horizontal Card */}
               <div id={`h-card-${i}`}
                 className={`
                   p-6
-                  rounded-2xl
+                  rounded-lg
                   bg-(--color-secondary)
                   border border-(--color-tertiary)/15
                   shadow-xl
@@ -309,11 +329,11 @@ const CareerTimeline = () => {
                 />
 
                 <div id={`h-tags-row-${i}`} className={`flex flex-wrap gap-2`}>
-                   <span id={`h-type-badge-${i}`} className={`${styles.tag} text-[10px] font-primary-semibold bg-(--color-xp-type)/10 text-(--color-xp-type)`}>
+                  <span id={`h-type-badge-${i}`} className={`${styles.tag} text-[10px] font-primary-semibold bg-(--color-xp-type)/10 text-(--color-xp-type)`}>
                     {entry.type.valueOf()}
                   </span>
                   {entry.tags && entry.tags[currentLang]?.slice(0, 2).map((tag, j) => (
-                    <span key={`h-tag-${i}-${j}`} id={`h-tag-${i}-${j}`} className={`${styles.tag} text-[10px] opacity-50`}>
+                    <span key={`h-tag-${i}-${j}`} id={`h-tag-${i}-${j}`} className={`${styles.tag} text-[10px] opacity-100`}>
                       {tag}
                     </span>
                   ))}
@@ -322,11 +342,29 @@ const CareerTimeline = () => {
             </div>
           ))}
         </div>
-
-        {/* Swipe Hint */}
-        <div id={`h-swipe-hint`} className={`mt-4 opacity-30 ${styles.flexCol} items-center gap-2 animate-fade-in`}>
-          <div id={`h-swipe-bar`} className={`w-12 h-1 rounded-full bg-(--color-tertiary)`} />
-          <span id={`h-swipe-text`} className={`text-[10px] font-mono uppercase tracking-widest`}>Slide to explore</span>
+        
+        <div id="mobile-swipe-indicator"
+        className={`
+          md:hidden
+          absolute
+          ${styles.flexCol}
+          ${styles.contentCenter}
+          sm:bottom-45 ss:bottom-40 xs:bottom-40 bottom-15
+          w-full
+          opacity-30
+          pointer-events-none
+          animate-fade-in
+        `}
+        >
+          <span className={`text-[10px] font-mono uppercase tracking-widest`}>
+            Swipe !
+          </span>
+          <img id="swipe-icon"
+            src={menuIcons.double_chevrons_icon.content[currentTheme]}
+            alt={menuIcons.double_chevrons_icon.alt}
+            className={`w-6`}
+            style={{ animation: 'swipe-hint 2s infinite ease-in-out' }}
+          />
         </div>
       </div>
     </div>

@@ -34,6 +34,12 @@ export const subtitleMessages: Array<Message> = [
       }
     },
     {
+      content:      {
+        fr: "La recherche avance !",
+        en: "Research ongoing!",
+      }
+    },
+    {
       content: 
       {
         fr: "Bienvenue sur mon portfolio.",
@@ -48,66 +54,18 @@ export const bioText: Array<Biography> = [
     {
       title: 
       {
-        fr: "Développer un futur libre et équitable.",
-        en: "Develop the future, free and fair.",
+        fr: "Explorer, créer et partager.",
+        en: "Explore, create and share.",
       },
       content: {
         fr:
-          "Passionné par le développement d'outils intelligents, je lie <strong>utilité</strong> et <strong>accessibilité</strong> dans mes projets. \
-          La programmation est un art, et <strong>ma polyvalence</strong> fait aujourd'hui ma force.",
+        "Passionné de recherche autour des <strong>systèmes complexes</strong>, notamment en <strong>IA cognitive et évolutive</strong>. \
+        Plus généralement, je suis un <strong>dév. fullstack</strong> d'outils intelligents, alliant <strong>utilité</strong> et <strong>accessibilité</strong>.",
         en:
-          "Passionate about building intelligent tools, I combine <strong>utility</strong> and <strong>accessibility</strong> in my projects. \
-          Programming is an art, and <strong>my versatility</strong> is one of my key assets today.",
+        "Passionate about research on <strong>complex systems</strong>, especially in <strong>cognitive and evolutionary AI</strong>. \
+        More generally, I'm a <strong>fullstack dev</strong> of intelligent tools, combining <strong>utility</strong> and <strong>accessibility</strong>.",
       },
       active: true,
-    },
-    {
-      title: 
-      {
-        fr: "Développer un futur libre et équitable.",
-        en: "Develop the future, free and fair.",
-      },
-      content:
-      {
-        fr: 
-        "Principalement intéressé par le développement d'outils intelligents, je cherche avant tout à lier <strong>utilité</strong> et <strong>accessibilité</strong> dans mes projets. \
-        Mon objectif est de permettre au plus grand nombre de profiter des technologies utilitaires avancées. \
-        <br/><br/> \
-        La programmation est un art, nous permettant de matérialiser nos idées. J'en suis passionné depuis plusieurs années, \
-        et mes nombreuses inspirations ont forgées <strong>ma polyvalence</strong>, qui fait aujourd'hui ma force. \
-        <br/><br/>   \
-        Je prépare actuellement un Bachelor Universitaire de Technologie (<strong>BUT</strong>) \
-        en informatique, à l'Institut Universitaire de Technologie (IUT) de Bordeaux, France.",
-        en: 
-        "Mainly interested in the development of <strong>intelligent</strong> tools, I seek to link <strong>utility</strong> and <strong>accessibility</strong> in my projects. \
-        My goal is to allow as many people as possible to benefit from advanced utility technologies.\
-        <br/><br/> \
-        Programming is an art that brings abstractions of the mind to life. I have been passionate about it for several years, \
-        and my inspirations have forged <strong>my versatility</strong>, one of my key assets today. \
-        <br/><br/>   \
-        I am currently preparing a University Bachelor of Technology (<strong>BUT</strong>) \
-        en informatique, à l'Institut Universitaire de Technologie (IUT) de Bordeaux, France.",
-      },
-      active: false,
-    },
-    {
-      title:
-      {
-        fr: "Un développeur polyvalent, passionné par les outils intelligents.",
-        en: "A versatile developer, passionate about intelligent tools.",
-      },
-      content:
-      {
-        fr: 
-        "Je suis un développeur polyvalent, passionné par la création d'outils intelligents qui allient utilité et accessibilité. \
-        Depuis plusieurs années, je m'efforce de maîtriser divers langages et technologies pour concrétiser mes idées. \
-        Actuellement étudiant en Bachelor Universitaire de Technologie (BUT) en informatique à l'IUT de Bordeaux, je cherche à repousser les limites de ce que je peux créer et partager avec le monde.",
-        en: 
-        "I am a versatile developer, passionate about creating intelligent tools that combine utility and accessibility. \
-        For several years, I have been striving to master various languages and technologies to bring my ideas to life. \
-        Currently a student in a University Bachelor of Technology (BUT) in computer science at the IUT of Bordeaux, I seek to push the boundaries of what I can create and share with the world.",
-      },
-      active: false,
     },
 ];
 
@@ -177,6 +135,14 @@ export const sharedLinks: Array<Hyperlink> = [
     },
     link: "https://www.gdumarchat.dev/",
   },
+  {
+    content:
+    {
+      fr: "Rémi, entrepreneur innovant",
+      en: "Rémi, innovative entrepreneur",
+    },
+    link: "https://remipuigsech.fr",
+  }
 ];
 
 /** Footer columns definition, mapping each column to its title, context and content. */
@@ -209,8 +175,8 @@ export const aboutWidgets: Array<AboutWidget> = [
     },
     content:
     {
-      fr: "En dernière année <strong>BUT Informatique</strong> à <strong>l'IUT de Bordeaux.</strong>",
-      en: "In my last year of <strong>Bachelor degree in Computer Science</strong> at the <strong>IUT of Bordeaux.</strong>",
+      fr: "En dernière année <strong>BUT Informatique</strong> à <strong>l'IUT de Bordeaux.</strong> En <strong>alternance</strong> chez CGI.",
+      en: "In my last year of <strong>Bachelor degree in Computer Science</strong> at the <strong>IUT of Bordeaux.</strong> In <strong>apprenticeship</strong> at CGI.",
     },
   },
   {
@@ -222,8 +188,8 @@ export const aboutWidgets: Array<AboutWidget> = [
     },
     content:
     {
-      fr: "Entrer en <strong>école d'ingénieur</strong> et, à terme, faire de la <strong>recherche</strong> sur les systèmes complexes et la modélisation.",
-      en: "Enter engineering school and, ultimately, do <strong>research</strong> on complex systems and modeling.",
+      fr: "Devenir <strong>ingénieur</strong> en IA et modélisation, puis un <strong>rechercheur</strong> en <strong>vie artificielle</strong> et systèmes complexes.",
+      en: "Become an <strong>engineer</strong> in AI and modeling, then a <strong>researcher</strong> in <strong>artificial life</strong> and complex systems.",
     },
   },
   {
@@ -285,8 +251,8 @@ export const careerTimeline: Array<CareerEntry> = [
     },
     icon: CGILogo,
     period: {
-      fr: "Sept. 2025\nJuil. 2025",
-      en: "Apr. 2025\nJul. 2025",
+      fr: "Sept. 2025\nSept. 2026",
+      en: "Sept. 2025\nSept. 2026",
     },
     description: {
       fr: "R&D sur le projet Grand Angle, ERP à destination des collectivités territoriales. Affecté au module de gestion du cycle de vie des flux financiers \

@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+.vscode/*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -29,3 +31,11 @@ GEMINI.md
 .claude
 docs/*
 *.txt
+
+# Sandbox
+showcase
+showcase/*
+Showcase.*
+sandbox
+sandbox/*
+Sandbox.*

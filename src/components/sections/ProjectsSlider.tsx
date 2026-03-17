@@ -203,7 +203,7 @@ const ProjectsSlider = () => {
       className={`
         relative
         w-full h-[60vh] md:h-screen
-        md:max-h-[70vh] min-h-[350px]
+        md:max-h-[70vh] min-h-70
         ${styles.flexRow}
         ${styles.contentCenter}
         lg:space-x-[10%]
@@ -215,9 +215,8 @@ const ProjectsSlider = () => {
         className={`
           ${styles.sizeFull}
           ${styles.flexRow}
-          ${styles.contentStartYToCenterAtMd}
+          ${styles.contentCenter}
           relative
-          pt-10 md:pt-0
         `}
         style={{
           perspective: SLIDER_PERSPECTIVE,
@@ -235,7 +234,7 @@ const ProjectsSlider = () => {
             absolute
             ${styles.flexCol}
             ${styles.contentCenter}
-            sm:bottom-6 ss:bottom-14 xs:bottom-20 bottom-15
+            sm:bottom-6 ss:bottom-14 xs:bottom-8 bottom-5
             w-full
             opacity-30
             pointer-events-none

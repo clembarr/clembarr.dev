@@ -238,7 +238,7 @@ const RetexViewer = () => {
                     <span id='specs'
                         ref={specsContainer}
                         className={`
-                            ${styles.sizeFull}
+                            w-full lg:flex-1 lg:min-h-0
                             ${styles.flexCol}
                             overflow-hidden
                             mb-[0.5%]
@@ -247,7 +247,7 @@ const RetexViewer = () => {
                         <p className={`
                                 ${styles.sizeFull}
                                 text-wrap
-                                md:text-md sm:text-md text-xs
+                                lg:text-sm md:text-md sm:text-md text-xs
                                 text-justify
                             `}
                             dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(translate(relatedProject.content.specs, currentLang))}}
@@ -258,12 +258,12 @@ const RetexViewer = () => {
                         className={`
                             w-full
                             md:h-fit h-full
-                            md:max-h-[40%]
+                            lg:flex-none lg:min-h-[38%] md:max-h-[40%]
                             ${styles.flexColToRowAtLg}
                             ${styles.contentCenter}
                             text-wrap
                             md:space-x-[3%] space-x-0
-                            lg:mt-2 mt-6
+                            lg:mt-3 mt-6
                         `}
                     >
                         <span id='notions'
@@ -284,7 +284,7 @@ const RetexViewer = () => {
                                     list-disc
                                     list-inside
                                     space-y-[5%]
-                                    md:text-md sm:text-md text-xs
+                                    lg:text-sm md:text-md sm:text-md text-xs
                                 `}
                             >
                                 {displayedNotions.map((notion: string, index: number) => (
@@ -299,7 +299,7 @@ const RetexViewer = () => {
                             className={`
                                 relative
                                 ${styles.sizeFull}
-                                lg:max-w-[44%]
+                                2xl:max-w-[44%] lg:max-w-[38%]
                                 hidden lg:flex lg:flex-col
                                 ${styles.contentCenter}
                                 rounded-lg

@@ -62,7 +62,8 @@ const RetexHeader = (relatedProject: Retex) => {
                 <h1 className={`
                     w-full
                     font-primary-bold
-                    2xl:text-2xl lg:text-3xl md:text-2xl text-xl
+                    2xl:text-2xl xl:text-xl lg:text-lg md:text-2xl text-xl
+                    text-wrap
                     tracking-wide
                     lg:py-[6%]
                     lg:pt-[8%]
@@ -82,7 +83,7 @@ const RetexHeader = (relatedProject: Retex) => {
                     <hr className={`
                         ${styles.line}
                         lg:w-[50%] w-[25%]
-                        mt-4
+                        mt-4 lg:mt-2 xl:mt-4
                     `}
                     />
 
@@ -108,15 +109,18 @@ const RetexHeader = (relatedProject: Retex) => {
                         lg:space-y-[6%]
                         lg:overflow-hidden overflow-x-scroll
                         overflow-y-hidden
-                        space-x-3 md:space-x-6
+                        space-x-3 md:space-x-6 lg:space-x-0
                     `}
                 >
                     {relatedProject.content.tools.slice(0, 6).map((tool, index) => (
                         <a key={`retex-skill-${index}`}
                             className={`
                                 ${styles.flexColToRowAtLg}
-                                w-fit lg:w-full h-full
-                                justify-center items-start lg:justify-start lg:items-centerlg:space-x-[8%]
+                                ${styles.sizeFull}
+                                ${styles.contentStartX}
+                                lg:space-x-[8%]
+                                ${styles.defaultTransition}
+                                hover:translate-x-[3px]
                             `}
                             href={getLinkFromTypedLink(tool.link || "")}
                         >
@@ -134,7 +138,7 @@ const RetexHeader = (relatedProject: Retex) => {
                             <span className={`
                                 hidden lg:inline
                                 font-primary-regular
-                                2xl:text-lg lg:text-sm
+                                2xl:text-lg xl:text-base lg:text-2xs
                             `}> {tool.label} </span>
                         </a>
                     ))}

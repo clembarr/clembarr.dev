@@ -103,7 +103,7 @@ const BlogCard = ({ post, index = 0 }: BlogCardProps) => {
               p-4
               ${styles.flexCol}
               grow
-              space-y-5
+              xl:space-y-6 space-y-12
             `}
           >
             <div className={`
@@ -140,10 +140,10 @@ const BlogCard = ({ post, index = 0 }: BlogCardProps) => {
             <Card title={title}
               content={description}
               tags={tags}
-              moreTopClasses={`${styles.sizeFull} space-y-3 grow space-y-4`}
+              moreTopClasses={`grow mb-0`}
               titleProps="text-md leading-snug xl:mt-4 group-hover:text-(--color-tertiary) transition-colors duration-300"
-              contentProps="text-xs opacity-80 line-clamp-3 "
-              tagsProps="text-2xs "
+              contentProps="text-xs opacity-80 line-clamp-3 mt-6"
+              tagsProps="text-2xs mt-2"
             />
 
             <div id='footer-infos'

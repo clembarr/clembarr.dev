@@ -150,7 +150,7 @@ const ProjectsListing = () => {
             relative
         `}
     >
-        <ScrollReveal direction="up" delay={0.2} className="w-full">
+        <ScrollReveal direction="up" delay={0.2} className="">
             <div id='search-options-container'
                 className={`
                     w-full

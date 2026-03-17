@@ -51,7 +51,7 @@ const Blog = () => {
             >
               <Searchbar placeholderContext="searchBlog" />
 
-              <Sortingbar options={blogSortingOptions} maxPills={3} />
+              <Sortingbar options={blogSortingOptions} maxPills={getMaxPills()} />
             </div>
           </ScrollReveal>
 

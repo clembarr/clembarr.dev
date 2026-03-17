@@ -30,7 +30,7 @@ fi
 
 # Step 3: Run TypeScript type checking
 echo -e "${BLUE}🔍 Running TypeScript type checking...${NC}"
-npm run tsc -- --noEmit
+npx tsc --noEmit
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ Type checking passed${NC}"
 else
@@ -39,24 +39,24 @@ else
 fi
 echo ""
 
-# Step 4: Build the project
-echo -e "${BLUE}🔨 Building project...${NC}"
-npm run build
-if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✓ Build successful${NC}"
-else
-    echo -e "${RED}✗ Build failed${NC}"
-    exit 1
-fi
-echo ""
-
-# Step 5: Generate sitemap
+# Step 4: Generate sitemap (before build so Vite copies it into dist/)
 echo -e "${BLUE}🗺️  Generating sitemap...${NC}"
 node scripts/generate-sitemap.js
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ Sitemap generated${NC}"
 else
     echo -e "${RED}✗ Sitemap generation failed${NC}"
+    exit 1
+fi
+echo ""
+
+# Step 5: Build the project (copies public/sitemap.xml into dist/)
+echo -e "${BLUE}🔨 Building project...${NC}"
+npm run build
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}✓ Build successful${NC}"
+else
+    echo -e "${RED}✗ Build failed${NC}"
     exit 1
 fi
 echo ""

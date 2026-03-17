@@ -264,7 +264,7 @@ export const getMaxPills = () => {
         case 0:
         case -1:
         case -2:
-        default: return 2; //bellow xs
+        default: return 0; //bellow xs
     }
 };
 
@@ -278,51 +278,30 @@ export const getRandomTailwindColor = () => {
 }
 
 /**
- * @function getCSSBreakpoint Read a breakpoint value from the Tailwind 4 CSS
- * custom property `--breakpoint-<name>` defined in `@theme` (index.css).
- * @param name the breakpoint name (e.g. "sm", "2xl")
- * @returns the breakpoint value in pixels, or 0 if not found.
- */
-const getCSSBreakpoint = (name: string): number => {
-    const value = getComputedStyle(document.documentElement)
-        .getPropertyValue(`--breakpoint-${name}`)
-        .trim();
-    return parseInt(value) || 0;
-}
-
-/**
  * @function getActiveBreakpoint Compare the current screen width with the custom
- * breakpoints defined as CSS custom properties by Tailwind 4 in index.css.
+ * breakpoints defined in index.css, using window.matchMedia for reliable
+ * cross-device support (avoids CSS variable availability issues on mobile).
+ * Breakpoint px values mirror the @theme definitions in index.css.
  * @param returnType the type of the return value: 'string' or 'number'
  * @returns the active breakpoint as a label string (base to 2xl) or a rank number (-2 to 5).
  */
 export const getActiveBreakpoint = (returnType: "string" | "number") => {
-    const currentWidth = window.innerWidth;
+    const breakpoints: Array<{ name: string; rank: number; minWidth: number }> = [
+        { name: "2xl", rank: 5, minWidth: 1536 },
+        { name: "xl",  rank: 4, minWidth: 1280 },
+        { name: "lg",  rank: 3, minWidth: 1024 },
+        { name: "md",  rank: 2, minWidth: 768  },
+        { name: "sm",  rank: 1, minWidth: 640  },
+        { name: "ss",  rank: 0, minWidth: 500  },
+        { name: "xs",  rank: -1, minWidth: 400 },
+    ];
 
-    if (getCSSBreakpoint("2xl") <= currentWidth) {
-        return returnType === "number" ? 5 : "2xl";
+    for (const bp of breakpoints) {
+        if (window.matchMedia(`(min-width: ${bp.minWidth}px)`).matches) {
+            return returnType === "number" ? bp.rank : bp.name;
+        }
     }
-    else if (getCSSBreakpoint("xl") <= currentWidth) {
-        return returnType === "number" ? 4 : "xl";
-    }
-    else if (getCSSBreakpoint("lg") <= currentWidth) {
-        return returnType === "number" ? 3 : "lg";
-    }
-    else if (getCSSBreakpoint("md") <= currentWidth) {
-        return returnType === "number" ? 2 : "md";
-    }
-    else if (getCSSBreakpoint("sm") <= currentWidth) {
-        return returnType === "number" ? 1 : "sm";
-    }
-    else if (getCSSBreakpoint("ss") <= currentWidth) {
-        return returnType === "number" ? 0 : "ss";
-    }
-    else if (getCSSBreakpoint("xs") <= currentWidth) {
-        return returnType === "number" ? -1 : "xs";
-    }
-    else {
-        return returnType === "number" ? -2 : "base";
-    }
+    return returnType === "number" ? -2 : "base";
 }
 
 /**

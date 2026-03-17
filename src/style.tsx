@@ -58,6 +58,7 @@ const styles = {
 
   flexColToRowAtMd: `flex flex-col md:flex-row`,
   flexColToRowAtLg: `flex flex-col lg:flex-row`,
+  flexColToRowAtXl: `flex flex-col xl:flex-row`,
   flexRowToColAtMd: `flex flex-row md:flex-col`,
 
   hiddenToFlexColAtMd: `hidden md:flex md:flex-col`,

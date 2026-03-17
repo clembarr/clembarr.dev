@@ -12,7 +12,7 @@ import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-sql';
-import { BlogPost } from '../../assets/dataTypes';
+import { BlogPost, MediaType } from '../../assets/dataTypes';
 import { normalizeMedia, UNIVERSAL_LANG } from '../../utils/assetsUtils';
 import { ArticlesMotionConstants, author, placeholderMessages } from '../../assets/constants';
 import { LangContext } from '../language';
@@ -120,11 +120,14 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
   /**
    * @function renderParagraphContent Renders a paragraph's content,
    * replacing [[image x]] or [[image x | w=y pos]] patterns with corresponding
-   * images from post.img[]. Optional params after `|` control width and positioning:
-   * - w=<value> : applied as a Tailwind w-<value> class (e.g. w=1/2, w=80, w=full)
-   * - positioning keyword (center, left, right) : wraps the image in a flex container
-   *   with the corresponding justify- class
+   * media (image or video) from post.img[]. Optional params after `|` control
+   * width and positioning:
+   * - w=<value> : applied as inline style width (e.g. w=1/2, w=80px, w=100%)
+   * - positioning keyword (center, left, right) : wraps the media in a flex
+   *   container with the corresponding justify- class
    * Without params, defaults to w-full with no wrapper.
+   * Videos are rendered as autoplaying muted looping elements, using the
+   * ProjectMedia poster field if available.
    * @param content - the content string for the current language
    * @returns JSX elements array
    */
@@ -140,6 +143,8 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
         const imgSrc = post.img?.[imgIndex];
         if (!imgSrc) return null;
 
+        const media = normalizeMedia(imgSrc);
+
         /** Parse optional params: w=<CSS value> and positioning keyword */
         const rawParams = imageMatch[2]?.trim() ?? '';
         const widthMatch = rawParams.match(/w=(\S+)/);
@@ -152,20 +157,35 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
         };
         const posKey = Object.keys(posMap).find((k) => rawParams.includes(k));
 
-        const img = (
-          <img id={`img-${imgIndex}`}
+        const mediaClassName = `
+          rounded-lg
+          shadow-lg
+          my-6
+          ${widthStyle ? '' : 'w-full'}
+          max-w-4xl
+          object-cover
+        `;
+        const mediaStyle = widthStyle ? { width: widthStyle } : undefined;
+
+        const mediaEl = media.type === MediaType.VIDEO ? (
+          <video id={`media-${imgIndex}`}
             key={i}
-            src={normalizeMedia(imgSrc).url}
-            alt={`${title}-illustration${imgIndex}`}
-            className={`
-              rounded-lg
-              shadow-lg
-              my-6
-              ${widthStyle ? '' : 'w-full'}
-              max-w-4xl
-              object-cover
-            `}
-            style={widthStyle ? { width: widthStyle } : undefined}
+            src={media.url}
+            poster={media.poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className={mediaClassName}
+            style={mediaStyle}
+          />
+        ) : (
+          <img id={`media-${imgIndex}`}
+            key={i}
+            src={media.url}
+            alt={media.alt ?? `${title}-illustration${imgIndex}`}
+            className={mediaClassName}
+            style={mediaStyle}
             loading="lazy"
           />
         );
@@ -173,11 +193,11 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
         if (posKey) {
           return (
             <div key={i} className={`flex ${posMap[posKey]}`}>
-              {img}
+              {mediaEl}
             </div>
           );
         }
-        return img;
+        return mediaEl;
       }
       if (part.trim()) {
         return (
