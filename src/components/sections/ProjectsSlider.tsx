@@ -248,7 +248,7 @@ const ProjectsSlider = () => {
             src={menuIcons.double_chevrons_icon.content[currentTheme]}
             alt={menuIcons.double_chevrons_icon.alt}
             className={`w-6`}
-            style={{ animation: 'swipe-hint 2s infinite ease-in-out' }}
+            style={{ animation: 'swipe-hint-projects-slider 2s infinite ease-in-out' }}
           />
         </div>
 
