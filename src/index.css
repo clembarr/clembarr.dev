@@ -883,6 +883,18 @@ All token rules are scoped under #article-content
 to beat Tailwind Typography specificity.
    ─────────────────────────────────────────────── */
 
+/* ── Inline markdown highlight (==text==) ── */
+#article-content mark.highlight {
+  background-color: #fde047;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+.dark #article-content mark.highlight {
+  background-color: rgba(250, 204, 21, 0.22);
+  color: inherit;
+}
+
 /* ── Inline code (not inside code blocks) ── */
 #article-content code:not(pre code) {
   color: #d4d4d4;

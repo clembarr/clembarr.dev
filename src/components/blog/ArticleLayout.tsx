@@ -118,6 +118,24 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
     placeholderMessages.find((m) => m.context === context)!.content[currentLang];
 
   /**
+   * @function parseInlineMarkdown Converts pseudo-markdown inline syntax to HTML.
+   * Only transforms text nodes — existing HTML tags are preserved as-is.
+   * Supported: **bold**, *italic*, _underline_, ==highlight==
+   */
+  const parseInlineMarkdown = (html: string): string =>
+    html
+      .split(/(<[^>]+>)/g)
+      .map((segment, i) => {
+        if (i % 2 === 1) return segment; // HTML tag → preserve as-is
+        return segment
+          .replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+          .replace(/_([^_]+)_/g, '<u>$1</u>')
+          .replace(/==([^=]+)==/g, '<mark class="highlight">$1</mark>');
+      })
+      .join('');
+
+  /**
    * @function renderParagraphContent Renders a paragraph's content,
    * replacing [[image x]] or [[image x | w=y pos]] patterns with corresponding
    * media (image or video) from post.img[]. Optional params after `|` control
@@ -206,7 +224,7 @@ const ArticleLayout = ({ post, relatedPosts = [] }: ArticleLayoutProps) => {
             className={`
               leading-relaxed
             `}
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(part) }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(parseInlineMarkdown(part)) }}
           />
         );
       }

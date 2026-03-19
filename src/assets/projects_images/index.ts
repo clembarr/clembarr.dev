@@ -45,7 +45,58 @@ import ecc_ecc from "./ecc_ecc.png"
 import ecc_corps_finis from "./ecc_corps_finis.png"
 import ecc_limit_case from "./ecc_limit_case.png"
 import ecc_add from "./ecc_add.png"
+import eew_lang_traj from "./eew_lang_trajectories.png"
+import eew_traj_bias from "./eew_lang_traj_bias.png"
+import eew_traj_emerge_score from "./eew_traj_emerge_score.png"
+import eew_traj_dyna from "./eew_lang_dyna.png"
 
+export const eewTrajDyna: ProjectMedia = {
+    url: eew_traj_dyna,
+    type: MediaType.IMAGE,
+    alt: "Visualization of the dynamic emergence score in the EEW experiment, showing how the influence of different languages on the model's behavior evolves over time and across trajectories."
+}
+
+export const eewTrajEmergeScore: ProjectMedia = {
+    url: eew_traj_emerge_score,
+    type: MediaType.IMAGE,
+    alt: "Visualization of the emergence score in the EEW experiment, showing how the influence of different languages on the model's behavior evolves over time and across trajectories."
+}
+
+export const eewAlgo: ProjectMedia = {
+    url: eew_algo,
+    type: MediaType.IMAGE,
+    alt: "Scheme of the algorithm used for the EEW experiment, detailing the steps of data collection, processing, and analysis to identify language biases in LLM generations."
+}
+
+export const eewBasicVisuals: ProjectMedia = {
+    url: eew_basic_visuals,
+    type: MediaType.IMAGE,
+    alt: "Basic visuals of the EEW experiment, showcasing the initial data distributions and model outputs before in-depth analysis."
+}
+
+export const eewLangBehaviors: ProjectMedia = {
+    url: eew_lang_behaviors,
+    type: MediaType.IMAGE,
+    alt: "Visualization of language behavior patterns in the EEW experiment, highlighting how different languages influence the model's output in various scenarios."
+}
+
+export const eewLangBias: ProjectMedia = {
+    url: eew_lang_bias,
+    type: MediaType.IMAGE,
+    alt: "Visualization of language bias in the EEW experiment, showing the areas of the model's output that are influenced by specific languages and how they affect the overall behavior."
+}
+
+export const eewLangTraj: ProjectMedia = {
+    url: eew_lang_traj,
+    type: MediaType.IMAGE,
+    alt: "Trajectory patterns of the LLM generations in a 2D space, showing the influence of different languages on the model's behavior."
+}
+
+export const eewLangBiasTraj: ProjectMedia = {
+    url: eew_traj_bias,
+    type: MediaType.IMAGE,
+    alt: "Visualization of the language bias in the LLM generations, highlighting areas associated with specific languages and their influence on the model's output."
+}
 
 export const eccEcc: ProjectMedia = {
     url: ecc_ecc,

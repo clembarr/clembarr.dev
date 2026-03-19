@@ -74,7 +74,7 @@ export const sharedLinks: Array<Hyperlink> = [
   {
     content:
     {
-      fr: "Elias, developpeur cybersécurité",
+      fr: "Elias, développeur cybersécurité",
       en: "Elias, cybersecurity developer",
     },
     link: "https://eliasgauthier.fr",
@@ -114,7 +114,7 @@ export const sharedLinks: Array<Hyperlink> = [
   {
     content:
     {
-      fr: "Mathieu, engénieur data",
+      fr: "Mathieu, ingénieur data",
       en: "Mathieu, data engineer",
     },
     link: "https://matjay.me",
@@ -130,7 +130,7 @@ export const sharedLinks: Array<Hyperlink> = [
   {
     content:
     {
-      fr: "Gurvan, developpeur de logiciels",
+      fr: "Gurvan, développeur de logiciels",
       en: "Gurvan, software developer",
     },
     link: "https://www.gdumarchat.dev/",

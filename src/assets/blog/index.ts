@@ -10,7 +10,7 @@ import { eewLangBiases } from './eew-lang-biases';
  * All blog posts - ordered by date (most recent first)
  */
 export const blogPosts: BlogPost[] = [
-  //eewLangBiases
+  eewLangBiases
 ];
 
 // Individual exports for direct access

@@ -3,6 +3,7 @@ import { SLIDER_CARD_INTERVAL_MS, SLIDER_CARD_APPARITION_TIMEOUT_MS, SLIDER_PERS
 import { projects } from "../../assets/contents"
 import styles from "../../style"
 import { coreImages, menuIcons } from "../../assets"
+import { SwipeIndicator } from "../widgets"
 import { cloneElement, ReactElement, useContext, useEffect, useRef, useState } from "react"
 import { randomNumberBetween } from "../../utils/utils"
 import { ProjectCard } from "../cards"
@@ -202,7 +203,7 @@ const ProjectsSlider = () => {
     <section id='projects-slider'
       className={`
         relative
-        w-full h-[60vh] md:h-screen
+        w-full h-[65vh] ss:h-[75vh] sm:h-[65vh] md:h-screen
         md:max-h-[70vh] min-h-70
         ${styles.flexRow}
         ${styles.contentCenter}
@@ -228,29 +229,10 @@ const ProjectsSlider = () => {
           card
         ))}
 
-        <div id="mobile-swipe-indicator"
-          className={`
-            md:hidden
-            absolute
-            ${styles.flexCol}
-            ${styles.contentCenter}
-            sm:bottom-6 ss:bottom-14 xs:bottom-8 bottom-5
-            w-full
-            opacity-30
-            pointer-events-none
-            animate-fade-in
-          `}
-        >
-          <span className={`text-[10px] font-mono uppercase tracking-widest`}>
-            Swipe !
-          </span>
-          <img id="swipe-icon"
-            src={menuIcons.double_chevrons_icon.content[currentTheme]}
-            alt={menuIcons.double_chevrons_icon.alt}
-            className={`w-6`}
-            style={{ animation: 'swipe-hint-projects-slider 2s infinite ease-in-out' }}
-          />
-        </div>
+        <SwipeIndicator
+          bottomClass="sm:bottom-0 ss:bottom-0 xs:bottom-8 bottom-5"
+          animationName="swipe-hint-projects-slider"
+        />
 
         <button id="prev-button"
           className={`

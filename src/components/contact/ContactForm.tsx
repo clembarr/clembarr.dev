@@ -265,8 +265,8 @@ const ContactForm = () => {
       <div className=
         {`
           w-full
-          h-3/5
-          min-h-30
+          h-[20vh]
+          max-h-[50vh]
           relative
           text-2xs sm:text-sm
         `}
@@ -283,6 +283,7 @@ const ContactForm = () => {
             overflow-y-scroll
             resize-none
             border-2
+            no-scrollbar
           `}
           placeholder={`${
             contactForm.fields['message'].content[currentLang] ?

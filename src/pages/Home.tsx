@@ -36,6 +36,7 @@ const Home = () => {
         className={`
           w-screen
           2xl:h-[74vh] xl:h-[68vh] lg:h-[62vh] md:h-[40vh] h-[35vh]
+          
           px-[12%]
           text-(--color-quaternary)
           bg-transparent

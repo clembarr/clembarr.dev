@@ -5,7 +5,7 @@ import { ThemeContext } from "../theme/ThemeEngine";
 import { careerTimeline } from "../../assets/contents";
 import { LangContext } from "../language";
 import DOMPurify from "dompurify"
-import { menuIcons } from "../../assets";
+import { SwipeIndicator } from "../widgets";
 
 /** @constant DATE_COLUMN_WIDTH Width of the date label column, left of the axis (px). */
 const DATE_COLUMN_WIDTH = 72;
@@ -55,7 +55,7 @@ const CareerTimeline = () => {
       className={`
         w-full
         h-[75vh]
-        md:mb-20 lg:mb-10
+        mb-20 ss:mb-0 md:mb-20 lg:mb-10
         relative
         overflow-hidden
       `}
@@ -141,6 +141,8 @@ const CareerTimeline = () => {
                 <div id={`v-left-area-${i}`} className={`flex items-start gap-2 shrink-0`}>
                   <div id={`v-date-col-${i}`}
                     className={`
+                      w-full
+                      h-fit
                       ${styles.flexCol}
                       ${styles.contentEndY}
                       pt-2
@@ -324,7 +326,7 @@ const CareerTimeline = () => {
                 </div>
 
                 <p id={`h-card-desc-${i}`}
-                  className={`text-sm opacity-60 leading-relaxed font-primary-regular line-clamp-4`}
+                  className={`text-sm opacity-60 leading-relaxed font-primary-regular`}
                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.description[currentLang]) }}
                 />
 
@@ -343,29 +345,10 @@ const CareerTimeline = () => {
           ))}
         </div>
         
-        <div id="mobile-swipe-indicator"
-        className={`
-          md:hidden
-          absolute
-          ${styles.flexCol}
-          ${styles.contentCenter}
-          sm:bottom-45 ss:bottom-40 xs:bottom-40 bottom-15
-          w-full
-          opacity-30
-          pointer-events-none
-          animate-fade-in
-        `}
-        >
-          <span className={`text-[10px] font-mono uppercase tracking-widest`}>
-            Swipe !
-          </span>
-          <img id="swipe-icon"
-            src={menuIcons.double_chevrons_icon.content[currentTheme]}
-            alt={menuIcons.double_chevrons_icon.alt}
-            className={`w-6`}
-            style={{ animation: 'swipe-hint 2s infinite ease-in-out' }}
-          />
-        </div>
+        <SwipeIndicator
+          bottomClass="sm:bottom-0 ss:bottom-15 xs:bottom-10 bottom-15"
+          animationName="swipe-hint"
+        />
       </div>
     </div>
   );
