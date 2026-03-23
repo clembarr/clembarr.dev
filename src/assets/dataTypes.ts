@@ -283,6 +283,7 @@ export interface CreditMention extends Hyperlink{
  */
 export interface Hyperlink extends Message {
   link: string | MultilingualContent | Hyperlink;
+  prioritized?: boolean;
 }
 
 /**

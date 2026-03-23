@@ -86,6 +86,7 @@ export const sharedLinks: Array<Hyperlink> = [
       en: "Théo, generative AI developer",
     },
     link: "https://tcastillo.me",
+    prioritized: true,
   },
   {
     content:

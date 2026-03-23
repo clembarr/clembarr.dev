@@ -101,9 +101,9 @@ const Footer = () => {
           (pattern) => pattern.route.includes(window.location.pathname.split("/")[1])
         )[0];
         const countNavLinks = currentPattern ? currentPattern.links.length : 4;
-        const links = content as Hyperlink[];
+        const links = shuffle(shuffle(content as Hyperlink[])).sort((a, b) => a.prioritized ? -1 : b.prioritized ? 1 : -1);
 
-        return shuffle(shuffle(links)).slice(0, countNavLinks).map((link, index) => (
+        return links.slice(0, countNavLinks).map((link, index) => (
           <a key={`see-also-${index}`}
             id={`see-also-${index}`}
             href={getLinkFromTypedLink(link.link, currentLang)}
