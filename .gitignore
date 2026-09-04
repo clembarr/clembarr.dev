@@ -29,6 +29,8 @@ dist-ssr
 CLAUDE.*
 GEMINI.*
 .claude/*
+!.claude/skills/
+!.claude/agents/
 docs/*
 *.txt
 

@@ -4,7 +4,7 @@
  */
 
 import { BlogPost, BlogCategory } from '../dataTypes';
-import { UNIVERSAL_LANG } from '../../utils/assetsUtils';
+import { UNIVERSAL_LANG } from '../../utils/translationUtils';
 import { eewAlgo, eewBasicVisuals, eewLangBehaviors, eewLangBias, eewLangBiasTraj, eewLangTraj, eewTrajDyna, eewTrajEmergeScore, projectsImages } from '../projects_images';
 
 export const eewLangBiases: BlogPost = {

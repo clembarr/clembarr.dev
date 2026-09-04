@@ -6,6 +6,8 @@ import nagoya_u_logo from "./nagoya_u_logo.png";
 import fnmns_logo from "./fnmns_logo.png";
 import iut_info_logo from "./iut_info_logo.png";
 import JDB_logo from "./JDB_logo.png";
+import esiea_logo from "./esiea_logo.webp";
+import thales_logo from "./thales_logo.webp";
 
 export const CGILogo: GraphicAsset = {
     label: "CGI",
@@ -49,7 +51,7 @@ export const IUTInfoLogo: GraphicAsset = {
         'light': iut_info_logo,
         'dark': iut_info_logo
     },
-    alt: "IUT Informatics od Bordeaux Logo"
+    alt: "IUT Informatics of Bordeaux Logo"
 };  
 
 export const JDBLogo: GraphicAsset = {
@@ -59,4 +61,22 @@ export const JDBLogo: GraphicAsset = {
         'dark': JDB_logo
     },
     alt: "Lycée Jay de Beaufort Logo"
+};
+
+export const ESIEALogo: GraphicAsset = {
+    label: "ESIEA",
+    content: {
+        'light': esiea_logo,
+        'dark': esiea_logo
+    },
+    alt: "ESIEA Logo"
+};
+
+export const ThalesLogo: GraphicAsset = {
+    label: "Thales",
+    content: {
+        'light': thales_logo,
+        'dark': thales_logo
+    },
+    alt: "Thales Logo"
 };
