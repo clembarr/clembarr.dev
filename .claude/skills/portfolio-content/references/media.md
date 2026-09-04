@@ -5,20 +5,33 @@
 | `src/assets/projects_images/` | captures et schémas de projets (et, historiquement, d'articles) |
 | `src/assets/blog_images/` | illustrations purement éditoriales — **vide aujourd'hui** |
 | `src/assets/illustrations/` | visuels de l'interface (hero, fonds, portraits) — hors CRUD contenu |
-| `src/assets/skills_icons/`, `orga_icons/`, `socials_icons/`, `menu_icons/` | icônes `GraphicAsset`, cf. `skills.md` / `career.md` |
+| `src/assets/skills_icons/`, `orga_icons/`, `socials_icons/` | icônes `GraphicAsset` — via `add-icon.sh`, cf. `skills.md` / `career.md` |
+| `src/assets/menu_icons/` | icônes d'interface — hors CRUD contenu |
 
 ## Import assisté
 
+Deux scripts selon la nature du média :
+
 ```bash
+# images de contenu -> ProjectMedia
 bash .claude/skills/portfolio-content/scripts/add-media.sh <projects|blog> <prefixe> <fichier...>
+
+# icones et logos -> GraphicAsset (light + dark)
+bash .claude/skills/portfolio-content/scripts/add-icon.sh <orga|skills|socials> <nom> <fichier...>
 ```
+
+`add-media.sh` :
 
 - convertit PNG/JPG/TIF/BMP en **WebP qualité 82** (ImageMagick) ;
 - copie SVG, MP4, GIF et WebP sans conversion ;
 - renomme en `<prefixe>_<sujet>.<ext>`, snake_case minuscule ;
 - affiche les **2 fragments** à insérer dans `index.ts`.
 
-Le script n'édite pas le TypeScript : les fragments sont appliqués par édition.
+`add-icon.sh` convertit de même, mais **laisse les SVG en SVG** (les vectoriser en WebP leur
+ferait perdre leur scalabilité), gère la paire light/dark, et produit un `GraphicAsset` — en
+PascalCase pour `orga_icons` (`ESIEALogo`), en snake_case `<nom>_icon` pour les deux autres.
+
+Aucun des deux n'édite le TypeScript : les fragments sont appliqués par édition.
 
 ## Nomenclature
 

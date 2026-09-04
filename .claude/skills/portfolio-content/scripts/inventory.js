@@ -107,8 +107,10 @@ try {
     console.log(`== PARCOURS (${careerTimeline.length}) — contents.ts → careerTimeline ==`);
     careerTimeline.forEach((entry) => {
       const period = label(entry.period).replace(/\n/g, ' → ');
+      const tags = entry.tags?.fr?.join(' · ') || entry.tags?.['0']?.join(' · ') || '';
       console.log(`  ${String(entry.type).padEnd(14)} ${period.padEnd(24)} ${label(entry.organization)}`);
       console.log(`  ${' '.repeat(14)} ${label(entry.title)}`);
+      if (tags) console.log(`  ${' '.repeat(14)} ${tags}`);
     });
     console.log();
   }

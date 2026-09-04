@@ -1,6 +1,6 @@
 ---
 name: portfolio-content
-description: CRUD du contenu de clembarr.dev — ajouter, modifier, lister ou supprimer un projet (retex), un article de blog, une compétence (skill), une entrée de parcours (expérience, alternance, stage, formation, certification, bénévolat), une biographie, un widget "à propos", un lien "voir aussi"/footer, un réseau social, ou importer des images de contenu. À utiliser dès qu'il faut toucher à src/assets (projects/, blog/, skills.ts, contents.ts, uiConstants.ts, projects_images/, blog_images/). Also covers: add/edit/remove a project, blog post, skill, work experience, education entry, or content image on this portfolio.
+description: CRUD du contenu de clembarr.dev — ajouter, modifier, lister ou supprimer un projet (retex), un article de blog, une compétence (skill), une entrée de parcours (expérience, alternance, stage, formation, certification, bénévolat), une biographie, un widget "à propos", un lien "voir aussi"/footer, un réseau social, ou importer une image, une icône ou un logo d'organisation. À utiliser dès qu'il faut toucher à src/assets (projects/, blog/, skills.ts, contents.ts, uiConstants.ts, projects_images/, blog_images/). Also covers: add/edit/remove a project, blog post, skill, work experience, education entry, or content image on this portfolio.
 ---
 
 # Contenu du portfolio — création, modification, suppression
@@ -67,6 +67,24 @@ nommés individuels (`import { customCNNArchi } from '../projects_images'`) et n
 
 **Ne charger que le fichier concerné.**
 
+## Effets de bord
+
+Le contenu n'est presque jamais isolé. Avant de clore une modification, poser la question de
+ces répercussions — c'est ce qui sépare une donnée à jour d'un site cohérent.
+
+| Ce qui change | À vérifier aussi |
+|---|---|
+| Poste ou école en cours | `aboutWidgets.currently` — il nomme l'employeur et le cursus. Il est **systématiquement** obsolète après un changement de parcours. |
+| Nouvelle expérience | l'entrée précédente est-elle close ? sa période affiche peut-être encore une fin prévisionnelle |
+| Positionnement pro | `bioText` (rôle affiché), `subtitleMessages`, `aboutWidgets.future` |
+| Nouveau domaine technique | `skills.ts` — les technos du poste manquent peut-être |
+| Titre d'un projet | `relatedProjects` des articles qui le citent |
+| Slug d'un article | `relatedPosts` des projets, et `public/sitemap.xml` |
+| Suppression d'une compétence | `getSkill()` dans les projets — **casse au runtime**, pas à la compilation |
+| Nouveau CV / diplôme | `src/assets/documents/` |
+
+Ne pas appliquer ces changements d'office : les proposer.
+
 ## Déroulé
 
 ### 1. Inventaire — toujours en premier
@@ -93,16 +111,36 @@ oui ; inventer ce qu'il a fait, non.
 bash .claude/skills/portfolio-content/scripts/add-media.sh <projects|blog> <prefixe> <fichier...>
 ```
 
-Convertit en WebP, place le fichier au bon nom, et affiche les 2 fragments à insérer dans
-`index.ts`. L'insertion se fait par édition, pas par le script. Chaque média a besoin d'un
-`alt` rédigé : le validateur bloque sur un `alt` vide.
+Pour une **icône ou un logo** (compétence, organisation, réseau social), c'est l'autre script :
 
-### 4. Écriture
+```bash
+bash .claude/skills/portfolio-content/scripts/add-icon.sh <orga|skills|socials> <nom> <fichier...>
+```
+
+Les deux convertissent en WebP, placent le fichier au bon nom et affichent les fragments à
+insérer dans `index.ts`. L'insertion se fait par édition, pas par le script. Chaque média a
+besoin d'un `alt` rédigé : le validateur bloque sur un `alt` vide.
+
+### 4. Proposer avant d'appliquer
+
+Le contenu est **public et éditorial**. Avant d'écrire quoi que ce soit dans les fichiers,
+présenter le rendu complet — champs fr et en, chemins des fichiers, poids des images après
+conversion — et laisser valider.
+
+Signaler explicitement **tout passage rédigé par soi** plutôt que dicté par l'utilisateur : un
+champ obligatoire sans information fournie (une description absente, par exemple) oblige à
+proposer un brouillon, mais il doit être annoncé comme tel, jamais noyé dans le reste.
+
+Séparer aussi ce qui est demandé de ce qui est déduit d'une convention du dépôt : une
+convention peut être un défaut jamais rouvert autant qu'un choix, c'est à l'utilisateur de
+trancher.
+
+### 5. Écriture
 
 Fichier de données **puis** enregistrement dans le barrel `index.ts` (tableau **et** export
 nommé — les deux, l'oubli du second ne casse rien visiblement mais rompt l'accès direct).
 
-### 5. Vérification — obligatoire avant de rendre la main
+### 6. Vérification — obligatoire avant de rendre la main
 
 ```bash
 bash .claude/skills/portfolio-content/scripts/check.sh          # complet
