@@ -8,7 +8,7 @@ import {
   CareerEntryType,
 } from "./dataTypes";
 import { navLinks, creditsMentions } from "./constants";
-import { CGILogo, FNMNSLogo, IUTInfoLogo, JDBLogo, LGPLogo, NagoyaULogo } from "./orga_icons";
+import { CGILogo, ESIEALogo, FNMNSLogo, IUTInfoLogo, JDBLogo, LGPLogo, NagoyaULogo, ThalesLogo } from "./orga_icons";
 
 // Re-export skills from its new dedicated file
 export { skills } from './skills';
@@ -60,10 +60,10 @@ export const bioText: Array<Biography> = [
       content: {
         fr:
         "Passionné de recherche autour des <strong>systèmes complexes</strong>, notamment en <strong>IA cognitive et évolutive</strong>. \
-        Plus généralement, je suis un <strong>dév. fullstack</strong> d'outils intelligents, alliant <strong>utilité</strong> et <strong>accessibilité</strong>.",
+        Plus généralement, je suis un <strong>ingénieur</strong> d'outils intelligents, alliant <strong>utilité</strong> et <strong>accessibilité</strong>.",
         en:
         "Passionate about research on <strong>complex systems</strong>, especially in <strong>cognitive and evolutionary AI</strong>. \
-        More generally, I'm a <strong>fullstack dev</strong> of intelligent tools, combining <strong>utility</strong> and <strong>accessibility</strong>.",
+        More generally, I'm an <strong>engineer</strong> of intelligent tools, combining <strong>utility</strong> and <strong>accessibility</strong>.",
       },
       active: true,
     },
@@ -176,8 +176,8 @@ export const aboutWidgets: Array<AboutWidget> = [
     },
     content:
     {
-      fr: "En dernière année <strong>BUT Informatique</strong> à <strong>l'IUT de Bordeaux.</strong> En <strong>alternance</strong> chez CGI.",
-      en: "In my last year of <strong>Bachelor degree in Computer Science</strong> at the <strong>IUT of Bordeaux.</strong> In <strong>apprenticeship</strong> at CGI.",
+      fr: "En <strong>cycle ingénieur</strong> à l'<strong>ESIEA Paris</strong>, spécialité IA et Data. <strong>Apprenti</strong> chez Thales à Cholet.",
+      en: "In an <strong>engineering programme</strong> at <strong>ESIEA Paris</strong>, majoring in AI and Data. <strong>Apprentice</strong> at Thales in Cholet.",
     },
   },
   {
@@ -243,17 +243,69 @@ export const careerTimeline: Array<CareerEntry> = [
   {
     type: CareerEntryType.EXPERIENCE,
     title: {
-      fr: "Ingénieur logiciel en Alternance",
-      en: "Software Engineer in Apprenticeship",
+      fr: "Ingénieur IA et Radiocomms",
+      en: "AI and Radiocomms Engineer",
     },
     organization: {
-      fr: "CGI",
-      en: "CGI",
+      fr: "Thales, Cholet",
+      en: "Thales, Cholet, France",
+    },
+    icon: ThalesLogo,
+    period: {
+      fr: "Sept. 2026\nAoût 2029",
+      en: "Sept. 2026\nAug. 2029",
+    },
+    description: {
+      fr: "Recherche, prototypage et benchmarking de solutions LLM appliquées à la synchronisation \
+      de radiocommunications. Habilitation défense.",
+      en: "Research, prototyping and benchmarking of LLM solutions applied to radiocommunication \
+      synchronization. Defense security clearance.",
+    },
+    tags: {
+      fr: ["Alternance", "LLM", "Agile", "Recherche", "TSI"],
+      en: ["Apprenticeship", "LLM", "Agile", "Research", "SIP"],
+    }
+  },
+  {
+    type: CareerEntryType.EDUCATION,
+    title: {
+      fr: "Ingénieur Informatique",
+      en: "Engineer's Degree in Computer Science",
+    },
+    organization: {
+      fr: "ESIEA, Paris",
+      en: "ESIEA, Paris",
+    },
+    icon: ESIEALogo,
+    period: {
+      fr: "Sept. 2026\nAoût 2029",
+      en: "Sept. 2026\nAug. 2029",
+    },
+    description: {
+      fr: "Cycle ingénieur à l'École Supérieure d'Informatique et d'Électronique Automatique, \
+      spécialité intelligence artificielle et science des données.",
+      en: "Engineering programme at the École Supérieure d'Informatique et d'Électronique Automatique, \
+      majoring in artificial intelligence and data science.",
+    },
+    tags: {
+      fr: ["IA", "Méca", "Management", "CTI"],
+      en: ["AI", "Mech.", "Management", "CTI"],
+    }
+  },
+  {
+    type: CareerEntryType.EXPERIENCE,
+    title: {
+      fr: "Ingénieur logiciel",
+      en: "Software Engineer",
+    },
+    organization: {
+      fr: "CGI, Bordeaux",
+      en: "CGI, Bordeaux",
     },
     icon: CGILogo,
     period: {
-      fr: "Sept. 2025\nSept. 2026",
-      en: "Sept. 2025\nSept. 2026",
+      fr: "Sept. 2025\nAoût 2026",
+      en: "Sept. 2025\nAug. 2026",
     },
     description: {
       fr: "R&D sur le projet Grand Angle, ERP à destination des collectivités territoriales. Affecté au module de gestion du cycle de vie des flux financiers \
@@ -261,7 +313,7 @@ export const careerTimeline: Array<CareerEntry> = [
       en: "R&D on Grand Angle, an ERP for local governments. Assigned to the financial flow lifecycle management module and PES exchanges.",
     },
     tags: {
-      fr: ["Alt.", "Agile", "Conception"],
+      fr: ["Alternance", "Agile", "Conception"],
       en: ["Apprenticeship", "Agile", "Design"],
     }
   },

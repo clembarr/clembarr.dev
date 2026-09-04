@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "sitemap": "node scripts/generate-sitemap.js",
+    "validate": "node scripts/validate-data.js",
     "predeploy": "npm run sitemap && npm run build",
     "deploy": "gh-pages -d dist",
     "deploy:full": "bash scripts/deploy.sh"
