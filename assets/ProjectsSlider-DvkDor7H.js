@@ -1,4 +1,4 @@
-import{j as o}from"./vendor-animation-NadEQFtp.js";import{L as $,T as S,h as _,a as k,b as M,s as a,C as z,S as A,c as P,d as F,e as D,m as T,f as h,p as X,r as v}from"./index-Dl5Or-_A.js";import{r as n,L as Y}from"./vendor-react-DxOmqXaI.js";import"./vendor-utils-D24pSdc9.js";const q=({project:s,additionalStyles:p,onanimationend:d})=>{const{currentLang:l}=n.useContext($),{currentTheme:g}=n.useContext(S),c=n.useRef(null),x=g==="dark";return o.jsxs("div",{ref:c,id:`card-${s.title[l]}-container`,className:`
+import{j as o}from"./vendor-animation-NadEQFtp.js";import{L as $,T as S,h as _,a as k,b as M,s as a,C as z,S as A,c as P,d as F,e as D,m as T,f as h,p as X,r as v}from"./index-0_QTxbVJ.js";import{r as n,L as Y}from"./vendor-react-DxOmqXaI.js";import"./vendor-utils-D24pSdc9.js";const q=({project:s,additionalStyles:p,onanimationend:d})=>{const{currentLang:l}=n.useContext($),{currentTheme:g}=n.useContext(S),c=n.useRef(null),x=g==="dark";return o.jsxs("div",{ref:c,id:`card-${s.title[l]}-container`,className:`
         group
         ${a.sizeFull}
         xl:max-h-[75%] lg:max-h-[65%] md:max-h-[65%] sm:max-h-[70%] ss:max-h-[65%] xs:max-h-[60%] max-h-[60%]
