@@ -49,6 +49,34 @@ import eew_lang_traj from "./eew_lang_trajectories.png"
 import eew_traj_bias from "./eew_lang_traj_bias.png"
 import eew_traj_emerge_score from "./eew_traj_emerge_score.png"
 import eew_traj_dyna from "./eew_lang_dyna.png"
+import ffbf_architecture from "./ffbf_architecture.svg"
+import ffbf_bench from "./ffbf_bench.gif"
+import ffbf_novelty_map_over_time from "./ffbf_novelty_map_over_time.webp"
+import ffbf_memory from "./ffbf_memory.webp"
+
+export const ffbfArchitecture: ProjectMedia = {
+    url: ffbf_architecture,
+    type: MediaType.IMAGE,
+    alt: "Schéma en trois étapes du filtre FFBF : le vecteur d'entrée, les détecteurs qui s'activent, puis la mémoire des poids."
+}
+
+export const ffbfBench: ProjectMedia = {
+    url: ffbf_bench,
+    type: MediaType.IMAGE,
+    alt: "Animation de la démo interactive : un stimulus est envoyé, les détecteurs gagnants s'allument, la mémoire encaisse un creux et le score se place contre la ligne de base mobile."
+}
+
+export const ffbfNoveltyMapOverTime: ProjectMedia = {
+    url: ffbf_novelty_map_over_time,
+    type: MediaType.IMAGE,
+    alt: "Les mêmes cinquante lignes de log placées par sens, à quatre moments du flux. Seule leur teinte change : le groupe de routine pâlit puis fonce quand l'incident prend le dessus."
+}
+
+export const ffbfMemory: ProjectMedia = {
+    url: ffbf_memory,
+    type: MediaType.IMAGE,
+    alt: "Les 1 200 poids de la mémoire après un incident. À gauche l'ensemble, creux et peu utilisé ; à droite trois poids suivis au fil du flux, avec leurs paliers de baisse et de récupération."
+}
 
 export const eewTrajDyna: ProjectMedia = {
     url: eew_traj_dyna,

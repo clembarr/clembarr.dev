@@ -105,6 +105,13 @@ Poser **toutes** les questions manquantes d'un coup, avec des valeurs par défau
 paragraphes d'article. Proposer une reformulation ou une traduction fr↔en de ce qu'il a fourni,
 oui ; inventer ce qu'il a fait, non.
 
+**Jamais de tiret cadratin (`—`) dans le contenu produit** — ni dans les descriptions, specs,
+notions, `alt`, tags, ni dans aucun texte destiné au site. Utiliser deux-points, parenthèses,
+point ou virgule selon le cas.
+
+**Dans les `specs`, jamais de saut de ligne (paragraphe vide) : la place est comptée.**
+Séparer les mouvements du récit par un simple retour à la ligne `<br>`, dans une seule chaîne.
+
 ### 3. Médias
 
 ```bash

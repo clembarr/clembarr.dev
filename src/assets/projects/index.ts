@@ -14,6 +14,7 @@ import { votator } from './votator';
 import { scalewayDeployment } from './scaleway-deployement';
 import { customCNN } from './custom_cnn';
 import { eccSae } from './ecc_sae';
+import { noveltyDetection } from './novelty-detection';
 
 /**
  * All projects - maintains array interface for backward compatibility
@@ -21,6 +22,7 @@ import { eccSae } from './ecc_sae';
  */
 export const projects: Retex[] = [
   veridisquo,
+  noveltyDetection,
   scalewayDeployment,
   gpgtool,
   eewAnalyzer,
@@ -43,5 +45,6 @@ export {
   votator,
   scalewayDeployment,
   customCNN,
-  eccSae
+  eccSae,
+  noveltyDetection
 };
