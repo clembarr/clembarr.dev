@@ -1210,3 +1210,6 @@ export const SLIDER_PERSPECTIVE = '1000px';
 
 /** CSS perspective depth for the projects listing grid (px). */
 export const PROJECTS_LISTING_PERSPECTIVE = '2000px';
+
+/** Number of events displayed by the home page news feed. */
+export const NEWS_EVENT_COUNT = 3;

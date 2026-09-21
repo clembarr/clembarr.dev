@@ -421,6 +421,25 @@ export interface BlogPost extends Project {
   relatedProjects?: string[];
 }
 
+/** The content types surfaced in the home page news feed. */
+export enum NewsEventKind {
+  PROJECT = "PROJECT",
+  POST = "POST",
+}
+
+/**
+ * @interface NewsEvent
+ * @description A dated entry of the news feed, built at runtime from the content layer.
+ * It stores nothing of its own: the source content holds the title, the description and
+ * the date the feed is sorted on. Discriminated on `kind` so consumers reach the fields
+ * specific to a project or to a post without casting.
+ * @property kind - The content type this event was derived from.
+ * @property source - The project or blog post the event points to.
+ */
+export type NewsEvent =
+  | { kind: NewsEventKind.PROJECT; source: Retex }
+  | { kind: NewsEventKind.POST; source: BlogPost };
+
 /**
  * Structure of SEO constants for a page.
  */
