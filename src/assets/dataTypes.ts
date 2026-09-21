@@ -208,6 +208,7 @@ export interface Project {
   coverImage: string | ProjectMedia;
   date: Date;
   favorite?: boolean;
+  excludeFromNews?: boolean; // Keeps the entry out of the home page news feed
   img?: string[] | ProjectMedia[]; // Kept for backward compatibility
 }
 

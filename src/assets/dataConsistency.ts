@@ -245,6 +245,10 @@ const validateProjects = (ctx: ValidationContext): void => {
       ctx.errors.push(`[${projectId}] "favorite" must be a boolean`);
     }
 
+    if (project.excludeFromNews !== undefined && typeof project.excludeFromNews !== 'boolean') {
+      ctx.errors.push(`[${projectId}] "excludeFromNews" must be a boolean`);
+    }
+
     // Content validation
     if (!project.content) {
       ctx.errors.push(`[${projectId}] Missing content object`);
@@ -331,6 +335,10 @@ const validateBlogPosts = (ctx: ValidationContext): void => {
       ctx.errors.push(`[${postId}] Missing coverImage`);
     } else {
       validateMedia(post.coverImage, `${postId} - coverImage`, ctx);
+    }
+
+    if (post.excludeFromNews !== undefined && typeof post.excludeFromNews !== 'boolean') {
+      ctx.errors.push(`[${postId}] "excludeFromNews" must be a boolean`);
     }
 
     if (!post.category) {

@@ -6,7 +6,7 @@ import { useContext, useCallback, useEffect, useRef, useState } from 'react';
 import { LangContext } from '../language';
 import { coreImages, menuIcons } from '../../assets';
 import { RetexContext } from './RetexDisplayEngine'
-import { placeholderMessages } from '../../assets/constants';
+import { PageTransitionsConstants, placeholderMessages, RETEX_TEXT_SETTLE_MARGIN_MS } from '../../assets/constants';
 import RetexHeader from './RetexHeader';
 import RetexGalleryViewer from './RetexGalleryViewer';
 import { ThemeContext } from "../theme/ThemeEngine";
@@ -105,7 +105,32 @@ const RetexViewer = () => {
 
     useEffect(() => {
         setMaxNotions(Infinity);
-        handleTextOverflow();
+
+        /** handleTextOverflow measures the rendered boxes to pick a font size, so it is
+         *  only right once the layout has settled. Two passes, because the viewer is
+         *  reached two ways. The early one covers a viewer opening in place: the frame
+         *  after the next paint, once the web fonts are in. The late one covers arriving
+         *  from the news section, which opens the viewer through a route change — boxes
+         *  measured while that transition still runs give a wrong size, so measure again
+         *  once it is over. */
+        let frame = 0;
+        const measureWhenPainted = () => {
+            frame = requestAnimationFrame(() => {
+                frame = requestAnimationFrame(() => handleTextOverflow());
+            });
+        };
+
+        document.fonts.ready.then(measureWhenPainted).catch(measureWhenPainted);
+
+        const settled = setTimeout(
+            () => handleTextOverflow(),
+            PageTransitionsConstants.DURATION * 1000 + RETEX_TEXT_SETTLE_MARGIN_MS
+        );
+
+        return () => {
+            cancelAnimationFrame(frame);
+            clearTimeout(settled);
+        };
     }, [displayedRetexTitle, toggleGallery, currentLang, handleTextOverflow]);
 
     useEffect(() => {

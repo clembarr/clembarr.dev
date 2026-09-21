@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect, useRef, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { projects } from "../../assets/contents";
 import styles from "../../style"
 import ProjectPreview from "../cards/ProjectPreview";
@@ -25,10 +26,24 @@ const ProjectsListing = () => {
     const { toMatch } = useContext(SearchContext);
     const { currentLang } = useContext(LangContext);
     const [ displayedProjects, setDisplayedProjects ] = useState(projects);
-    const { displayedRetexTitle } = useContext(RetexContext);
+    const { displayedRetexTitle, setDisplayedRetex } = useContext(RetexContext);
+    const location = useLocation();
+    const navigate = useNavigate();
     const {currentTheme} = useContext(ThemeContext);
     const [isMobile, setIsMobile] = useState((getActiveBreakpoint("number") as number >= 2));
-    
+
+    /** The news section sends a project here rather than opening it on the home page:
+     *  the retex viewer lives on this page. Opening happens once this listing is
+     *  rendered, then the navigation state is cleared so a back and forth does not
+     *  reopen the retex on its own. */
+    useEffect(() => {
+        const requestedRetex = (location.state as { retexTitle?: string } | null)?.retexTitle;
+        if (!requestedRetex) return;
+
+        setDisplayedRetex(requestedRetex);
+        navigate(location.pathname, { replace: true, state: null });
+    }, [location.pathname, location.state, navigate, setDisplayedRetex]);
+
     useEffect(() => {
         const handleResize = () => {
             const avbp = getActiveBreakpoint("number") as number;

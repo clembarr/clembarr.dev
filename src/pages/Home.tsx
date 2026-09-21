@@ -6,11 +6,11 @@ import { SuspenseFallback } from "../components";
 import { MetaTags, StructuredData } from "../components/seo";
 import { HomeSEOConstants, personSchema, websiteSchema } from '../assets/constants';
 
-const ProjectsSlider = lazy(() => import("../components/sections/ProjectsSlider"));
+const News = lazy(() => import("../components/sections/News"));
 
 /**
  * @component Home
- * @description Home page. Lazy-loads ProjectsSlider to keep the initial bundle small.
+ * @description Home page. Lazy-loads News to keep the initial bundle small.
  * Sections are revealed on scroll via ScrollReveal wrappers.
  */
 const Home = () => {
@@ -53,14 +53,14 @@ const Home = () => {
       </ScrollReveal>
 
       <ScrollReveal direction="up" delay={0.3}>
-        <div id="projects-slider-container"
+        <div id="news-container"
           className={`
             ${styles.sectionContainer}
             overflow-visible
           `}
         >
           <Suspense fallback={<SuspenseFallback />}>
-            <ProjectsSlider />
+            <News />
           </Suspense>
         </div>
       </ScrollReveal>

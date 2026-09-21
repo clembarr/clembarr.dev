@@ -20,6 +20,7 @@ import {
   BlogCategory,
   GalleryControl,
   GalleryAction,
+  MultilingualContent,
 } from "./dataTypes";
 import { UNIVERSAL_LANG } from "../utils/translationUtils";
 import { emailAPI } from "./configConstants";
@@ -1199,17 +1200,33 @@ export const HERO_BACKSPACE_SPEED_MS = 1;
 /** Pause in ms after a subtitle is fully typed before backspacing begins. */
 export const HERO_TYPING_PAUSE_MS = 4000;
 
-/** Interval in ms between each card appearing in the projects slider stack. */
-export const SLIDER_CARD_INTERVAL_MS = 200;
-
-/** Per-card timeout multiplier in ms for the slider apparition end detection. */
-export const SLIDER_CARD_APPARITION_TIMEOUT_MS = 400;
-
-/** CSS perspective depth for the projects slider stack (px). */
-export const SLIDER_PERSPECTIVE = '1000px';
-
 /** CSS perspective depth for the projects listing grid (px). */
 export const PROJECTS_LISTING_PERSPECTIVE = '2000px';
 
 /** Number of events displayed by the home page news feed. */
 export const NEWS_EVENT_COUNT = 3;
+
+/**
+ * Extra delay in ms before the retex viewer measures its text a second time. Added to
+ * the page transition duration: the news section reaches the viewer through a route
+ * change, and boxes measured while that transition still runs give a wrong font size.
+ */
+export const RETEX_TEXT_SETTLE_MARGIN_MS = 120;
+
+/**
+ * Heading of the news section. Written as an aside rather than a title: the cards are
+ * the section, this line only introduces them.
+ */
+export const newsSectionTitle: MultilingualContent = {
+  fr: "Dernièrement..",
+  [UNIVERSAL_LANG]: "Lately..",
+};
+
+/** Link sitting under the news cards, leading to the full projects listing. */
+export const newsAllProjectsLink: Hyperlink = {
+  content: {
+    fr: "Tous les projets",
+    [UNIVERSAL_LANG]: "All projects",
+  },
+  link: "/projects",
+};
