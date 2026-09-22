@@ -108,8 +108,12 @@ le repli par défaut. Suivre cette convention plutôt que d'écrire une clé `en
 ## Vérifier
 
 ```bash
-npm run lint && npm run build && npm run sitemap
+npm run lint && npm run build && npm run sitemap && npm test
 ```
+
+Une section neuve porte une ancre et un rendu : `npm run test:e2e` vérifie que l'ancre
+pointe bien sur elle. Le test qui parcourt les liens de la navbar la couvre sans rien
+écrire de plus, dès que son `id` et son entrée de `navLinks` concordent.
 
 Puis, à l'œil : l'ancre du menu descend bien sur la section, dans les deux thèmes et les
 deux langues.

@@ -1,0 +1,77 @@
+name: CI
+
+# Code lands on dev, content on feed, and both reach production through a merge on main.
+# The pipeline therefore guards those two branches and every pull request opened onto
+# main; deployment stays a manual step, run from main.
+on:
+  push:
+    branches: [dev, feed]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: types, lint, content and unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # tsc -b covers src, the three tsconfig projects and the test files.
+      - name: Typecheck and build
+        run: npm run build
+
+      # The repository carries pre-existing lint findings; this reports them without
+      # failing the run. Turn it blocking once the count is down to zero.
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true
+
+      # Blocking: this is what catches a relatedProjects pointing at a renamed project,
+      # a getSkill label typo, an empty alt — the errors that compile fine and break at
+      # runtime. It was at zero errors when the pipeline was written.
+      - name: Validate content
+        run: npm run validate
+
+      - name: Unit tests
+        run: npm test
+
+  e2e:
+    name: end to end
+    runs-on: ubuntu-latest
+    needs: checks
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Only chromium: the suite runs a desktop and a mobile profile, both on it.
+      - name: Install the browser
+        run: npx playwright install --with-deps chromium
+
+      - name: End to end tests
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

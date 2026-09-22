@@ -5,9 +5,14 @@ description: Évolution du code de clembarr.dev — créer ou modifier une secti
 
 # Code du portfolio — sections, styles, i18n, architecture
 
-Ce dépôt n'a **ni test ni CI** : `.github/` ne contient que deux dossiers vides. Le seul
-filet est `tsc -b` (via `npm run build`) et `src/assets/dataConsistency.ts`. Or les liens
-entre les couches de ce site sont des **chaînes de caractères**, que `tsc` ne voit pas.
+Le filet de ce dépôt tient en quatre commandes : `tsc -b` (via `npm run build`),
+`src/assets/dataConsistency.ts` (`npm run validate`), et depuis septembre 2026 deux suites
+de tests — `npm test` (Vitest) et `npm run test:e2e` (Playwright) — rejouées par une CI sur
+`dev`, `feed` et les pull requests vers `main`.
+
+Aucune des quatre ne voit tout. Les liens entre les couches de ce site sont des **chaînes
+de caractères**, que `tsc` ignore ; et jsdom n'a pas de moteur de rendu, donc la suite
+unitaire est aveugle au layout.
 
 Ce skill décrit ces couplages, les conventions du dépôt, et la façon d'écrire du code qui
 ressemble au reste.
@@ -69,7 +74,8 @@ vérifier avant d'agir coûte moins cher que de les défaire.
 | Importer depuis `react-router-dom` | Le dépôt utilise **`react-router` v7**, sans le `-dom` |
 | Ajouter Prettier, ESLint stylistique ou `.editorconfig` | Aucun n'existe. La mise en forme se lit dans les fichiers : voir `references/style-code.md` |
 | Introduire des CSS Modules ou `styled-components` | Tout est Tailwind + `src/style.tsx`. Aucun `.module.css` dans le dépôt |
-| Installer Vitest « pour ajouter un test » | Aucun harnais de test. En proposer un est une décision d'architecture, pas un détail d'implémentation : le demander |
+| Installer un harnais de test, ou supposer qu'il n'y en a pas | Vitest, Testing Library et Playwright sont en place, avec leurs conventions : voir `references/tests.md` |
+| Écrire un test de position ou de visibilité en jsdom | Il passera toujours, même sur du code cassé : aucune mesure n'y est calculée. Ce test appartient à la suite e2e |
 | Ajouter une dépendance pour un besoin ponctuel | Vérifier d'abord `src/utils/utils.ts` et les 12 dépendances déjà présentes |
 
 ## Où aller selon la demande
@@ -80,6 +86,7 @@ vérifier avant d'agir coûte moins cher que de les défaire.
 | traduction, langue, fr/en, texte non traduit | `references/i18n.md` |
 | couleur, thème, sombre/clair, espacement, responsive, police, z-index | `references/styling.md` |
 | refonte, refactor, déplacer, renommer, contexte, dépendance, bundle | `references/architecture.md` |
+| test, suite, couverture, CI, non-régression, Playwright, Vitest | `references/tests.md` |
 
 **Ne charger que le fichier concerné.**
 
@@ -124,11 +131,17 @@ guident au lieu de s'accumuler.
 ### 5. Vérification — obligatoire avant de rendre la main
 
 ```bash
-npm run lint && npm run build && npm run validate
+npm run lint && npm run build && npm run validate && npm test
 ```
 
-`npm run build` fait `tsc -b` : c'est le contrôle de typage. `npm run validate` ne couvre
-que le contenu, mais un changement de type ou de structure s'y voit.
+`npm run build` fait `tsc -b` : c'est le contrôle de typage, et il couvre aussi les
+fichiers de `tests/` via `tsconfig.test.json`. `npm run validate` ne couvre que le contenu,
+mais un changement de type ou de structure s'y voit.
+
+`npm run test:e2e` en plus dès que la modification touche au rendu, à une route, à un
+parcours ou à une préférence — il démarre un serveur de dev et coûte une quarantaine de
+secondes. Toute logique non triviale ajoutée repart avec son test : `references/tests.md`
+dit lequel des deux harnais, et pourquoi le choix n'est pas libre.
 
 ⚠️ Si ces commandes répondent `eslint: command not found` ou `tsc: command not found`, les
 liens de `node_modules/.bin/` sont cassés : ils pointent en absolu vers l'emplacement d'une
@@ -150,26 +163,44 @@ ouvert. Le commit est une décision de l'utilisateur.
 
 ## Lignes de base
 
-Ces commandes ne sortent pas propres aujourd'hui. Ne pas chercher à atteindre zéro, ne pas
-faire monter les compteurs, et signaler tout écart introduit par la modification en cours.
+Mesuré le 22/09/2026. Quatre des cinq commandes sortent propres : toute nouvelle ligne
+rouge vient de la modification en cours. La cinquième, `lint`, traîne trois erreurs
+préexistantes qu'il n'est pas demandé de ramener à zéro — seulement de ne pas grossir.
+
+Ces compteurs bougent avec le dépôt : les recompter plutôt que les croire sur parole.
 
 | Commande | État de référence |
 |---|---|
 | `tsc -b` (via `npm run build`) | **propre** — toute erreur est nouvelle |
-| `npm run lint` | 3 erreurs, 16 avertissements |
-| `npm run validate` | 1 erreur, 33 avertissements |
+| `npm test` | **126 tests verts** — tout échec est une régression |
+| `npm run test:e2e` | **63 passés, 11 ignorés** (profil de viewport inadapté) |
+| `npm run validate` | **0 erreur**, 33 avertissements |
+| `npm run lint` | 3 erreurs, 15 avertissements |
 
-Les 3 erreurs d'ESLint : un `prefer-const` dans `SkillConstellation.tsx:95`, deux
-`no-explicit-any` dans `BlogPost.tsx`. Les avertissements sont pour l'essentiel des
-`react-hooks/exhaustive-deps`.
+⚠️ **`npm run lint` affiche bien plus que ça sur cette machine, et le surplus est faux.**
+`eslint.config.js` n'ignore que `dist` : le lint descend donc aussi dans
+`.claude/worktrees/`, où dorment des copies entières du dépôt laissées par des agents.
+Chacune remonte les mêmes erreurs, et le compteur affiché est un multiple du vrai. Lire le
+compte réel en écartant ces copies :
 
-L'erreur du validateur est réelle et instructive : `[eew-language-biases] relatedProjects references
-unknown project "EEW Analyzer"` — le projet a été renommé « LLM as a Judge » sans mettre à
-jour l'article qui le cite. C'est exactement la règle d'or n° 1 en action. La corriger
-relève de `portfolio-content`.
+```bash
+npx eslint . -f json | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const r=JSON.parse(d).filter(f=>!f.filePath.includes('.claude/worktrees'));let e=0,w=0;r.forEach(f=>f.messages.forEach(m=>m.severity===2?e++:w++));console.log(e,'erreurs,',w,'avertissements')})"
+```
 
-Ne pas faire monter le nombre d'erreurs. Si une modification produit un avertissement, le
-signaler.
+La CI ne connaît pas ce biais : `.claude/` est gitignoré, le runner ne voit que le vrai
+code. Ajouter `.claude` aux `ignores` d'ESLint réglerait l'écart en local — à proposer.
+
+Les 3 erreurs réelles : un `prefer-const` dans `SkillConstellation.tsx:95`, deux
+`no-explicit-any` dans `BlogPost.tsx` (lignes 55 et 69). Les avertissements sont pour
+l'essentiel des `react-hooks/exhaustive-deps`. C'est pour ces trois erreurs que l'étape de
+lint est en `continue-on-error` dans la CI ; elle passera bloquante quand elles auront
+disparu.
+
+Les 11 tests e2e ignorés le sont par `test.skip` sur la largeur du viewport : le retex
+change de forme à `lg`, et un test de la mise en page de bureau n'a rien à vérifier sur un
+profil mobile. Ce compte est attendu, pas un symptôme.
+
+Si une modification produit un avertissement, le signaler.
 
 ## Écarts connus — ne pas imiter, ne pas corriger d'office
 
@@ -185,11 +216,16 @@ l'occasion se présente, pas traités en silence.
 | `ThemeEngine` ignore `prefers-color-scheme` et `index.html` sert `class="root light"` : flash clair au chargement en mode sombre | À proposer |
 | `getContent()` existe mais les composants indexent en direct `x[currentLang]` | cf. `references/i18n.md` — correctif large, à proposer |
 | `pkg-dir` est en dépendance et n'est importé nulle part | Suppression à proposer |
-| `npm run validate` n'est branché ni sur `build` ni sur `predeploy` | À proposer |
+| `npm run validate` est bloquant en CI mais toujours branché ni sur `build` ni sur `predeploy` | Un déploiement lancé en local peut donc partir avec des erreurs de contenu. À proposer |
 | `About.tsx` : `useMemo(() => tagsWidget("hobbies"), [currentLang])` a une dépendance manquante, et `aboutWidgets.content` force des casts `as unknown as` | Dette de typage — ne pas la reproduire dans du code neuf |
 | `CareerTimeline.tsx` trie sur `period['fr']` en dur | Casse si la clé `fr` disparaît — à proposer |
 | `SkillConstellation.tsx` — 311 lignes de canvas, ré-exporté par son barrel et importé par aucun composant | Code mort. Suppression à proposer |
 | La police Kanit est chargée sur chaque page et appliquée à aucun élément (`font-tertiary` : 0 usage) | Coût réseau réel — à proposer |
 | `style.tsx` n'est adopté qu'en partie : `glass`, `glassCard`, `glassNav`, `glassModal`, `card`, `cardElevated`, les quatre boutons et `heroHeading` ne sont importés nulle part | Les composants réécrivent ces styles à la main. Ne pas supposer qu'une clé de `style.tsx` est en service |
 | `--color-navbar-bg` n'est déclaré que dans `.light` alors que `Navbar.tsx:85` l'utilise | Déclaration sans effet en sombre : `backdrop-blur-md` prend le relais et le rendu est correct. Ne pas « réparer » |
+| `Dropdown.tsx` code ses `id` en dur (`dropdown-button`, `items-list`) et le composant est monté 3 fois par page | HTML invalide, et tout sélecteur doit être scopé (`#navbar-options #dropdown-button`). À proposer |
+| `ArticleLayout.tsx:222` renumérote ses parts à chaque paragraphe : six éléments portent `id="paragraph-0-content"` | Aucun `getElementById` ne s'y appuie, l'impact est nul aujourd'hui. À proposer |
+| `Dropdown.tsx:59` interpole `additionalButtonStyles`, optionnel, sans repli : la classe littérale `undefined` atterrit dans le DOM | Cosmétique. À proposer |
+| `adjustFontSize` (`utils.ts:398`) écrit `container.innerText.length \|\| 0` — le repli s'exécute après l'accès, il ne protège pas d'une propriété absente | Sans effet en navigateur, où `innerText` existe toujours. `?.` serait juste. À proposer |
+| Un titre de projet sans clé `UNIVERSAL_LANG` (`scaleway-deployement.ts`) fait dépendre sa clé relationnelle de l'ordre de déclaration des langues, via le repli de `getContent` | Fonctionne, mais réordonner `fr` et `en` changerait la clé que vise `relatedProjects`. À proposer |
 | `validateMultilingual` saute le contrôle par langue dès qu'`UNIVERSAL_LANG` est présent | Rend la validation des traductions quasi inopérante — cf. `references/i18n.md` |

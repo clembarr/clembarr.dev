@@ -41,9 +41,10 @@ sans qu'aucun outil ne le signale.
 de constantes éclatés (`configConstants`, `motionConstants`, `uiConstants`, `seoConstants`).
 Les nouveaux imports peuvent viser directement le bon fichier.
 
-## Refactorer sans tests
+## Refactorer
 
-`tsc -b` couvre les renommages de **symboles**. Il ne voit rien de ce qui suit :
+`tsc -b` couvre les renommages de **symboles**. Les deux suites de tests couvrent le
+comportement (`references/tests.md`). Aucun des trois ne voit ce qui suit :
 
 | Ce qui casse en silence | Comment le retrouver |
 |---|---|
@@ -51,8 +52,11 @@ Les nouveaux imports peuvent viser directement le bon fichier.
 | Label de compétence passé à `getSkill()` | `node .claude/skills/portfolio-content/scripts/inventory.js skills` |
 | `relatedProjects` / `relatedPosts` | `npm run validate` |
 | Import de média supprimé ou renommé | `node .claude/skills/portfolio-content/scripts/orphans.js` |
-| Clé de langue attendue par un composant | rien — voir `references/i18n.md` |
+| Clé de langue attendue par un composant | partiellement `npm test` — voir `references/i18n.md` |
 | Token CSS présent dans un seul bloc de thème | rien — voir `references/styling.md` |
+
+Après un refactor large, la suite e2e est le contrôle le plus proche de ce que verra un
+visiteur : `npm run test:e2e`.
 
 Le réflexe avant un renommage large : **chercher la chaîne littérale**, pas seulement le
 symbole. Après : `npm run validate` puis `orphans.js`.
@@ -67,8 +71,8 @@ vérifie à l'exécution. Le module est importé pour effet de bord par `src/mai
 tourne automatiquement en développement, et en CLI via `npm run validate`.
 
 **Les deux évoluent ensemble.** Un champ ajouté à un type sans règle de validation est un
-champ que personne ne vérifiera jamais — et dans un dépôt sans tests, le validateur *est*
-le filet.
+champ que personne ne vérifiera jamais : les tests portent sur le code, le validateur est
+le seul à porter sur le contenu.
 
 Les validateurs existants suivent tous la même signature : `(ctx: ValidationContext) =>
 void`, poussant sur `ctx.errors` (bloquant) ou `ctx.warnings` (informatif). Les ajouter à
@@ -97,7 +101,8 @@ confiance, pas une précaution facultative.
 ## Déploiement
 
 - `npm run deploy` → `predeploy` (`npm run sitemap && npm run build`) → `gh-pages -d dist`.
-  Manuel, depuis un poste de développement. Il n'y a **aucune CI**.
+  Manuel, depuis un poste de développement. La CI (`.github/workflows/ci.yml`) vérifie mais
+  **ne publie rien** : elle tourne sur `dev`, `feed` et les pull requests vers `main`.
 - `npm run deploy:full` lance `scripts/deploy.sh`, qui **ne déploie pas** : il nettoie,
   vérifie les types, construit, affiche les tailles de bundle et imprime les instructions.
   Il n'appelle jamais `gh-pages`, et ne lance pas `npm run validate`.
@@ -118,6 +123,8 @@ confiance, pas une précaution facultative.
 ## Vérifier
 
 ```bash
-npm run lint && npm run build && npm run validate
+npm run lint && npm run build && npm run validate && npm test
 node .claude/skills/portfolio-content/scripts/orphans.js
 ```
+
+Et `npm run test:e2e` dès que le refactor touche au rendu ou à un parcours.

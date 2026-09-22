@@ -1,7 +1,8 @@
 # Style d'écriture du code
 
 Il n'y a **ni Prettier ni `.editorconfig`** dans ce dépôt. Les conventions ne vivent que
-dans les fichiers. Les chiffres ci-dessous sont mesurés sur les 104 fichiers de `src/`.
+dans les fichiers. Les chiffres ci-dessous sont mesurés sur les 104 fichiers de `src/`, et
+valent aussi pour `tests/` : un fichier de test est du code du dépôt, JSDoc comprise.
 
 **Règle première : s'aligner sur le fichier qu'on modifie.** Le tableau ne tranche que pour
 un fichier neuf.
@@ -157,5 +158,5 @@ export { ExampleEngine, ExampleContext };
 ## Vérifier
 
 ```bash
-npm run lint && npm run build
+npm run lint && npm run build && npm test
 ```
