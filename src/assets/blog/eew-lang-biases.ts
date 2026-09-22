@@ -309,5 +309,5 @@ export const eewLangBiases: BlogPost = {
         },
     ],
     tableOfContents: true,
-    relatedProjects: ["EEW Analyzer"],
+    relatedProjects: ["LLM as a Judge"],
 };

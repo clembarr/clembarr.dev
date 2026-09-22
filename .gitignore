@@ -41,3 +41,6 @@ Showcase.*
 sandbox
 sandbox/*
 Sandbox.*
+# tests
+test-results
+playwright-report

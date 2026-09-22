@@ -26,8 +26,6 @@ const RetexViewer = () => {
     const [toggleGallery, setToggleGallery] = useState<boolean>(false);
     const galleryToggleState = useRef<boolean>(toggleGallery);
 
-    const galleryButton = useRef<HTMLButtonElement>(null);
-    const galleryPreview = useRef<HTMLDivElement>(null);
     const specsContainer = useRef<HTMLSpanElement>(null);
     const notionsContainer = useRef<HTMLSpanElement>(null);
     const notionsList = useRef<HTMLUListElement>(null);
@@ -132,16 +130,6 @@ const RetexViewer = () => {
             clearTimeout(settled);
         };
     }, [displayedRetexTitle, toggleGallery, currentLang, handleTextOverflow]);
-
-    useEffect(() => {
-        const button = galleryButton.current;
-        const buttonContainer = galleryPreview.current;
-        if (!button || !buttonContainer) return;
-
-        //Center absolute button in its parent container
-        button.style.top = `${(buttonContainer.clientHeight - button.clientHeight) / 2 -2}px`;
-        button.style.left = `${(buttonContainer.clientWidth - button.clientWidth) / 2}px`;
-    }, [currentLang, displayedRetexTitle, toggleGallery]);
 
     const relatedProject = projects.find((project) => {
         return (translate(project.title, currentLang) === displayedRetexTitle
@@ -332,7 +320,6 @@ const RetexViewer = () => {
                             `}
                         >
                             <span id='retex-gallery-preview'
-                                ref={galleryPreview}
                                 className={`
                                     ${styles.sizeFull}
                                     ${projectMedia.length !== 1 ? 
@@ -368,9 +355,10 @@ const RetexViewer = () => {
 
                                 {projectMedia.length !== 1 ?
                                     <button id='retex-gallery-button'
-                                        ref={galleryButton}
                                         className={`
                                             absolute
+                                            top-1/2 left-1/2
+                                            -translate-x-1/2 -translate-y-1/2
                                             ${styles.sizeFit}
                                             ${styles.flexRow}
                                             ${styles.contentCenter}
