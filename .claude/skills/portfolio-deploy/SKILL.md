@@ -5,9 +5,11 @@ description: Déploiement de clembarr.dev — vérifier la cohérence, valider l
 
 # Déploiement de clembarr.dev
 
-Publication manuelle sur GitHub Pages, sans CI. Le dépôt n'a **ni test ni intégration
-continue** : cette procédure est le seul contrôle avant la mise en ligne. Ce qui n'est pas
-vérifié ici part en production.
+Publication manuelle sur GitHub Pages. Depuis le 22/09/2026 le dépôt porte deux suites de
+tests et une CI (`.github/workflows/ci.yml`), mais **la CI ne publie rien** et ne voit pas
+ce qui nous occupe ici : elle se déclenche sur `dev`, `feed` et les pull requests vers
+`main`, jamais sur un merge local vers `main`. Cette procédure reste donc le seul contrôle
+de ce qui part réellement en production.
 
 Dépôt : `git@github.com:B-a-r-r/B-a-r-r.github.io.git` — branche publiée `gh-pages`,
 domaine `clembarr.dev`.
@@ -88,7 +90,7 @@ dépôt : **33 avertissements**.
 npm run lint
 ```
 
-Ligne de base : **3 erreurs, 16 avertissements**, toutes antérieures. Ne pas chercher le
+Ligne de base : **3 erreurs, 15 avertissements**, toutes antérieures. Ne pas chercher le
 zéro ; comparer au repère et signaler tout écart introduit par les changements en cours.
 
 Si la commande répond `eslint: command not found`, les liens de `node_modules/.bin/` sont
@@ -96,7 +98,21 @@ cassés — ils pointent en absolu vers une ancienne machine. `npm install` les 
 attendant : `node node_modules/eslint/bin/eslint.js .` et
 `node node_modules/typescript/bin/tsc -b`. Le lien de `gh-pages` est relatif et fonctionne.
 
-### 5. Publier
+### 5. Tests — barrière bloquante
+
+```bash
+npm test && npm run test:e2e
+```
+
+Lignes de base : **126 tests unitaires verts**, et **63 e2e passés, 11 ignorés** (les
+ignorés le sont par profil de viewport, c'est attendu). La suite e2e démarre un serveur de
+dev et coûte une quarantaine de secondes.
+
+Un rouge ici **arrête la publication** : c'est une régression sur le code qu'on s'apprête à
+mettre en ligne. Renvoyer vers `portfolio-test` pour le diagnostic — lui seul dit si
+l'échec vient du code, d'un test instable ou du chromium de NixOS.
+
+### 6. Publier
 
 ```bash
 npm run deploy
@@ -112,7 +128,7 @@ Puis `gh-pages -d dist` remplace **l'intégralité** de la branche `gh-pages` pa
 Publier est une action **externe et irréversible** — le site est public. Demander l'accord
 avant, sauf instruction contraire explicite.
 
-### 6. Vérifier la mise en ligne
+### 7. Vérifier la mise en ligne
 
 ```bash
 git fetch origin
@@ -142,6 +158,7 @@ en cas de doute.
 |---|---|
 | Déployer depuis `dev` ou `feed` | `gh-pages` est écrasée en entier — le site perd le travail absent de la branche |
 | Lancer `npm run deploy` sans avoir passé `validate` | `predeploy` ne lance que sitemap et build : rien ne vérifie les clés de contenu |
+| Se fier à la CI pour un merge local vers `main` | Elle ne tourne que sur `dev`, `feed` et les pull requests. Un `git merge` en local ne déclenche rien |
 | `CNAME` déplacé hors de `public/` | Vite ne le recopie plus dans `dist/` : le domaine personnalisé saute à chaque publication |
 | Liens profonds (`/blog/<slug>`) en accès direct | 404 à froid : GitHub Pages n'a pas de règle de réécriture et il n'existe pas de `public/404.html`. Écart connu, à proposer |
 | `scripts/deploy.sh` (`npm run deploy:full`) | **Ne déploie pas.** Il nettoie, vérifie les types, construit, affiche les tailles et imprime des instructions. Il ne lance ni `validate` ni `gh-pages` |
@@ -149,8 +166,9 @@ en cas de doute.
 
 ## Après
 
-Rendre compte : ce qui a été mergé, l'état du validateur et du lint, ce qui a été publié, et
-le résultat des vérifications de l'étape 6 — avec la sortie réelle des commandes.
+Rendre compte : ce qui a été mergé, l'état du validateur, du lint et des deux suites de
+tests, ce qui a été publié, et le résultat des vérifications de l'étape 7 — avec la sortie
+réelle des commandes.
 
 **Ne pas committer autre chose que le merge accordé.** La branche `gh-pages` est gérée par
 l'outil ; ne pas la toucher.

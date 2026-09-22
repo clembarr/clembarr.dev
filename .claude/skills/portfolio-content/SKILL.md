@@ -154,8 +154,16 @@ bash .claude/skills/portfolio-content/scripts/check.sh          # complet
 bash .claude/skills/portfolio-content/scripts/check.sh --fast   # sans build de prod
 ```
 
-Enchaîne lint du contenu, validation des données, sitemap et build. Le lint global du dépôt est
-rapporté pour information : il porte des erreurs préexistantes hors contenu, il ne bloque pas.
+Enchaîne lint du contenu, validation des données, **suite unitaire**, sitemap et build. Le
+lint global du dépôt est rapporté pour information : il porte des erreurs préexistantes hors
+contenu, il ne bloque pas.
+
+La suite unitaire lit la couche de contenu réelle et en vérifie les invariants — tri, absence
+de doublons, `alt` présent. Un ajout de contenu peut donc la faire rougir, et c'est un vrai
+signal : le contenu viole un invariant. Si en revanche le test rouge s'accroche à une valeur
+écrite en dur (un titre, un label), c'est **le test** qui est fautif — il devait porter sur la
+forme. Passer la main à `portfolio-test` dans les deux cas, ne pas bricoler la donnée pour
+faire taire une assertion.
 
 Rapporter à l'utilisateur ce qui a été ajouté, les fichiers touchés, et les avertissements
 restants. Ne pas committer : le skill s'arrête là.

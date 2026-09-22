@@ -4,6 +4,8 @@
 #
 #   lint contenu → eslint sur src/assets uniquement (la surface du skill)
 #   validate     → donnees de contenu : liens casses, alt manquant, label de skill inconnu
+#   tests        → suite unitaire : elle lit la couche de contenu reelle et en verifie les
+#                  invariants (tri, doublons, alt) — un ajout de contenu peut la casser
 #   sitemap      → regenere public/sitemap.xml a partir des slugs d'articles
 #   build        → tsc -b && vite build
 #
@@ -35,6 +37,7 @@ run() {
 
 run "lint contenu"    npx eslint src/assets
 run "validation data" npm run validate
+run "tests unitaires" npm test
 run "sitemap"         npm run sitemap
 
 # The deprecated aggregates must not gain new entries

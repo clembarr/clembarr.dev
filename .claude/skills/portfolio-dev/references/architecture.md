@@ -44,7 +44,7 @@ Les nouveaux imports peuvent viser directement le bon fichier.
 ## Refactorer
 
 `tsc -b` couvre les renommages de **symboles**. Les deux suites de tests couvrent le
-comportement (`references/tests.md`). Aucun des trois ne voit ce qui suit :
+comportement (skill `portfolio-test`). Aucun des trois ne voit ce qui suit :
 
 | Ce qui casse en silence | Comment le retrouver |
 |---|---|

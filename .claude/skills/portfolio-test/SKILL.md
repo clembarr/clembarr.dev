@@ -1,6 +1,11 @@
-# Tests
+---
+name: portfolio-test
+description: Tests de clembarr.dev — écrire, lancer, réparer ou étendre les suites Vitest (tests/unit/) et Playwright (tests/e2e/), choisir laquelle des deux porte un cas, prouver qu'un test attrape vraiment la régression qu'il vise, diagnostiquer un échec de CI (.github/workflows/ci.yml). À utiliser dès qu'une modification de code commence — ce dépôt travaille en TDD, le test rouge s'écrit avant le code — et dès qu'il est question de couverture, de non-régression, de test instable, de tests/, de vitest.config.ts ou de playwright.config.ts. Le code qui rend le test vert s'écrit avec portfolio-dev ; une valeur de contenu n'a pas de test, elle a le validateur (portfolio-content). Also covers: write a test, TDD, red green refactor, unit tests, component tests, end to end tests, Vitest, Playwright, jsdom, Testing Library, CI pipeline, flaky test, regression test, coverage for this portfolio.
+---
 
-Le dépôt porte deux suites et une CI depuis le 22/09/2026. Avant cette date il n'avait
+# Tests — clembarr.dev
+
+Le dépôt porte deux suites et une CI depuis le **22/09/2026**. Avant cette date il n'avait
 aucun test : les conventions ci-dessous sont récentes, elles se lisent ici plutôt que dans
 un historique de fichiers.
 
@@ -10,6 +15,39 @@ un historique de fichiers.
 | Bout en bout | `npm run test:e2e` | `tests/e2e/` | parcours réels, layout, persistance |
 
 `npm run test:watch` relance la suite unitaire à chaque sauvegarde.
+
+## Le test d'abord — règle du dépôt
+
+**Toute logique non triviale ajoutée ou corrigée commence par un test qui échoue.** Ce n'est
+pas une préférence de style : un test écrit après le code passe du premier coup, et un test
+qui n'a jamais été rouge ne prouve rien. Le TDD rend l'étape rouge gratuite — elle est
+rouge parce que le code n'existe pas encore.
+
+Le cycle, dans cet ordre :
+
+1. **Rouge.** Écrire le test, le lancer, **lire le message d'échec**. Un test qui échoue
+   pour la mauvaise raison — import cassé, sélecteur qui n'existe pas, Engine non monté —
+   ne garde rien : il rougira encore quand le code sera juste, et on le « réparera » en le
+   vidant de son sens.
+2. **Vert.** Le minimum de code qui le fait passer. Pas la généralisation, pas le cas
+   suivant.
+3. **Refactor.** La suite tient pendant qu'on range.
+
+Pour un **bug**, l'étape rouge est la reproduction : le test qui échoue sur le code actuel
+est la preuve qu'on a compris le symptôme. Écrire le correctif avant, c'est corriger une
+hypothèse.
+
+### Quand le test d'abord ne s'applique pas
+
+| Le changement | Ce qui tient sa place |
+|---|---|
+| Une **valeur** de contenu (projet, article, compétence, parcours) | `npm run validate` — c'est le rôle de `dataConsistency.ts`, cf. `portfolio-content` |
+| Un **parti pris visuel** : couleur, espacement, animation, mise en page | Aucun test ne juge ça. Bac à sable `/showcase` et œil humain, cf. `portfolio-art` |
+| Un renommage, un déplacement de fichier, un changement de type | `tsc -b` guide, et la suite existante sert de filet |
+| Du texte, un lien, une constante d'affichage | Rien. Y coller un test fige une valeur qui bougera |
+
+Tout le reste — une branche, une boucle, un calcul, un effet, une route, une persistance,
+une règle de tri ou de filtre — part avec son test, et il s'écrit avant.
 
 ## Quelle suite pour quoi
 
@@ -47,6 +85,10 @@ describe("getContent", () => {
     });
 });
 ```
+
+Les tests sont **écrits en anglais**, comme le reste du code du dépôt, et chaque fichier
+s'ouvre sur un bloc JSDoc qui dit ce que la couche testée tient debout — pas ce que le
+fichier contient. Voir `tests/unit/engines.test.tsx` pour le patron.
 
 **Tester la forme, pas la valeur.** Les tests lisent la couche de contenu réelle. Ils
 doivent porter sur des invariants (le tri est décroissant, aucun label n'est dupliqué,
@@ -104,10 +146,25 @@ surchargeable par `CHROMIUM_PATH`, et ne laisse Playwright choisir le sien que s
 Un `Chrome not found` ou un navigateur qui meurt au lancement vient de là, pas d'une
 installation manquante.
 
-## Vérifier qu'un test tient
+## Boucler court
 
-Un test écrit après le code passe du premier coup — c'est normal, et ça ne prouve rien.
-**Le casser volontairement est la seule preuve** : introduire la régression qu'il est censé
+Relancer les 126 tests unitaires coûte deux secondes ; la suite e2e, une quarantaine. Pendant
+un cycle, cibler :
+
+```bash
+npx vitest run tests/unit/utils.test.ts -t "adjustFontSize"
+npx playwright test tests/e2e/projects.spec.ts --project=desktop
+npx playwright test tests/e2e/projects.spec.ts --repeat-each=4   # chasse à l'instable
+npx playwright test --ui                                          # inspection pas à pas
+```
+
+Et repasser la suite entière avant de rendre la main : un test vert isolé peut rougir en
+compagnie des autres, `localStorage` et le serveur de dev étant partagés.
+
+## Prouver qu'un test tient
+
+Le TDD donne l'étape rouge gratuitement. Pour un test ajouté **après coup** — sur du code
+déjà écrit — elle se paie à la main : introduire la régression que le test est censé
 attraper, vérifier qu'il rougit, restaurer.
 
 ```bash
@@ -117,7 +174,8 @@ git diff src/    # doit être vide après restauration
 ```
 
 Le fix du bouton de galerie a été validé ainsi : 14/20 avant, 20/20 après, sur quatre
-répétitions — ce qui a aussi révélé que le bug était intermittent.
+répétitions — ce qui a aussi révélé que le bug était intermittent. Un test e2e qui passe
+une fois ne dit rien d'un bug de timing : `--repeat-each` tranche.
 
 ## CI
 
@@ -129,5 +187,38 @@ vers `main`. Deux jobs : `checks` (build, lint, validate, unitaires) puis `e2e`.
 - `npm run lint` est en `continue-on-error` : le dépôt porte trois erreurs préexistantes.
   À passer bloquant quand le compteur atteint zéro. Sur le runner le compte est juste —
   `.claude/worktrees/`, qui fausse le compteur en local, est gitignoré.
+- Le job `e2e` installe le chromium de Playwright (`CI` désactive la recherche du
+  navigateur système) et publie `playwright-report/` en artefact pendant 7 jours : c'est là
+  qu'on lit un échec qui ne se reproduit pas en local.
 - Le déploiement reste **manuel, depuis `main`** — cf. le skill `portfolio-deploy`. La CI
   ne publie rien.
+
+## Lignes de base
+
+Mesuré le 22/09/2026. Ces compteurs bougent avec le dépôt : les recompter plutôt que les
+croire sur parole, et **mettre ce tableau à jour dès qu'ils changent pour de bon**.
+
+| Commande | État de référence |
+|---|---|
+| `npm test` | **126 tests verts**, 7 fichiers — tout échec est une régression |
+| `npm run test:e2e` | **63 passés, 11 ignorés** — l'ignoré est attendu, pas un symptôme |
+| `npm run build` (`tsc -b`) | **propre** — couvre aussi `tests/` via `tsconfig.test.json` |
+
+Les 11 e2e ignorés le sont par `test.skip` sur la largeur du viewport : le retex change de
+forme à `lg`, et un test de la mise en page de bureau n'a rien à vérifier sur un profil
+mobile.
+
+## Avant de rendre la main
+
+```bash
+npm run lint && npm run build && npm run validate && npm test
+```
+
+Et `npm run test:e2e` dès que la modification touche au rendu, à une route, à un parcours
+ou à une préférence.
+
+Rapporter la sortie réelle, y compris l'étape rouge : « le test échouait avec *X*, il passe
+maintenant » est ce qui distingue un test qui garde quelque chose d'un test décoratif.
+
+Puis relire ce skill : s'il décrit encore le dépôt tel qu'il est — cf. la règle de
+maintenance des skills dans `CLAUDE.md`.

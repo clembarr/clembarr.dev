@@ -1,6 +1,6 @@
 ---
 name: portfolio-dev
-description: Évolution du code de clembarr.dev — créer ou modifier une section, ajouter une page ou une route, retoucher le design system (couleurs, thème sombre, espacements, breakpoints, polices), traduire l'interface ou brancher une nouvelle langue, refondre l'architecture, déplacer ou renommer un composant, ajouter un contexte, revoir les dépendances ou le découpage du bundle. À utiliser dès qu'il faut toucher à src/components, src/pages, src/utils, src/style.tsx, src/index.css, vite.config.ts ou scripts/. Pour ajouter ou modifier une valeur de contenu (un projet, un article, une compétence, une entrée de parcours, une image), passer par le skill portfolio-content à la place. Also covers: add or restyle a section, add a page or route, change colors or dark mode, adjust responsive breakpoints, add a language, refactor or rename components, rework this portfolio's architecture.
+description: Évolution du code de clembarr.dev — créer ou modifier une section, ajouter une page ou une route, retoucher le design system (couleurs, thème sombre, espacements, breakpoints, polices), traduire l'interface ou brancher une nouvelle langue, refondre l'architecture, déplacer ou renommer un composant, ajouter un contexte, revoir les dépendances ou le découpage du bundle. À utiliser dès qu'il faut toucher à src/components, src/pages, src/utils, src/style.tsx, src/index.css, vite.config.ts ou scripts/. Pour ajouter ou modifier une valeur de contenu (un projet, un article, une compétence, une entrée de parcours, une image), passer par le skill portfolio-content à la place. Toute logique ajoutée ou corrigée ici commence par un test qui échoue : charger aussi le skill portfolio-test, qui porte les deux suites, la CI et le cycle rouge-vert. Also covers: add or restyle a section, add a page or route, change colors or dark mode, adjust responsive breakpoints, add a language, refactor or rename components, rework this portfolio's architecture.
 ---
 
 # Code du portfolio — sections, styles, i18n, architecture
@@ -17,14 +17,19 @@ unitaire est aveugle au layout.
 Ce skill décrit ces couplages, les conventions du dépôt, et la façon d'écrire du code qui
 ressemble au reste.
 
-## Frontière avec `portfolio-content`
+## Frontière avec les skills voisins
 
-Deux skills se déclenchent sur le mot « portfolio ». La ligne de partage est nette :
+Plusieurs skills se déclenchent sur le mot « portfolio ». La ligne de partage est nette :
 
 | La demande | Le skill |
 |---|---|
 | Une **valeur** de contenu : un projet, un article, une compétence, une entrée de parcours, une image | `portfolio-content` |
 | Une **structure** : composant, page, route, style, type, contexte, dépendance | ce skill |
+| Un **test** : l'écrire, le choisir, le lancer, lire un échec de CI | `portfolio-test` |
+
+`portfolio-test` n'est pas une étape de fin : ce dépôt travaille **en TDD**, le test rouge
+s'écrit avant le code. Le charger en même temps que ce skill dès que la modification porte
+sur de la logique.
 
 Une demande à cheval — « ajoute une section Témoignages » — commence ici pour la structure
 (le composant, son montage, son ancre de navigation), puis **délègue les données** à
@@ -74,7 +79,7 @@ vérifier avant d'agir coûte moins cher que de les défaire.
 | Importer depuis `react-router-dom` | Le dépôt utilise **`react-router` v7**, sans le `-dom` |
 | Ajouter Prettier, ESLint stylistique ou `.editorconfig` | Aucun n'existe. La mise en forme se lit dans les fichiers : voir `references/style-code.md` |
 | Introduire des CSS Modules ou `styled-components` | Tout est Tailwind + `src/style.tsx`. Aucun `.module.css` dans le dépôt |
-| Installer un harnais de test, ou supposer qu'il n'y en a pas | Vitest, Testing Library et Playwright sont en place, avec leurs conventions : voir `references/tests.md` |
+| Installer un harnais de test, ou supposer qu'il n'y en a pas | Vitest, Testing Library et Playwright sont en place, avec leurs conventions : voir le skill `portfolio-test` |
 | Écrire un test de position ou de visibilité en jsdom | Il passera toujours, même sur du code cassé : aucune mesure n'y est calculée. Ce test appartient à la suite e2e |
 | Ajouter une dépendance pour un besoin ponctuel | Vérifier d'abord `src/utils/utils.ts` et les 12 dépendances déjà présentes |
 
@@ -86,9 +91,9 @@ vérifier avant d'agir coûte moins cher que de les défaire.
 | traduction, langue, fr/en, texte non traduit | `references/i18n.md` |
 | couleur, thème, sombre/clair, espacement, responsive, police, z-index | `references/styling.md` |
 | refonte, refactor, déplacer, renommer, contexte, dépendance, bundle | `references/architecture.md` |
-| test, suite, couverture, CI, non-régression, Playwright, Vitest | `references/tests.md` |
 
-**Ne charger que le fichier concerné.**
+**Ne charger que le fichier concerné.** Tout ce qui touche aux tests — écrire, choisir la
+suite, lire un échec, la CI — vit dans le skill **`portfolio-test`**, pas ici.
 
 Une exception : **`references/style-code.md` se lit dès qu'on écrit une ligne de code**, en
 plus du fichier de domaine. C'est lui qui fait que le résultat ressemble au reste du dépôt
@@ -123,12 +128,19 @@ Séparer explicitement ce qui a été demandé de ce qui a été déduit d'une c
 dépôt. Une convention peut être un choix comme un défaut jamais rouvert — c'est à
 l'utilisateur de trancher.
 
-### 4. Écriture
+### 4. Le test d'abord
+
+Toute logique non triviale — une branche, un calcul, un effet, une route, une persistance —
+commence par un test qui **échoue**. Charger `portfolio-test` : il dit laquelle des deux
+suites porte le cas, ce qui dispense de test (une valeur de contenu, un parti pris visuel),
+et pourquoi un test jamais rouge ne garde rien.
+
+### 5. Écriture
 
 Composant → barrel `index.ts` → point de montage. Dans cet ordre, les erreurs de `tsc`
 guident au lieu de s'accumuler.
 
-### 5. Vérification — obligatoire avant de rendre la main
+### 6. Vérification — obligatoire avant de rendre la main
 
 ```bash
 npm run lint && npm run build && npm run validate && npm test
@@ -140,8 +152,7 @@ mais un changement de type ou de structure s'y voit.
 
 `npm run test:e2e` en plus dès que la modification touche au rendu, à une route, à un
 parcours ou à une préférence — il démarre un serveur de dev et coûte une quarantaine de
-secondes. Toute logique non triviale ajoutée repart avec son test : `references/tests.md`
-dit lequel des deux harnais, et pourquoi le choix n'est pas libre.
+secondes.
 
 ⚠️ Si ces commandes répondent `eslint: command not found` ou `tsc: command not found`, les
 liens de `node_modules/.bin/` sont cassés : ils pointent en absolu vers l'emplacement d'une
@@ -156,7 +167,13 @@ bash .claude/skills/portfolio-content/scripts/check.sh
 
 Rapporter la sortie réelle. Une affirmation « ça marche » se paie d'une commande lancée.
 
-### 6. Ne pas committer
+### 7. Mettre les skills à jour — obligatoire
+
+Ce skill et ses voisins décrivent le dépôt. Une modification de structure les périme en
+silence : c'est une **étape de la tâche, pas une corvée optionnelle**. La règle et sa
+liste de contrôle sont dans `CLAUDE.md`, section « Maintenance des skills ».
+
+### 8. Ne pas committer
 
 Rendre compte de ce qui a été fait, de ce qui a été vérifié et comment, et de ce qui reste
 ouvert. Le commit est une décision de l'utilisateur.
