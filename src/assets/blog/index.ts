@@ -5,16 +5,19 @@
 
 import { BlogPost } from '../dataTypes';
 import { eewLangBiases } from './eew-lang-biases';
+import { neuralNoveltyDetection } from './neural-novelty-detection';
 
 /**
  * All blog posts - ordered by date (most recent first)
  */
 export const blogPosts: BlogPost[] = [
+  neuralNoveltyDetection,
   eewLangBiases
 ];
 
 // Individual exports for direct access
 export { 
+  neuralNoveltyDetection,
   eewLangBiases 
 };
 /**

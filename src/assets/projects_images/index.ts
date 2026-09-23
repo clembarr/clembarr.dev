@@ -53,6 +53,7 @@ import ffbf_architecture from "./ffbf_architecture.svg"
 import ffbf_bench from "./ffbf_bench.gif"
 import ffbf_novelty_map_over_time from "./ffbf_novelty_map_over_time.webp"
 import ffbf_memory from "./ffbf_memory.webp"
+import ffbf_drift from "./ffbf_drift.webp"
 
 export const ffbfArchitecture: ProjectMedia = {
     url: ffbf_architecture,
@@ -70,6 +71,12 @@ export const ffbfNoveltyMapOverTime: ProjectMedia = {
     url: ffbf_novelty_map_over_time,
     type: MediaType.IMAGE,
     alt: "Les mêmes cinquante lignes de log placées par sens, à quatre moments du flux. Seule leur teinte change : le groupe de routine pâlit puis fonce quand l'incident prend le dessus."
+}
+
+export const ffbfDrift: ProjectMedia = {
+    url: ffbf_drift,
+    type: MediaType.IMAGE,
+    alt: "Deux courbes de nouveauté au fil d'un flux de logs : la routine monte de 0,12 à 0,68 pendant que les lignes d'incident descendent à 0,44. Les deux groupes se croisent vers la onzième ligne."
 }
 
 export const ffbfMemory: ProjectMedia = {
