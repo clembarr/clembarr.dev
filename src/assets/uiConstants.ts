@@ -1230,3 +1230,23 @@ export const newsAllProjectsLink: Hyperlink = {
   },
   link: "/projects",
 };
+
+/**
+ * Labels of the career section: its two columns and the certifications band. They stay
+ * at the floor of the type scale — the column already says the nature, the label only
+ * confirms it.
+ */
+export const careerSectionLabels: Record<"experience" | "education" | "certifications", MultilingualContent> = {
+  experience: {
+    fr: "Expériences",
+    [UNIVERSAL_LANG]: "Experience",
+  },
+  education: {
+    fr: "Formations",
+    [UNIVERSAL_LANG]: "Education",
+  },
+  certifications: {
+    fr: "Certifications",
+    [UNIVERSAL_LANG]: "Certifications",
+  },
+};

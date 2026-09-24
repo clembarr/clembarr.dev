@@ -11,14 +11,15 @@ description fr/en.
 
 **Optionnel** — logo de l'organisation · tags fr/en · ressources liées (rapport, attestation).
 
-Types (`CareerEntryType`) :
+Types (`CareerEntryType`) — aucun badge de type à l'écran : c'est l'emplacement qui dit
+la nature.
 
-| Enum | Valeur affichée | Usage |
+| Enum | Où l'entrée s'affiche | Usage |
 |---|---|---|
-| `EXPERIENCE` | `EXP.` | emploi, alternance, stage, job d'été |
-| `EDUCATION` | `EDUC.` | diplôme, cursus |
-| `CERTIFICATION` | `CERTIF.` | brevet, certification |
-| `VOLUNTEERING` | `VOLUNTEERING` | bénévolat |
+| `EXPERIENCE` | colonne Expériences | emploi, alternance, stage, job d'été |
+| `VOLUNTEERING` | colonne Expériences | bénévolat |
+| `EDUCATION` | colonne Formations | diplôme, cursus |
+| `CERTIFICATION` | bande de jetons sous les colonnes, détail au survol | brevet, certification |
 
 ## Conventions rédactionnelles
 
@@ -28,6 +29,14 @@ Types (`CareerEntryType`) :
 `Ingénieur LLM et Radiocommunications en Alternance`. Le statut (alternance, stage) va dans
 les **tags**, pas dans le titre — `Alternance` en fr, `Apprenticeship` en en. Les entrées de
 formation (`EDUCATION`) ne portent pas ce tag, seulement les expériences.
+
+Ces tags de nature passent en ambre (`--color-xp-type`) parce qu'ils figurent dans
+`NATURE_TAGS` (`CareerTimeline.tsx`) : `alternance`/`apprenticeship`, `stage`/`internship`,
+`benevolat`/`volunteering`, comparés sans accent ni casse. Une autre graphie (`Alt.`,
+`Stagiaire`) s'affiche comme un tag de sujet ordinaire, sans erreur.
+
+**Description d'une certification : courte.** Elle ne s'affiche que dans l'encart de survol
+de son jeton, qui n'a la place que de quelques lignes.
 
 ⚠️ `Chercheur ALife en Stage` (Nagoya) déroge encore : le titre contient le statut alors que
 `Stage` est déjà dans ses tags. À proposer à la correction si l'occasion se présente.
@@ -54,20 +63,28 @@ d'elle-même :
   title:        { fr: "Ingénieur logiciel en Alternance", en: "Software Engineer in Apprenticeship" },
   organization: { fr: "CGI", en: "CGI" },
   icon: CGILogo,                                    // optionnel
-  period:       { fr: "Sept. 2025\nSept. 2026", en: "Sept. 2025\nSept. 2026" },
+  period:       { fr: "Sept 2025\nAoût 2026", en: "Sept 2025\nAug 2026" },
   description:  { fr: "…", en: "…" },
-  tags:         { fr: ["Alt.", "Agile"], en: ["Apprenticeship", "Agile"] },
+  tags:         { fr: ["Alternance", "Agile"], en: ["Apprenticeship", "Agile"] },
   ressources: [                                     // optionnel
     { content: { fr: "Rapport de stage", en: "Internship report" }, link: "…" },
   ],
 }
 ```
 
-**Le `\n` dans `period` est significatif** : il sépare début et fin sur deux lignes dans la
-timeline. Une entrée ponctuelle n'en met pas (`{ fr: "2022", en: "2022" }`).
+**Le `\n` dans `period` est significatif** : il sépare début et fin, affichés sur la carte en
+un intervalle `Sept 2025 – Août 2026`. Une entrée ponctuelle n'en met pas
+(`{ fr: "2022", en: "2022" }`).
 
-Le tableau est ordonné **du plus récent au plus ancien** — ici l'ordre est réellement
-chronologique, contrairement au barrel des projets.
+**La période `fr` est la clé de tri**, quelle que soit la langue affichée : son premier terme
+donne l'année portée sur la frise et la place de la carte dans sa colonne. Le mois est lu
+par préfixe (`janv`, `fevr`, … `juin`, `juil`, … `dec`, sans accent, point facultatif) ; une
+année seule vaut janvier. Un mois mal orthographié ne lève rien : l'entrée est datée de
+janvier.
+
+Le tableau est ordonné **du plus récent au plus ancien**, par lisibilité : la section trie
+elle-même chaque colonne sur la date de début, l'ordre du tableau n'a pas d'effet à
+l'écran.
 
 ## Ajouter un logo d'organisation
 

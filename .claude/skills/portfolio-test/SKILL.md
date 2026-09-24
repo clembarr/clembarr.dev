@@ -235,13 +235,14 @@ croire sur parole, et **mettre ce tableau à jour dès qu'ils changent pour de b
 | Commande | État de référence |
 |---|---|
 | `npm test` | **126 tests verts**, 7 fichiers — tout échec est une régression |
-| `npm run test:e2e` | **67 passés, 15 ignorés**, environ 1 min — l'ignoré est attendu, pas un symptôme |
+| `npm run test:e2e` | **75 passés, 21 ignorés**, environ 1 min — l'ignoré est attendu, pas un symptôme |
 | `npm run build` (`tsc -b`) | **propre** — couvre aussi `tests/` via `tsconfig.test.json` |
 
-Les 15 e2e ignorés le sont par `test.skip` sur le profil : 11 parce que le retex change de
+Les 21 e2e ignorés le sont par `test.skip` sur le profil : 11 parce que le retex change de
 forme à `lg` et qu'un test de la mise en page de bureau n'a rien à vérifier sur un profil
 mobile, 4 parce que la garde responsive porte sa propre matrice de viewports et ne tourne
-que sur `desktop`.
+que sur `desktop`, 6 parce que la section carrière change de forme à `md` — ses colonnes
+n'existent pas sur mobile, son swipe n'existe pas sur bureau (`career.spec.ts`).
 
 ## Avant de rendre la main
 

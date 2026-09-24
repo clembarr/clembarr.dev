@@ -1,357 +1,719 @@
-import { useContext, useState, useRef } from "react";
+import { ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import DOMPurify from "dompurify";
 import { careerFigure } from "../../assets/illustrations";
-import styles from "../../style";
-import { ThemeContext } from "../theme/ThemeEngine";
 import { careerTimeline } from "../../assets/contents";
+import { careerSectionLabels } from "../../assets/constants";
+import { CareerEntry, CareerEntryType } from "../../assets/dataTypes";
+import { translate } from "../../utils/assetsUtils";
+import styles from "../../style";
 import { LangContext } from "../language";
-import DOMPurify from "dompurify"
+import { ThemeContext } from "../theme/ThemeEngine";
 import { SwipeIndicator } from "../widgets";
 
-/** @constant DATE_COLUMN_WIDTH Width of the date label column, left of the axis (px). */
-const DATE_COLUMN_WIDTH = 72;
-
-/** @constant DATE_DOT_GAP Gap between date column and dot column (px) — matches gap-2 = 8px. */
-const DATE_DOT_GAP = 8;
-
-/** @constant DOT_COLUMN_WIDTH Width of the dot column centered on the axis (px). */
-const DOT_COLUMN_WIDTH = 52;
-
 /**
- * @constant AXIS_LEFT Left offset (px) of the 2px axis line so its center falls exactly
- * on the dot center: date_col + gap + half_dot_col - half_line_width.
+ * French month prefixes, accent-free and lowercase, paired with their zero-based index.
+ * "juin" and "juil" are spelled to four letters so they cannot shadow each other.
  */
-const AXIS_LEFT = DATE_COLUMN_WIDTH + DATE_DOT_GAP + Math.floor(DOT_COLUMN_WIDTH / 2) - 1;
+const MONTH_PREFIXES: Array<[string, number]> = [
+    ["janv", 0],
+    ["fevr", 1],
+    ["mars", 2],
+    ["avr", 3],
+    ["mai", 4],
+    ["juin", 5],
+    ["juil", 6],
+    ["aout", 7],
+    ["sept", 8],
+    ["oct", 9],
+    ["nov", 10],
+    ["dec", 11],
+];
 
 /**
- * @description Career timeline section with vertical (desktop) and horizontal (mobile) views.
+ * Tags that name the nature of an entry rather than one of its topics. They wear the
+ * amber code of the type badge (`--color-xp-type`), so the nature still reads at a glance
+ * now that the column, not a badge, carries the type.
+ */
+const NATURE_TAGS = new Set([
+    "alternance", "apprenticeship",
+    "stage", "internship",
+    "benevolat", "volunteering",
+]);
+
+/**
+ * @function isNatureTag Tell whether a tag names the nature of the entry.
+ * @param tag - The tag as written in the content layer
+ * @returns true when the tag belongs to the nature vocabulary
+ */
+const isNatureTag = (tag: string): boolean =>
+    NATURE_TAGS.has(tag.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase());
+
+/**
+ * @function toMonthIndex Turn one bound of a period ("Sept. 2026", "2022") into an
+ * absolute month index, so two bounds can be compared and sorted.
+ * @param bound - One line of the French period string
+ * @returns year * 12 + month, or null when no year can be read. A bare year is January
+ */
+const toMonthIndex = (bound: string): number | null => {
+    const year = bound.match(/\d{4}/);
+    if (!year) return null;
+
+    const normalized = bound
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    const month = MONTH_PREFIXES.find(([prefix]) => normalized.includes(prefix));
+
+    return parseInt(year[0], 10) * 12 + (month ? month[1] : 0);
+};
+
+/**
+ * @function readStart Read the month an entry starts on. The French period is read
+ * whatever the active language: it is the stable key of the content layer.
+ * @param entry - The career entry to read
+ * @returns The absolute month index of the earliest bound, or 0 when none can be read
+ */
+const readStart = (entry: CareerEntry): number => {
+    const bounds = entry.period["fr"]
+        .split("\n")
+        .map(toMonthIndex)
+        .filter((month): month is number => month !== null);
+
+    return bounds.length ? Math.min(...bounds) : 0;
+};
+
+/**
+ * @function readRange Format the whole period of an entry as a single inline interval.
+ * @param entry - The career entry to read
+ * @param lang - The active language, so the interval reads in the displayed language
+ * @returns "Sept 2026 – Août 2029", or the single bound when the entry is a point in time
+ */
+const readRange = (entry: CareerEntry, lang: string): string => {
+    const bounds = entry.period[lang].split("\n").map((bound) => bound.trim()).filter(Boolean);
+
+    return bounds.length > 1 ? `${bounds[0]} – ${bounds[bounds.length - 1]}` : bounds[0] ?? "";
+};
+
+
+/** @constant TRACK_WIDTH Width (px) of the timeline track standing left of each column. */
+const TRACK_WIDTH = 44;
+
+/** @constant TRACK_OFFSET Drop (px) of the track below the top of the first card. */
+const TRACK_OFFSET = 12;
+
+/** One year on a column track, and the span its cards cover in the scrolled content (px). */
+type YearTick = {
+    year: number;
+    top: number;
+    bottom: number;
+};
+
+/** What the track needs to know about its scroll container, read on every scroll. */
+type ScrollMetrics = {
+    scrollTop: number;
+    clientHeight: number;
+    scrollHeight: number;
+    ticks: YearTick[];
+};
+
+/**
+ * @component CareerColumn
+ * @description One nature of the career, scrolled on its own. The native scrollbar is
+ * hidden and replaced by the column timeline: each year faces its first card and scrolls
+ * with it, lighting up while one of its cards is in view, and a thumb running on the axis
+ * tells where the column stands. The thumb can be dragged and the rail clicked, the
+ * wheel, touch and keyboard keep scrolling the column natively.
+ * @param name - Nature name, used to build the ids
+ * @param label - Column label, already translated
+ * @param entries - Entries of that nature, newest first
+ * @param renderCard - Card renderer of the section, so both columns share one card
+ * @param smooth - false under prefers-reduced-motion: a click on the track then jumps
+ */
+const CareerColumn = ({ name, label, entries, renderCard, smooth }: {
+    name: string;
+    label: string;
+    entries: CareerEntry[];
+    renderCard: (entry: CareerEntry, id: string) => ReactNode;
+    smooth: boolean;
+}) => {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const trackRef = useRef<HTMLDivElement>(null);
+    const drag = useRef<{ y: number; scrollTop: number } | null>(null);
+    const [metrics, setMetrics] = useState<ScrollMetrics>({ scrollTop: 0, clientHeight: 0, scrollHeight: 1, ticks: [] });
+
+    /**
+     * @function measure Read the scroll state and the span covered by the cards of each
+     * year. Cheap enough to run on every scroll: a column holds a handful of cards.
+     */
+    const measure = useCallback(() => {
+        const scroller = scrollRef.current;
+        if (!scroller) return;
+
+        const ticks: YearTick[] = [];
+        entries.forEach((entry, i) => {
+            const year = Math.floor(readStart(entry) / 12);
+            const card = scroller.querySelector<HTMLElement>(`#career-${name}-${i}`);
+            if (!card) return;
+
+            const bottom = card.offsetTop + card.offsetHeight;
+            const tick = ticks.find((known) => known.year === year);
+            if (tick) tick.bottom = Math.max(tick.bottom, bottom);
+            else ticks.push({ year, top: card.offsetTop, bottom });
+        });
+
+        setMetrics({
+            scrollTop: scroller.scrollTop,
+            clientHeight: scroller.clientHeight,
+            scrollHeight: scroller.scrollHeight,
+            ticks,
+        });
+    }, [entries, name]);
+
+    useEffect(() => {
+        const scroller = scrollRef.current;
+        if (!scroller) return;
+
+        const observer = new ResizeObserver(measure);
+        observer.observe(scroller);
+        if (scroller.firstElementChild) observer.observe(scroller.firstElementChild);
+
+        return () => observer.disconnect();
+    }, [measure]);
+
+    /**
+     * @function jumpTo Center the column on the point of the track that was pressed.
+     * @param event - The pointer event on the track
+     */
+    const jumpTo = (event: React.PointerEvent<HTMLDivElement>) => {
+        const scroller = scrollRef.current;
+        const track = trackRef.current;
+        if (!scroller || !track) return;
+
+        const rect = track.getBoundingClientRect();
+        const target = (event.clientY - rect.top) / rect.height * scroller.scrollHeight - scroller.clientHeight / 2;
+        scroller.scrollTo({ top: target, behavior: smooth ? "smooth" : "auto" });
+    };
+
+    const startDrag = (event: React.PointerEvent<HTMLSpanElement>) => {
+        event.stopPropagation();
+        event.currentTarget.setPointerCapture(event.pointerId);
+        drag.current = { y: event.clientY, scrollTop: scrollRef.current?.scrollTop ?? 0 };
+    };
+
+    const moveDrag = (event: React.PointerEvent<HTMLSpanElement>) => {
+        const scroller = scrollRef.current;
+        const track = trackRef.current;
+        if (!drag.current || !scroller || !track) return;
+
+        // "instant": the global smooth scroll-behavior would make the column trail the pointer
+        scroller.scrollTo({
+            top: drag.current.scrollTop + (event.clientY - drag.current.y) * scroller.scrollHeight / track.clientHeight,
+            behavior: "instant",
+        });
+    };
+
+    const stopDrag = () => { drag.current = null; };
+
+    const { scrollTop, clientHeight, scrollHeight, ticks } = metrics;
+    const toPercent = (px: number) => `${px / scrollHeight * 100}%`;
+
+    /** The rail, where the thumb runs, starts level with the first year at rest. */
+    const railTop = (ticks[0]?.top ?? 0) + TRACK_OFFSET;
+    const scrollable = scrollHeight > clientHeight + 1;
+
+    return (
+        <div id={`career-${name}-column`} className={`${styles.flexCol} min-w-0 min-h-0`}>
+            <span id={`career-${name}-label`}
+                style={{ paddingLeft: `${TRACK_WIDTH + 16}px` }}
+                className={`
+                    shrink-0
+                    pb-2
+                    font-secondary-semibold
+                    text-3xs
+                    uppercase tracking-widest
+                    text-(--color-quaternary)/35
+                `}
+            > {label} </span>
+
+            <div id={`career-${name}-body`} className={`${styles.flexRow} grow min-h-0 gap-4`}>
+                <div id={`career-${name}-track`}
+                    aria-hidden="true"
+                    style={{ width: `${TRACK_WIDTH}px` }}
+                    className={`relative shrink-0`}
+                >
+                    <span id={`career-${name}-axis`}
+                        style={{ top: `${Math.max(0, railTop - scrollTop)}px` }}
+                        className={`absolute bottom-0 right-1 w-px bg-(--color-tertiary)/25`}
+                    />
+
+                    <div id={`career-${name}-years`}
+                        className={`
+                            absolute inset-0
+                            overflow-hidden
+                            mask-[linear-gradient(to_bottom,transparent,black_4%,black_90%,transparent)]
+                        `}
+                    >
+                        {ticks.map((tick) => {
+                            const inView = tick.bottom > scrollTop && tick.top < scrollTop + clientHeight;
+
+                            return (
+                                <span key={`career-${name}-tick-${tick.year}`}
+                                    id={`career-${name}-tick-${tick.year}`}
+                                    style={{ top: `${tick.top + TRACK_OFFSET - scrollTop}px` }}
+                                    className={`
+                                        absolute right-0
+                                        ${styles.flexRow}
+                                        items-center gap-1.5
+                                        -translate-y-1/2
+                                        font-mono
+                                        text-3xs
+                                        ${inView ? "text-(--color-tertiary)" : "text-(--color-quaternary)/30"}
+                                        ${smooth ? "transition-colors duration-300 ease-out" : ""}
+                                    `}
+                                >
+                                    {tick.year}
+                                    <span className={`
+                                            w-[9px] h-[9px]
+                                            rounded-full
+                                            border border-(--color-tertiary)/60
+                                            ${inView ? "bg-(--color-tertiary)" : "bg-(--color-secondary)"}
+                                        `}
+                                    />
+                                </span>
+                            );
+                        })}
+                    </div>
+
+                    <div id={`career-${name}-rail`}
+                        ref={trackRef}
+                        onPointerDown={jumpTo}
+                        style={{ top: `${railTop}px` }}
+                        className={`
+                            absolute bottom-0 right-0
+                            w-[9px]
+                            ${scrollable ? "cursor-pointer" : ""}
+                        `}
+                    >
+                        {scrollable &&
+                        <span id={`career-${name}-thumb`}
+                            onPointerDown={startDrag}
+                            onPointerMove={moveDrag}
+                            onPointerUp={stopDrag}
+                            onPointerCancel={stopDrag}
+                            style={{ top: toPercent(scrollTop), height: toPercent(clientHeight) }}
+                            className={`
+                                absolute right-0
+                                w-[9px]
+                                ${styles.flexRow}
+                                justify-center
+                                touch-none
+                                cursor-grab active:cursor-grabbing
+                            `}
+                        >
+                            <span className={`w-[3px] h-full rounded-full bg-(--color-tertiary)/50`} />
+                        </span>}
+                    </div>
+                </div>
+
+                <div id={`career-${name}-scroll`}
+                    ref={scrollRef}
+                    role="list"
+                    tabIndex={0}
+                    aria-label={label}
+                    onScroll={measure}
+                    className={`
+                        relative
+                        grow min-w-0
+                        overflow-y-auto
+                        overflow-x-hidden
+                        outline-none
+                        mask-[linear-gradient(to_bottom,transparent,black_4%,black_90%,transparent)]
+                        no-scrollbar
+                    `}
+                >
+                    <div id={`career-${name}-cards`} className={`${styles.flexCol} gap-3 py-4 pb-[9vh]`}>
+                        {entries.map((entry, i) => (
+                            <div key={`career-${name}-item-${i}`} role="listitem">
+                                {renderCard(entry, `career-${name}-${i}`)}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+/**
+ * @function byStartDesc Sort comparator putting the most recent start first.
+ * @param a - First entry
+ * @param b - Second entry
+ * @returns A negative number when a started after b
+ */
+const byStartDesc = (a: CareerEntry, b: CareerEntry): number => readStart(b) - readStart(a);
+
+/**
+ * @component CareerTimeline
+ * @description Career section read from left to right: the figure, then two columns
+ * scrolled independently, experiences and education. Each column carries its own
+ * timeline as its scrollbar, so the nature is told by the column and the date by the
+ * track. Certifications leave the chronology for a flat band of tokens under the columns.
+ * Below md the columns become one horizontal swipe, the band staying where it is.
  */
 const CareerTimeline = () => {
-  const { currentTheme } = useContext(ThemeContext);
-  const { currentLang } = useContext(LangContext);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const horizontalScrollRef = useRef<HTMLDivElement>(null);
+    const { currentLang } = useContext(LangContext);
+    const { currentTheme } = useContext(ThemeContext);
 
-  const isDark: boolean = currentTheme === 'dark';
+    const isDark = currentTheme === "dark";
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const transition = prefersReducedMotion ? "" : styles.easeOutTransition;
 
-  /**
-   * @function getYear Extract only the year from a period string
-   * @param period the multilingual period object
-   */
-  const getYear = (period: { [key: string]: string }) => {
-    const str = period[currentLang];
-    const match = str.match(/\d{4}/);
-    return match ? match[0] : str;
-  }
+    const experiences = useMemo(
+        () => careerTimeline
+            .filter((entry) => entry.type !== CareerEntryType.CERTIFICATION && entry.type !== CareerEntryType.EDUCATION)
+            .sort(byStartDesc),
+        []
+    );
 
-  /** @constant sortedCareerTimeline Entries sorted from most recent to oldest by start year. */
-  const sortedCareerTimeline = [...careerTimeline].sort((a, b) => {
-    const yearA = parseInt(a.period['fr'].match(/\d{4}/)?.[0] ?? '0');
-    const yearB = parseInt(b.period['fr'].match(/\d{4}/)?.[0] ?? '0');
-    return yearB - yearA;
-  });
+    const education = useMemo(
+        () => careerTimeline.filter((entry) => entry.type === CareerEntryType.EDUCATION).sort(byStartDesc),
+        []
+    );
 
-  return (
-    <div id="career"
-      className={`
-        w-full
-        h-[75vh]
-        mb-20 ss:mb-0 md:mb-20 lg:mb-10
-        relative
-        overflow-hidden
-      `}
-    >
-      <div id={`illustration-container`}
-        className={`
-          hidden lg:flex
-          absolute 
-          ${isDark ? 
-          `
-            top-40 lg:top-60 xl:top-40
-            -left-15 lg:left-0 xl:-left-15
-            opacity-100 lg:opacity-30 xl:opacity-100
-            max-w-lg
-            lg:w-80 xl:w-120 2xl:w-auto
-          ` 
-          : 
-          `
-            top-20 lg:top-35 xl:top-20
-            left-0 
-            opacity-95 lg:opacity-30 xl:opacity-95
-            max-w-100
-            lg:w-80 xl:w-90 2xl:w-auto
-          `
-        }
-          ${styles.sizeFull}
-          ${styles.flexCol}
-        `}
-      >
-        <img id={`career-illustration`}
-          src={careerFigure.content[currentTheme]}
-          alt={careerFigure.alt}
-          className={`object-cover w-full h-auto`}
-        />
-      </div>
+    const swipeEntries = useMemo(() => [...experiences, ...education].sort(byStartDesc), [experiences, education]);
 
-      <div id={`career-vertical-view`}
-        className={`
-          hidden md:flex
-          ${styles.flexCol}
-          w-full
-          h-full
-          min-h-0
-          relative
-          py-6
-          lg:ml-30 xl:ml-[23vw]
-          overflow-y-scroll
-          overflow-x-hidden
-          mask-[linear-gradient(to_bottom,transparent,black_5%,black_88%,transparent)]
-          no-scrollbar
-        `}
-      >
-        <div id={`vertical-entries-content`} className={`relative ${styles.flexCol} w-full`}>
-          <div id={`vertical-timeline-axis`}
-            className={`
-              absolute
-              -top-10
-              -bottom-10
-              w-0.75
-              opacity-20
-              bg-(--color-tertiary)
-            `}
-            style={{ left: `${AXIS_LEFT}px` }}
-          />
+    const certifications = useMemo(
+        () => careerTimeline.filter((entry) => entry.type === CareerEntryType.CERTIFICATION),
+        []
+    );
 
-          {sortedCareerTimeline.map((entry, i) => {
-            const isHovered = hoveredIndex === i;
+    /**
+     * @function renderCard Render one entry as a card that breathes: the logo beside a
+     * block holding title, organization and dates, then the full description, then the
+     * tags. Nothing is clamped or truncated — this section is the only place these texts
+     * are readable, so a card grows to fit rather than cutting its content.
+     * @param entry - The career entry to display
+     * @param id - Identifier of the card, unique across the section
+     * @returns The card element
+     */
+    const renderCard = (entry: CareerEntry, id: string) => {
+        const tags = entry.tags?.[currentLang] ?? [];
 
-            return (
-              <div key={`v-entry-${i}`}
-                id={`v-timeline-entry-${i}`}
+        return (
+            <article key={id} id={id}
                 className={`
-                  ${styles.flexRow}
-                  ${styles.contentStartY}
-                  group
-                  gap-4
-                  mb-8
-                  last:mb-0
-                `}
-                onMouseEnter={() => setHoveredIndex(i)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                <div id={`v-left-area-${i}`} className={`flex items-start gap-2 shrink-0`}>
-                  <div id={`v-date-col-${i}`}
-                    className={`
-                      w-full
-                      h-fit
-                      ${styles.flexCol}
-                      ${styles.contentEndY}
-                      pt-2
-                      font-mono
-                      text-3xs
-                      leading-tight
-                      text-right
-                      ${styles.defaultTransition}
-                    `}
-                    style={{
-                      width: `${DATE_COLUMN_WIDTH}px`,
-                      opacity: isHovered ? 0.9 : 0.3,
-                    }}
-                  >
-                    {entry.period[currentLang]}
-                  </div>
-
-                  <div id={`v-dot-col-${i}`}
-                    className={`flex flex-col items-center shrink-0 pt-2`}
-                    style={{ width: `${DOT_COLUMN_WIDTH}px` }}
-                  >
-                    <div id={`v-dot-${i}`}
-                      className={`
-                        relative
-                        z-10
-                        rounded-lg
-                        border-[2.5px]
-                        ${styles.defaultTransition}
-                      `}
-                      style={{
-                        width: isHovered ? '16px' : '13px',
-                        height: isHovered ? '16px' : '13px',
-                        borderColor: 'var(--color-tertiary)',
-                        backgroundColor: isHovered ? 'var(--color-tertiary)' : 'var(--color-secondary)',
-                        marginTop: isHovered ? '-1.5px' : '0',
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div id={`v-card-${i}`}
-                  className={`
-                    ${styles.flexCol}
-                    ${styles.contentStartY}
-                    flex-1
+                    group/card
                     relative
-                    overflow-hidden
+                    ${styles.flexCol}
+                    h-full
                     rounded-lg
-                    border border-(--color-tertiary)/15
-                    group-hover:border-(--color-tertiary)/50
-                    px-5 py-4
-                    xl:mr-[35%] lg:mr-[20%] mr-4
-                    ml-12
-                    bg-(--color-secondary)
-                    ${styles.defaultTransition}
-                    space-y-3
-                    shadow-lg
-                  `}
-                >
-                  <div id={`v-card-glow-${i}`}
-                    className={`
-                      absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100
-                      ${styles.defaultTransition}
-                      bg-gradient-to-r from-transparent via-(--color-tertiary) to-transparent
-                    `} 
-                  />
+                    px-4 py-3.5
+                    bg-(--color-surface)
+                    border border-(--color-border)
+                    ${isDark
+                        ? "hover:border-(--color-tertiary)/35"
+                        : "hover:border-(--color-border-strong)"
+                    }
+                    ${transition}
+                `}
+            >
+                <div id={`${id}-header`} className={`${styles.flexRow} items-start gap-3 min-w-0`}>
+                    <div id={`${id}-identity`} className={`${styles.flexCol} grow min-w-0`}>
+                        <p id={`${id}-title`}
+                            className={`
+                                font-primary-bold
+                                2xl:text-base xl:text-sm text-xs
+                                leading-snug
+                                text-(--color-quaternary)
+                                group-hover/card:text-(--color-tertiary)
+                                wrap-break-word
+                                ${transition}
+                            `}
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(translate(entry.title, currentLang)) }}
+                        />
 
-                  <div id={`v-card-header-${i}`} className={`flex w-full items-start justify-between`}>
-                    <div id={`v-header-info-${i}`} className={`flex flex-col`}>
-                      <p id={`v-card-title-${i}`}
-                        className={`font-primary-bold text-xl leading-snug text-(--color-quaternary) group-hover:text-(--color-tertiary) transition-colors duration-300`}
-                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.title[currentLang]) }}
-                      />
-                      <p id={`v-card-orga-${i}`} 
-                        className={`text-md opacity-80 mt-1 font-primary-semibold text-(--color-quaternary)`}
-                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.organization[currentLang]) }}
-                      />
+                        <p id={`${id}-organization`}
+                            className={`
+                                mt-1
+                                font-primary-semibold
+                                2xl:text-xs xl:text-2xs text-2xs
+                                leading-tight
+                                text-(--color-quaternary)/70
+                                wrap-break-word
+                            `}
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(translate(entry.organization, currentLang)) }}
+                        />
+
+                        <span id={`${id}-range`}
+                            className={`
+                                mt-2
+                                font-mono
+                                text-3xs
+                                leading-tight
+                                text-(--color-quaternary)/35
+                            `}
+                        > {readRange(entry, currentLang)} </span>
                     </div>
-                    {entry.icon && (
-                      <img id={`v-card-icon-${i}`}
+
+                    {entry.icon &&
+                    <img id={`${id}-icon`}
                         src={entry.icon.content[currentTheme]}
                         alt={entry.icon.alt}
-                        className={`object-cover w-12 h-auto ml-4 opacity-80`}
-                      />
-                    )}
-                  </div>
-
-                  <p id={`v-card-description-${i}`} 
-                    className={`text-base opacity-55 leading-relaxed font-primary-regular`}
-                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.description[currentLang]) }}
-                  />
-
-                  <div id={`v-tags-container-${i}`} className={`flex flex-wrap gap-2 mt-3`}>
-                    <span id={`v-type-badge-${i}`} className={`${styles.tag} text-3xs font-primary-semibold bg-(--color-xp-type)/10 text-(--color-xp-type)`}>
-                      {entry.type.valueOf()}
-                    </span>
-                    {entry.tags && entry.tags[currentLang]?.map((tag, j) => (
-                      <span key={`v-tag-${i}-${j}`} id={`v-tag-${i}-${j}`} className={`${styles.tag} text-3xs font-primary-semibold opacity-60 hover:opacity-100`}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div id={`career-horizontal-view`}
-        className={`
-          flex md:hidden
-          ${styles.sizeFull}
-          ${styles.flexCol}
-          ${styles.contentStartX}
-          px-4
-        `}
-      >
-        <div id={`horizontal-scroll-container`}
-          ref={horizontalScrollRef}
-          className={`
-            ${styles.sizeFull}
-            flex
-            overflow-x-auto
-            snap-x
-            snap-mandatory
-            no-scrollbar
-            gap-6
-            py-10
-          `}
-        >
-          {sortedCareerTimeline.map((entry, i) => (
-            <div key={`h-entry-${i}`}
-              id={`h-entry-wrapper-${i}`}
-              className={`
-                snap-center
-                shrink-0
-                xs:w-[66vw] w-[65vw]
-                max-w-[320px]
-                ${styles.flexCol}
-                gap-4
-              `}
-            >
-              <div id={`h-indicator-row-${i}`} className={`flex items-center gap-4`}>
-                <div id={`h-year-label-${i}`} className={`font-mono text-xs text-(--color-tertiary)`}>
-                  {getYear(entry.period)}
-                </div>
-                <div id={`h-axis-line-${i}`} className={`flex-1 h-[1px] bg-(--color-tertiary)/20`} />
-                <div id={`h-dot-${i}`} className={`w-3 h-3 rounded-full bg-(--color-tertiary)`} />
-              </div>
-
-              <div id={`h-card-${i}`}
-                className={`
-                  p-6
-                  rounded-lg
-                  bg-(--color-secondary)
-                  border border-(--color-tertiary)/15
-                  shadow-xl
-                  ${styles.flexCol}
-                  gap-4
-                `}
-              >
-                <div id={`h-card-header-${i}`} className={`flex justify-between items-start`}>
-                  <div id={`h-title-group-${i}`} className={`flex flex-col`}>
-                    <h3 id={`h-card-title-${i}`}
-                      className={`font-primary-bold text-lg leading-tight text-(--color-quaternary)`}
-                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.title[currentLang]) }}
-                    />
-                    <p id={`h-card-orga-${i}`}
-                      className={`text-sm font-primary-semibold opacity-70 mt-1`}
-                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.organization[currentLang]) }}
-                    />
-                  </div>
-                  {entry.icon && (
-                    <img id={`h-card-icon-${i}`}
-                      src={entry.icon.content[currentTheme]}
-                      alt={entry.icon.alt}
-                      className={`w-10 h-auto opacity-80`}
-                    />
-                  )}
+                        loading="lazy"
+                        className={`2xl:w-11 xl:w-10 w-9 h-auto shrink-0 object-contain opacity-80`}
+                    />}
                 </div>
 
-                <p id={`h-card-desc-${i}`}
-                  className={`text-sm opacity-60 leading-relaxed font-primary-regular`}
-                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry.description[currentLang]) }}
+                <p id={`${id}-description`}
+                    className={`
+                        mt-3
+                        font-primary-regular
+                        text-2xs
+                        leading-[165%]
+                        text-(--color-quaternary)/55
+                        wrap-break-word
+                    `}
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(translate(entry.description, currentLang)) }}
                 />
 
-                <div id={`h-tags-row-${i}`} className={`flex flex-wrap gap-2`}>
-                  <span id={`h-type-badge-${i}`} className={`${styles.tag} text-[10px] font-primary-semibold bg-(--color-xp-type)/10 text-(--color-xp-type)`}>
-                    {entry.type.valueOf()}
-                  </span>
-                  {entry.tags && entry.tags[currentLang]?.slice(0, 2).map((tag, j) => (
-                    <span key={`h-tag-${i}-${j}`} id={`h-tag-${i}-${j}`} className={`${styles.tag} text-[10px] opacity-100`}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                {tags.length > 0 &&
+                <div id={`${id}-tags`} className={`${styles.flexRow} flex-wrap gap-1 mt-3`}>
+                    {tags.map((tag, j) => (
+                        <span key={`${id}-tag-${j}`} id={`${id}-tag-${j}`}
+                            className={`
+                                inline-flex items-center
+                                px-1.5 py-px
+                                rounded-full
+                                font-primary-semibold
+                                text-3xs
+                                ${isNatureTag(tag)
+                                    ? "bg-(--color-xp-type)/10 border border-(--color-xp-type)/25 text-(--color-xp-type)"
+                                    : "bg-(--color-tertiary)/10 border border-(--color-tertiary)/20 text-(--color-tertiary)"
+                                }
+                                opacity-70 group-hover/card:opacity-100
+                                ${transition}
+                            `}
+                        > {tag} </span>
+                    ))}
+                </div>}
+            </article>
+        );
+    };
+
+    return (
+        <div id="career"
+            className={`
+                w-full
+                h-[75vh]
+                mb-20 ss:mb-0 md:mb-20 lg:mb-10
+                relative
+                ${styles.flexCol}
+                overflow-hidden
+            `}
+        >
+            <div id="illustration-container"
+                className={`
+                    hidden lg:flex
+                    absolute
+                    ${isDark ?
+                    `
+                        top-40 lg:top-60 xl:top-40
+                        -left-15 lg:left-0 xl:-left-15
+                        opacity-100 lg:opacity-30 xl:opacity-100
+                        max-w-lg
+                        lg:w-80 xl:w-120 2xl:w-auto
+                    `
+                    :
+                    `
+                        top-20 lg:top-35 xl:top-20
+                        left-0
+                        opacity-95 lg:opacity-30 xl:opacity-95
+                        max-w-100
+                        lg:w-80 xl:w-90 2xl:w-auto
+                    `
+                }
+                    ${styles.sizeFull}
+                    ${styles.flexCol}
+                `}
+            >
+                <img id="career-illustration"
+                    src={careerFigure.content[currentTheme]}
+                    alt={careerFigure.alt}
+                    className={`object-cover w-full h-auto`}
+                />
             </div>
-          ))}
+
+            <div id="career-columns-view"
+                className={`
+                    hidden md:grid
+                    grid-cols-2
+                    2xl:gap-x-12 xl:gap-x-10 gap-x-8
+                    grow min-h-0
+                    lg:ml-30 xl:ml-[23vw]
+                    mr-4
+                `}
+            >
+                <CareerColumn
+                    name="experience"
+                    label={translate(careerSectionLabels.experience, currentLang)}
+                    entries={experiences}
+                    renderCard={renderCard}
+                    smooth={!prefersReducedMotion}
+                />
+
+                <CareerColumn
+                    name="education"
+                    label={translate(careerSectionLabels.education, currentLang)}
+                    entries={education}
+                    renderCard={renderCard}
+                    smooth={!prefersReducedMotion}
+                />
+            </div>
+
+            <div id="career-horizontal-view"
+                className={`
+                    flex md:hidden
+                    ${styles.flexCol}
+                    w-full grow
+                    min-h-0
+                    pb-10
+                    px-4
+                `}
+            >
+                <div id="career-horizontal-scroll"
+                    className={`
+                        flex
+                        w-full grow min-h-0
+                        items-center
+                        overflow-x-auto
+                        snap-x snap-mandatory
+                        no-scrollbar
+                        gap-4
+                    `}
+                >
+                    {swipeEntries.map((entry, index) => (
+                        <div key={`career-swipe-${index}`}
+                            id={`career-swipe-${index}`}
+                            className={`
+                                snap-center shrink-0
+                                xs:w-[66vw] w-[72vw]
+                                max-w-[300px]
+                                ${styles.flexCol}
+                                gap-2
+                            `}
+                        >
+                            <div id={`career-swipe-marker-${index}`} className={`${styles.flexRow} items-center gap-3`}>
+                                <span className={`font-mono text-3xs text-(--color-tertiary)`}>
+                                    {translate(entry.period, currentLang).split("\n")[0]}
+                                </span>
+                                <span className={`grow h-px bg-(--color-tertiary)/20`} />
+                                <span className={`w-2 h-2 rounded-full bg-(--color-tertiary)`} />
+                            </div>
+
+                            {renderCard(entry, `career-swipe-card-${index}`)}
+                        </div>
+                    ))}
+                </div>
+
+                <SwipeIndicator
+                    bottomClass="bottom-1"
+                    animationName="swipe-hint"
+                />
+            </div>
+
+            <div id="career-certifications-band"
+                className={`
+                    shrink-0
+                    ${styles.flexRow}
+                    items-center
+                    gap-2
+                    md:px-0 px-4
+                    lg:ml-30 xl:ml-[23vw]
+                    md:mr-4
+                    2xl:mt-12 xl:mt-10 mt-8
+                    md:flex-wrap flex-nowrap
+                    md:overflow-visible overflow-x-auto
+                    no-scrollbar
+                `}
+            >
+                <span id="career-certifications-label"
+                    className={`
+                        shrink-0
+                        mr-5
+                        font-secondary-semibold
+                        text-3xs
+                        uppercase tracking-widest
+                        text-(--color-quaternary)/35
+                    `}
+                > {translate(careerSectionLabels.certifications, currentLang)} </span>
+
+                {certifications.map((entry, index) => (
+                    <span key={`career-certification-${index}`}
+                        id={`career-certification-${index}`}
+                        tabIndex={0}
+                        className={`
+                            ${styles.tag}
+                            group/token
+                            relative
+                            shrink-0
+                            gap-1.5
+                            text-3xs
+                            outline-none
+                            ${isDark ? "hover:shadow-(--glow-sm)" : "hover:border-(--color-tertiary)/40"}
+                            ${transition}
+                        `}
+                    >
+                        {entry.icon &&
+                        <img src={entry.icon.content[currentTheme]}
+                            alt={entry.icon.alt}
+                            loading="lazy"
+                            className={`w-3.5 h-auto object-contain opacity-80`}
+                        />}
+
+                        {translate(entry.title, currentLang)}
+
+                        <span className={`font-mono opacity-60`}>
+                            {readRange(entry, currentLang)}
+                        </span>
+
+                        <span id={`career-certification-detail-${index}`}
+                            className={`
+                                absolute bottom-full left-0 mb-2
+                                w-96 max-w-[80vw]
+                                ${styles.flexCol}
+                                gap-1.5
+                                p-4
+                                rounded-xl
+                                text-left
+                                text-(length:--base-font-size)
+                                bg-(--color-surface)
+                                border border-(--color-tertiary)/20
+                                ${isDark ? "shadow-(--glow-sm)" : "shadow-lg"}
+                                opacity-0 pointer-events-none
+                                group-hover/token:opacity-100
+                                group-focus/token:opacity-100
+                                ${transition}
+                            `}
+                        >
+                            <span className={`font-primary-semibold text-[75%] text-(--color-quaternary)/80`}>
+                                {translate(entry.organization, currentLang)}
+                            </span>
+
+                            <span className={`
+                                    font-primary-regular
+                                    text-[70%]
+                                    leading-[160%]
+                                    text-(--color-quaternary)/70
+                                `}
+                            >
+                                {translate(entry.description, currentLang)}
+                            </span>
+                        </span>
+                    </span>
+                ))}
+            </div>
         </div>
-        
-        <SwipeIndicator
-          bottomClass="sm:bottom-0 ss:bottom-15 xs:bottom-10 bottom-15"
-          animationName="swipe-hint"
-        />
-      </div>
-    </div>
-  );
+    );
 };
 
 export default CareerTimeline;
