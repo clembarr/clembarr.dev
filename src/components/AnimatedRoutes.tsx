@@ -1,6 +1,6 @@
 import {Route, Routes, useLocation } from 'react-router'
 import { AnimatePresence } from 'framer-motion'
-import { Home, ErrPage, Projects, Blog, BlogPost } from '../pages'
+import { Home, ErrPage, Projects, Blog, BlogPost, Credits } from '../pages'
 import { Errors } from '../assets/dataTypes'
 
 /**
@@ -17,6 +17,7 @@ export const AnimatedRoutes = () => {
         <Route path="/projects" element={<Projects />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/credits" element={<Credits />} />
         <Route path="/*" element={<ErrPage error={Errors.NOT_FOUND} />} />
         </Routes>
     </AnimatePresence>

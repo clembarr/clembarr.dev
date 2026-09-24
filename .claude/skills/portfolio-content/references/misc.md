@@ -33,7 +33,8 @@ Widgets actuels : `currently` · `future` · `hobbies` · `interests` · `lang`.
 
 ## Liens « voir aussi » — `sharedLinks`
 
-Affichés dans la colonne footer `see-also`. `prioritized: true` remonte le lien en tête.
+Affichés dans la ligne footer `see-also`, tirés au hasard et plafonnés à
+`FOOTER_SEE_ALSO_COUNT` (`uiConstants.ts`, 4). `prioritized: true` remonte le lien en tête.
 
 ```ts
 {
@@ -43,12 +44,21 @@ Affichés dans la colonne footer `see-also`. `prioritized: true` remonte le lien
 }
 ```
 
-## Colonnes de footer — `footerColumns`
+## Lignes de footer — `footerColumns`
 
-Trois colonnes, discriminées par `context` (`navigation`, `credits`, `see-also`) que
-`Footer.tsx` lit pour choisir le rendu. Leur `content` pointe vers `navLinks`,
-`creditsMentions` (tous deux dans `uiConstants.ts`) et `sharedLinks`. **Ajouter une colonne
-demande de gérer son `context` dans `Footer.tsx`** — ce n'est pas un simple ajout de données.
+Deux lignes horizontales (titre puis liens), discriminées par `context` (`navigation`,
+`see-also`) que `Footer.tsx` lit pour choisir le rendu. Leur `content` pointe vers `navLinks`
+(`uiConstants.ts`) et `sharedLinks`. **Ajouter une ligne demande de gérer son `context` dans
+`Footer.tsx`** — ce n'est pas un simple ajout de données.
+
+## Crédits — `uiConstants.ts` → `creditsMentions`
+
+Listés par la page `/credits` (`src/pages/Credits.tsx`), une ligne par entrée : le nom, puis
+le domaine de `link` en lien externe — un lien vers une page de recherche affichera donc
+`google.com`, préférer l'URL de la source réelle.
+Le footer n'en garde qu'un lien, `creditsLink` (`uiConstants.ts`), dont le libellé sert aussi
+de titre à la page. `link` est la source créditée ; à défaut, le lien retombe sur la première
+image de `contentRef` dans le thème actif.
 
 ## Réseaux sociaux — `uiConstants.ts` → `socialMedia`
 

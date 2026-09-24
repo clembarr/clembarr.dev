@@ -140,8 +140,8 @@ await page.addInitScript(() => {
 
 ## Garde responsive
 
-`tests/e2e/responsive.spec.ts` parcourt chaque route (`/`, `/projects`, `/blog`, un
-article) sur neuf viewports — un par tranche de breakpoint de largeur, de 360 à 1920 px,
+`tests/e2e/responsive.spec.ts` parcourt chaque route (`/`, `/projects`, `/blog`,
+`/credits`, un article) sur neuf viewports — un par tranche de breakpoint de largeur, de 360 à 1920 px,
 plus un portable court en 1366×650 — et vérifie deux invariants sur tout le DOM :
 
 | Invariant | Pourquoi il faut le mesurer élément par élément |
@@ -181,7 +181,7 @@ installation manquante.
 
 ## Boucler court
 
-Relancer les 126 tests unitaires coûte deux secondes ; la suite e2e, une minute — dont
+Relancer les 130 tests unitaires coûte deux secondes ; la suite e2e, une minute — dont
 une trentaine de secondes pour la garde responsive. Pendant
 un cycle, cibler :
 
@@ -234,13 +234,13 @@ croire sur parole, et **mettre ce tableau à jour dès qu'ils changent pour de b
 
 | Commande | État de référence |
 |---|---|
-| `npm test` | **126 tests verts**, 7 fichiers — tout échec est une régression |
-| `npm run test:e2e` | **75 passés, 21 ignorés**, environ 1 min — l'ignoré est attendu, pas un symptôme |
+| `npm test` | **130 tests verts**, 8 fichiers — tout échec est une régression |
+| `npm run test:e2e` | **77 passés, 23 ignorés**, environ 1 min — l'ignoré est attendu, pas un symptôme |
 | `npm run build` (`tsc -b`) | **propre** — couvre aussi `tests/` via `tsconfig.test.json` |
 
-Les 21 e2e ignorés le sont par `test.skip` sur le profil : 11 parce que le retex change de
+Les 23 e2e ignorés le sont par `test.skip` sur le profil : 12 parce que le retex change de
 forme à `lg` et qu'un test de la mise en page de bureau n'a rien à vérifier sur un profil
-mobile, 4 parce que la garde responsive porte sa propre matrice de viewports et ne tourne
+mobile, 5 parce que la garde responsive porte sa propre matrice de viewports et ne tourne
 que sur `desktop`, 6 parce que la section carrière change de forme à `md` — ses colonnes
 n'existent pas sur mobile, son swipe n'existe pas sur bureau (`career.spec.ts`).
 

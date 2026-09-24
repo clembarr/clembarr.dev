@@ -98,7 +98,7 @@ const News = () => {
         const actionStyle = `
             ${styles.flexCol}
             ${styles.sizeFull}
-            p-0
+            p-0!
             text-left
             cursor-pointer
         `;
@@ -140,7 +140,8 @@ const News = () => {
         const body = (<>
                     <div id={`news-event-${index}-cover`}
                         className={`
-                            w-full
+                            m-[6%]
+                            mb-0
                             2xl:h-32 xl:h-28 lg:h-24 md:h-20 sm:h-36 ss:h-32 h-28
                             overflow-hidden
                             shrink-0
@@ -153,14 +154,15 @@ const News = () => {
                         className={`
                             ${styles.flexCol}
                             grow
-                            2xl:p-5 xl:p-4 md:p-3.5 p-4
+                            px-[8%]
+                            2xl:py-5 xl:py-4 md:py-3.5 py-4
                             2xl:space-y-3 space-y-2
                         `}
                     >
                         <time
                             dateTime={event.source.date.toISOString()}
                             className={`
-                                font-secondary-semibold
+                                font-primary-regular
                                 ${dateScale}
                                 uppercase tracking-wider
                                 text-(--color-quaternary)/60
@@ -203,7 +205,7 @@ const News = () => {
                         group
                         ${styles.flexCol}
                         ${styles.sizeFull}
-                        rounded-xl
+                        rounded-md
                         overflow-hidden
                         relative
                         ${styles.easeOutTransition}
@@ -300,36 +302,17 @@ const News = () => {
                     overflow-y-visible
                 `}
             >
-                <div id="glitch-effect-wrapper"
+                <div id="figure-wrapper"
                     className={`
                         absolute
                         left-1/2 -translate-x-1/2
-                        ${currentTheme === "dark" ? "lg:bottom-10 xl:-bottom-10" : ""}
                         2xl:w-[96%] xl:w-[100%] w-[100%]
-                        overflow-hidden
                     `}
                 >
-                    {currentTheme === "dark" && <>
-                        <img
-                            src={coreImages.hephaistos.content[currentTheme]}
-                            alt={coreImages.hephaistos.alt}
-                            aria-hidden="true"
-                            className={`absolute inset-0 ${styles.sizeFull} object-contain pointer-events-none`}
-                            style={{ animation: 'glitch-slice-1 9s infinite' }}
-                        />
-                        <img
-                            src={coreImages.hephaistos.content[currentTheme]}
-                            alt={coreImages.hephaistos.alt}
-                            aria-hidden="true"
-                            className={`absolute inset-0 ${styles.sizeFull} object-contain pointer-events-none`}
-                            style={{ animation: 'glitch-slice-2 9s infinite 0.25s' }}
-                        />
-                    </>}
                     <img id="hephaistos-statue"
                         src={coreImages.hephaistos.content[currentTheme]}
                         alt={coreImages.hephaistos.alt}
                         className={`relative w-full object-contain`}
-                        style={ currentTheme === "dark" ? { animation: 'glitch-flicker 9s infinite' } : undefined }
                     />
                 </div>
             </div>

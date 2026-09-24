@@ -800,6 +800,17 @@ export const copyrigthText: Hyperlink = {
 };
 
 /**
+ * Store the link to the credits page, displayed in the footer and used as the page title
+ */
+export const creditsLink: Hyperlink = {
+  content: {
+    fr: "Crédits",
+    en: "Credits",
+  },
+  link: "/credits",
+};
+
+/**
  * Store all the error messages for the app
  */
 export const errorMessages: Array<ErrorMessage> = [
@@ -1205,6 +1216,9 @@ export const PROJECTS_LISTING_PERSPECTIVE = '2000px';
 
 /** Number of events displayed by the home page news feed. */
 export const NEWS_EVENT_COUNT = 3;
+
+/** Number of links shown in the see-also row of the footer. */
+export const FOOTER_SEE_ALSO_COUNT = 4;
 
 /**
  * Extra delay in ms before the retex viewer measures its text a second time. Added to

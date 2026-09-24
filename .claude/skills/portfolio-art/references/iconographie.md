@@ -40,8 +40,10 @@ mise en scène.
 ## Le hero est l'exception qui dit la vision
 
 `index.tsx:10` importe le hero clair depuis **`sysiphus_working.png`** — le croquis à l'encre.
-Le hero sombre est `hero_figure_dark.webp`, un **visage composé de caractères
-typographiques**, en menthe.
+Le hero sombre est `hero_figure_dark.webp`, une **chouette effraie tramée en pixels**, en
+menthe. Son ratio (portrait, 0,69) diffère de celui du croquis clair (paysage, 1,08) :
+`HeroIllustration.tsx` la loge dans le cadre du clair (`aspect-[2144/1984]`,
+`object-contain object-center`) pour que les deux thèmes occupent la même place.
 
 Ce ne sont donc **pas deux versions d'une même image**, contrairement à toutes les autres
 paires : ce sont deux œuvres différentes sur le même sujet, l'une faite à la main, l'autre

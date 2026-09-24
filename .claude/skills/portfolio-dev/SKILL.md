@@ -75,6 +75,8 @@ vérifier avant d'agir coûte moins cher que de les défaire.
 | Réflexe | La réalité de ce dépôt |
 |---|---|
 | Créer ou modifier `tailwind.config.js` | Il n'existe pas. Tailwind v4 se configure **en CSS**, dans `src/index.css` (`@theme`, `:root`, `.light`, `.dark`) |
+| Donner à une carte un `rounded-xl` ou un média à fond perdu, comme partout ailleurs | Une carte ici : `rounded-md`, média `m-[6%] mb-0`, texte `px-[8%]` — gabarit de `ProjectPreview.tsx`, cf. `portfolio-art` |
+| Écrire `p-0` sur un `<button>` et le croire nu | Ignoré : `index.css:203` pose un padding global hors couche qui bat les utilitaires. `p-0!` |
 | Installer `i18next` ou `react-intl` | Un moteur maison complet existe : `src/utils/translationUtils.ts` + `src/components/language/LangEngine.tsx` |
 | Importer depuis `react-router-dom` | Le dépôt utilise **`react-router` v7**, sans le `-dom` |
 | Ajouter Prettier, ESLint stylistique ou `.editorconfig` | Aucun n'existe. La mise en forme se lit dans les fichiers : voir `references/style-code.md` |
@@ -189,8 +191,8 @@ Ces compteurs bougent avec le dépôt : les recompter plutôt que les croire sur
 | Commande | État de référence |
 |---|---|
 | `tsc -b` (via `npm run build`) | **propre** — toute erreur est nouvelle |
-| `npm test` | **126 tests verts** — tout échec est une régression |
-| `npm run test:e2e` | **63 passés, 11 ignorés** (profil de viewport inadapté) |
+| `npm test` | **130 tests verts** — tout échec est une régression |
+| `npm run test:e2e` | **77 passés, 23 ignorés** (profil de viewport inadapté) |
 | `npm run validate` | **0 erreur**, 33 avertissements |
 | `npm run lint` | 3 erreurs, 15 avertissements |
 
@@ -213,9 +215,9 @@ l'essentiel des `react-hooks/exhaustive-deps`. C'est pour ces trois erreurs que 
 lint est en `continue-on-error` dans la CI ; elle passera bloquante quand elles auront
 disparu.
 
-Les 11 tests e2e ignorés le sont par `test.skip` sur la largeur du viewport : le retex
-change de forme à `lg`, et un test de la mise en page de bureau n'a rien à vérifier sur un
-profil mobile. Ce compte est attendu, pas un symptôme.
+Les 23 tests e2e ignorés le sont par `test.skip` sur le profil de viewport : un test de la
+mise en page de bureau n'a rien à vérifier sur un profil mobile, et inversement. Ce compte
+est attendu, pas un symptôme — détail dans `portfolio-test`.
 
 Si une modification produit un avertissement, le signaler.
 

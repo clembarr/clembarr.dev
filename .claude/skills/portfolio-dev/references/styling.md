@@ -110,6 +110,13 @@ besoins — les réutiliser avant d'écrire un `motion.div`.
 - **`ThemeEngine` ignore `prefers-color-scheme`** et applique la classe dans un `useEffect`,
   alors que `index.html` sert `class="root light"` : un visiteur en thème sombre voit un
   flash clair au chargement. Écart connu, à proposer plutôt qu'à corriger au passage.
+- **`button` porte un `padding` global hors couche** (`index.css:203`, `padding: 1% 3.5%`).
+  En Tailwind v4, une règle hors `@layer` bat les utilitaires : `p-0`, `px-*` ou `py-*` sur
+  un `<button>` sont **ignorés sans erreur**. Écrire `p-0!` (important) sur un bouton qui
+  doit être nu — c'est le cas des cartes d'actualité. Ranger la règle dans `@layer base`
+  réglerait la cause, mais changerait la marge de tous les boutons : à proposer.
+- **Une carte suit le gabarit de `ProjectPreview`** : `rounded-md`, média `m-[6%] mb-0`,
+  texte `px-[8%]`. Détail et raisons dans `portfolio-art`, « Le gabarit de carte ».
 - **L'échelle typographique est en pourcentages.** `text-lg` vaut `120%`, pas `1.125rem`.
   Raisonner en proportions, pas en pixels.
 

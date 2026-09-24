@@ -9,7 +9,8 @@ type HeroIllustrationProps = {
 /**
  * @component HeroIllustration
  * @description Theme-aware decorative illustration positioned in the hero section.
- * In dark mode: glowing hero figure with an ascii-pulse animation.
+ * In dark mode: glowing hero figure with a slow ascii-pulse animation, fitted in the frame
+ * of the light figure so that both themes take the same room whatever the image ratio.
  * In light mode: hero figure with an orbiting boulder animation overlay.
  * Fades and slides in when isVisible becomes true.
  * @param isVisible - Controls the fade-in / slide-in entrance transition
@@ -59,10 +60,11 @@ const HeroIllustration = ({ isVisible }: HeroIllustrationProps) => {
             className={`
               relative
               w-full
-              object-cover
+              aspect-[2144/1984]
+              object-contain object-center
               ${imageResponsiveOpacity}
               drop-shadow-[0_0_30px_rgba(124,255,196,0.15)]
-              animate-[ascii-pulse_3s_ease-in-out_infinite]
+              animate-[ascii-pulse_6s_ease-in-out_infinite]
             `}
           />
         </>

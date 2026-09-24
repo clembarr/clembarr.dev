@@ -30,6 +30,14 @@ test.describe("routes", () => {
         await expect(page.locator("#blog-container")).toBeVisible();
     });
 
+    test("reaches the credits page from the footer", async ({ page }) => {
+        await page.goto("/");
+
+        await page.locator("#footer #credits-link").click();
+        await page.waitForURL(/\/credits$/);
+        await expect(page.locator("#credits-list li")).not.toHaveCount(0);
+    });
+
     /** No public/404.html is deployed, so a cold deep link is served by the SPA fallback
      *  in dev and by GitHub Pages in production. The in-app route is what is checked. */
     test("renders the error page on an unknown route", async ({ page }) => {

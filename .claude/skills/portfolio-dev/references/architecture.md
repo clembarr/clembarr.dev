@@ -88,7 +88,8 @@ de `vendor-react`, `vendor-animation` et `vendor-utils`, sinon elle grossit le c
 principal.
 
 Le chargement différé se fait avec `React.lazy()` + `<Suspense fallback={<SuspenseFallback />}>`.
-Aujourd'hui seul `ProjectsSlider` en bénéficie ; les routes ne sont pas découpées.
+Aujourd'hui seule la section `News` en bénéficie (`src/pages/Home.tsx:9`) ; les routes ne
+sont pas découpées.
 
 ⚠️ `pkg-dir` figure dans les dépendances et n'est importé nulle part.
 

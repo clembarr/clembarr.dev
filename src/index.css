@@ -713,7 +713,7 @@ input:focus, textarea:focus {
     filter: brightness(1) contrast(1);
   }
   50% {
-    filter: brightness(1.15) contrast(1.1) drop-shadow(0 0 20px rgba(124, 255, 196, 0.3));
+    filter: brightness(1.06) contrast(1.04) drop-shadow(0 0 12px rgba(124, 255, 196, 0.15));
   }
 }
 

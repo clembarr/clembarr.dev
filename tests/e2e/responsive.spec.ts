@@ -127,7 +127,7 @@ test.describe("responsive layout", () => {
     test.describe.configure({ mode: "parallel" });
     test.use({ reducedMotion: "reduce" });
 
-    for (const route of ["/", "/projects", "/blog", "article"]) {
+    for (const route of ["/", "/projects", "/blog", "/credits", "article"]) {
         test(`${route} holds at every breakpoint`, async ({ page }) => {
             test.slow();
             const path = route === "article" ? await articleRoute(page) : route;

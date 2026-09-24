@@ -128,16 +128,4 @@ describe("News", () => {
 
         expect(listingLink).toBeDefined();
     });
-
-    /** The Hephaistos figure is decoration: it carries no information the cards do not
-     *  already give, so it must not be announced. */
-    it("hides the decorative glitch layers from assistive technology", () => {
-        renderNews();
-
-        const decorations = document.querySelectorAll("#glitch-effect-wrapper img[aria-hidden='true']");
-
-        decorations.forEach((image) => {
-            expect(image).toHaveAttribute("aria-hidden", "true");
-        });
-    });
 });

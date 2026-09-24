@@ -28,7 +28,7 @@ const Home = () => {
       className={`
         ${styles.page}
         ${styles.flexCol}
-        2xl:space-y-[12%] xl:space-y-[17%] lg:space-y-[10%] md:space-y-[8%] sm:space-y-[17%] ss:space-y-[10%] space-y-10
+        2xl:space-y-52 xl:space-y-48 lg:space-y-36 md:space-y-20 sm:space-y-24 ss:space-y-16 space-y-12
         lg:pb-25
       `}
     >
@@ -36,7 +36,7 @@ const Home = () => {
         className={`
           w-screen
           2xl:h-[74vh] xl:h-[68vh] lg:h-[62vh] md:h-[40vh] h-[35vh]
-          
+          2xl:mb-[12%] xl:mb-[17%] lg:mb-[10%] md:mb-[8%] sm:mb-[17%] ss:mb-[10%] mb-10
           px-[12%]
           text-(--color-quaternary)
           bg-transparent

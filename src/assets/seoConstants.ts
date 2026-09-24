@@ -150,6 +150,14 @@ export const ProjectSEOConstants: SEOConstants = {
   canonical: `${APP_URL}/projects`,
 }
 
+export const CreditsSEOConstants: SEOConstants = {
+  title: `clembarr.dev - Credits`,
+  description: "Crédits des illustrations, icônes et ressources utilisées sur clembarr.dev.",
+  keywords: ['crédits', 'credits', 'illustrations', 'icons', 'Clément Barrière'],
+  ogUrl: `${APP_URL}/credits`,
+  canonical: `${APP_URL}/credits`,
+}
+
 export const HomeSEOConstants: SEOConstants = {
   title: `clembarr.dev - Welcome`,
   description: "Portfolio de Clément Barrière - Développeur logiciel, chercheur et ingénieur en IA et modélisation. Projets, compétences et parcours.",

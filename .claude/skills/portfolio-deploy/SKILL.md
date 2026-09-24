@@ -104,7 +104,7 @@ attendant : `node node_modules/eslint/bin/eslint.js .` et
 npm test && npm run test:e2e
 ```
 
-Lignes de base : **126 tests unitaires verts**, et **63 e2e passés, 11 ignorés** (les
+Lignes de base : **130 tests unitaires verts**, et **77 e2e passés, 23 ignorés** (les
 ignorés le sont par profil de viewport, c'est attendu). La suite e2e démarre un serveur de
 dev et coûte une quarantaine de secondes.
 

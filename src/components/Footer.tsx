@@ -1,18 +1,19 @@
 import styles from "../style"
-import { copyrigthText, navLinks } from "../assets/constants"
+import { copyrigthText, creditsLink, FOOTER_SEE_ALSO_COUNT } from "../assets/constants"
 import { getCurrentNavigation, getLinkFromTypedLink, shuffle } from "../utils/utils"
 import { useContext, useEffect, useState } from "react"
 import { footerColumns } from "../assets/contents"
 import DOMPurify from "dompurify"
 import { LangContext } from "./language"
 import { ThemeContext } from "./theme/ThemeEngine"
-import { CreditMention, Hyperlink, NavbarPattern } from "../assets/dataTypes"
+import { Hyperlink, NavbarPattern } from "../assets/dataTypes"
+import { Link } from "react-router"
 
 /**
  * @component ExternalLinkIcon
  * @description Small SVG icon displayed inline next to external link labels.
  */
-const ExternalLinkIcon = () => (
+export const ExternalLinkIcon = () => (
   <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
   </svg>
@@ -20,8 +21,9 @@ const ExternalLinkIcon = () => (
 
 /**
  * @component Footer
- * @description Footer with dynamically generated columns from `footerColumns`.
- * Renders navigation links, credits, and see-also links depending on column context.
+ * @description Footer with one horizontal row per entry of `footerColumns`: the title,
+ * then its links side by side. Navigation and see-also rows sit above a bottom line
+ * holding the link to the credits page on the left and the copyright on the right.
  */
 const Footer = () => {
   const [currentNavigation, setCurrentNavigation] = useState(getCurrentNavigation())
@@ -41,13 +43,13 @@ const Footer = () => {
    * @param content - the data array to render
    * @returns JSX elements for the column items
    */
-  const renderColumnItems = (context: string, content: Hyperlink[] | CreditMention[] | NavbarPattern[]) => {
+  const renderColumnItems = (context: string, content: Hyperlink[] | NavbarPattern[]) => {
     switch (context) {
       case "navigation": {
         const patterns = content as NavbarPattern[];
-        const currentPattern = patterns.filter(
+        const currentPattern = patterns.find(
           (pattern) => pattern.route.includes(window.location.pathname.split("/")[1])
-        )[0];
+        ) ?? patterns.find((pattern) => pattern.route === "");
         if (!currentPattern) return null;
 
         return currentPattern.links.map((navLink, index) => (
@@ -67,43 +69,10 @@ const Footer = () => {
         ));
       }
 
-      case "credits": {
-        const credits = content as CreditMention[];
-
-        return credits.map((credit, index) => (
-          <a key={`credit-${index}`}
-            id={`credit-${credit.content[currentLang]}`}
-            href={
-              credit.link ? getLinkFromTypedLink(credit.link, currentLang)
-              : (Array.isArray(credit.contentRef) ?
-                getLinkFromTypedLink(credit.contentRef[0].content[currentTheme], currentLang)
-                : credit.contentRef ? getLinkFromTypedLink(credit.contentRef.content[currentTheme], currentLang) : "#"
-              )
-            }
-            className={`
-              text-sm
-              text-(--color-muted)
-              hover:text-(--color-tertiary)
-              transition-all duration-200
-              inline-flex items-center gap-1
-            `}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {credit.content[currentLang]}
-            <ExternalLinkIcon />
-          </a>
-        ));
-      }
-
       case "see-also": {
-        const currentPattern = navLinks.filter(
-          (pattern) => pattern.route.includes(window.location.pathname.split("/")[1])
-        )[0];
-        const countNavLinks = currentPattern ? currentPattern.links.length : 4;
         const links = shuffle(shuffle(content as Hyperlink[])).sort((a, b) => a.prioritized ? -1 : b.prioritized ? 1 : -1);
 
-        return links.slice(0, countNavLinks).map((link, index) => (
+        return links.slice(0, FOOTER_SEE_ALSO_COUNT).map((link, index) => (
           <a key={`see-also-${index}`}
             id={`see-also-${index}`}
             href={getLinkFromTypedLink(link.link, currentLang)}
@@ -132,10 +101,9 @@ const Footer = () => {
     <footer id="footer"
       className={`
         w-screen
-        h-full
         px-[5%]
-        2xl:pt-8 lg:pt-10 pt-12
-        lg:pb-6 pb-8
+        lg:pt-6 pt-8
+        pb-4
         ${styles.flexCol}
         bg-(--color-secondary)
         border-t border-(--color-border)
@@ -152,38 +120,37 @@ const Footer = () => {
 
       <div id="footer-content"
         className={`
-          h-full
           w-full
-          ${styles.contentStartAll}
-          ${styles.flexColToRowAtLg}
+          grid
+          md:grid-cols-[auto_1fr] grid-cols-1
+          md:gap-x-8 md:gap-y-4 gap-y-2
+          items-baseline
           text-2xs
-          xl:space-x-25 lg:space-x-12.5
-          lg:space-y-0 space-y-[3%]
         `}
       >
         {footerColumns.map((col) => (
           <div key={`footer-col-${col.context}`}
             id={`${col.context}-container`}
-            className={`
-              ${styles.flexCol}
-              ${col.context !== "navigation" ? styles.contentStartAll : ""}
-              w-fit
-              ${col.context === "credits" ? "text-nowrap" : ""}
-              ${col.context === "see-also" ? "h-full text-nowrap" : ""}
-              gap-2
-            `}
+            className="contents"
           >
             <h3 id={`${col.context}-title`}
               className={`
                 font-primary-semibold
                 lg:text-base text-sm
                 text-(--color-quaternary)
-                ${col.context === "credits" ? "w-full" : ""}
-                mb-1
+                md:mt-0 mt-3
               `}
             >{col.title[currentLang]}</h3>
 
-            {renderColumnItems(col.context, col.content)}
+            <div id={`${col.context}-items`}
+              className={`
+                ${styles.flexWrap}
+                items-baseline
+                gap-x-5 gap-y-1
+              `}
+            >
+              {renderColumnItems(col.context, col.content)}
+            </div>
           </div>
         ))}
       </div>
@@ -191,19 +158,28 @@ const Footer = () => {
       <div id="copyrigth-container"
         className={`
           ${styles.flexRow}
-          justify-start items-center lg:justify-end lg:items-end
-          ${styles.sizeFull}
-          self-end
-          pt-4
-          mt-4
+          justify-between items-end
+          w-full
+          pt-3
+          mt-6
           border-t border-(--color-border)
           text-xs
         `}
       >
+        <Link id="credits-link"
+          to={getLinkFromTypedLink(creditsLink.link, currentLang)}
+          className={`
+            text-3xs
+            text-(--color-muted)
+            hover:text-(--color-tertiary)
+            transition-all duration-200
+          `}
+        >{creditsLink.content[currentLang]}</Link>
+
         <a id="copyrigth"
           href={getLinkFromTypedLink(copyrigthText.link, currentLang)}
           className={`
-            text-left lg:text-right
+            text-right
             text-3xs
             text-(--color-muted)
             hover:text-(--color-tertiary)

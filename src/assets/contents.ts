@@ -7,7 +7,7 @@ import {
   CareerEntry,
   CareerEntryType,
 } from "./dataTypes";
-import { navLinks, creditsMentions } from "./constants";
+import { navLinks } from "./constants";
 import { CGILogo, ESIEALogo, FNMNSLogo, IUTInfoLogo, JDBLogo, LGPLogo, NagoyaULogo, ThalesLogo } from "./orga_icons";
 
 // Re-export skills from its new dedicated file
@@ -152,11 +152,6 @@ export const footerColumns: FooterColumn[] = [
     title: { fr: "Navigation", en: "Navigation" },
     context: "navigation",
     content: navLinks,
-  },
-  {
-    title: { fr: "Crédits", en: "Credits" },
-    context: "credits",
-    content: creditsMentions,
   },
   {
     title: { fr: "Voir aussi", en: "See also" },

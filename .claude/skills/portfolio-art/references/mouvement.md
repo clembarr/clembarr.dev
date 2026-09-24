@@ -49,25 +49,26 @@ au survol ne vient pas de ce site.
 S'y ajoute la hairline `transparent → accent → transparent` qui apparaît en `group-hover` sur
 le bord d'une carte, avec un halo menthe en sombre seulement.
 
-## Les trois exceptions
+## Les deux exceptions
 
 Le mouvement appuyé est autorisé, mais **jamais sur l'interface** — uniquement sur les
 illustrations, où il raconte quelque chose :
 
-1. **Le jeu de cartes** du slider de projets : `card-top-to-bottom` projette la carte à 200 %
-   hors écran, la ramène de l'autre côté et la fait osciller en se posant. C'est une métaphore
-   physique, pas une décoration.
-2. **Les rafales de glitch** sur la figure en thème sombre : cycle de 9 s dont environ 7 s
-   sans rien. Intermittent au point de se lire comme une ambiance. **Monochrome** — voir
-   ci-dessous.
-3. **Le rocher** de Sisyphe : 360° en 25 s linéaire, avec des saccades d'un demi-pixel pour
+1. **La respiration** de la figure hero en thème sombre : `ascii-pulse`, cycle de 6 s,
+   luminosité +6 %, contraste +4 %, halo menthe de 12 px à 15 %. Assez lent et assez faible
+   pour se lire comme une présence, pas comme un clignotement.
+2. **Le rocher** de Sisyphe : 360° en 25 s linéaire, avec des saccades d'un demi-pixel pour
    qu'il ne soit pas parfaitement rond. À cette vitesse, c'est presque subliminal.
+
+La figure du fil d'actualité (la main) est **immobile** dans les deux thèmes : ses rafales
+de glitch ont été retirées.
 
 ## Ce qui a été refusé
 
 `index.css` contient une bibliothèque d'effets construite puis éteinte : `ascii-glitch` (la
 seule aberration chromatique du projet), `scanline`, `hologram-flicker`, `data-corruption`,
-`noise`, `matrix-rain`. **12 des 31 keyframes ne servent à rien**, et ce sont presque tous
+`noise`, `matrix-rain`, et les trois glitch monochromes. **21 des 31 keyframes ne servent
+à rien**, et ce sont presque tous
 les tape-à-l'œil.
 
 Trois commentaires disent pourquoi :

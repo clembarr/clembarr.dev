@@ -406,7 +406,7 @@ const CareerTimeline = () => {
                     relative
                     ${styles.flexCol}
                     h-full
-                    rounded-lg
+                    rounded-md
                     px-4 py-3.5
                     bg-(--color-surface)
                     border border-(--color-border)
@@ -447,7 +447,6 @@ const CareerTimeline = () => {
                         <span id={`${id}-range`}
                             className={`
                                 mt-2
-                                font-mono
                                 text-3xs
                                 leading-tight
                                 text-(--color-quaternary)/35
@@ -505,7 +504,6 @@ const CareerTimeline = () => {
             className={`
                 w-full
                 h-[75vh]
-                mb-20 ss:mb-0 md:mb-20 lg:mb-10
                 relative
                 ${styles.flexCol}
                 overflow-hidden
@@ -603,7 +601,7 @@ const CareerTimeline = () => {
                             `}
                         >
                             <div id={`career-swipe-marker-${index}`} className={`${styles.flexRow} items-center gap-3`}>
-                                <span className={`font-mono text-3xs text-(--color-tertiary)`}>
+                                <span className={`text-3xs text-(--color-tertiary)`}>
                                     {translate(entry.period, currentLang).split("\n")[0]}
                                 </span>
                                 <span className={`grow h-px bg-(--color-tertiary)/20`} />
@@ -672,7 +670,7 @@ const CareerTimeline = () => {
 
                         {translate(entry.title, currentLang)}
 
-                        <span className={`font-mono opacity-60`}>
+                        <span className={`opacity-60`}>
                             {readRange(entry, currentLang)}
                         </span>
 
@@ -683,7 +681,7 @@ const CareerTimeline = () => {
                                 ${styles.flexCol}
                                 gap-1.5
                                 p-4
-                                rounded-xl
+                                rounded-md
                                 text-left
                                 text-(length:--base-font-size)
                                 bg-(--color-surface)

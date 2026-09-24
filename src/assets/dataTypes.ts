@@ -360,7 +360,7 @@ export interface FlashMessage extends Message {
 export interface FooterColumn {
   title: MultilingualContent;
   context: string;
-  content: Hyperlink[] | CreditMention[] | NavbarPattern[];
+  content: Hyperlink[] | NavbarPattern[];
 }
 
 /** Identifiers for gallery viewer actions. */
