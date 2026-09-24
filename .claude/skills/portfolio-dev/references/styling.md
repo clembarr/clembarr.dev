@@ -117,7 +117,12 @@ besoins — les réutiliser avant d'écrire un `motion.div`.
 
 ```bash
 npm run lint && npm run build
+npx playwright test tests/e2e/responsive.spec.ts --project=desktop
 ```
+
+La garde responsive dit qu'aucune largeur ne casse : rien de coupé par le bord de l'écran,
+aucun texte sous 10 px — un risque réel avec une échelle `--text-*` en pourcentages du
+parent. Détail dans `portfolio-test`.
 
 Puis, à l'œil : la modification dans les **deux thèmes**, et aux breakpoints qu'elle touche.
 Aucun outil du dépôt ne vérifie qu'une couleur existe dans les deux blocs.

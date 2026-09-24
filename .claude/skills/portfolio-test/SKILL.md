@@ -138,6 +138,39 @@ await page.addInitScript(() => {
 });
 ```
 
+## Garde responsive
+
+`tests/e2e/responsive.spec.ts` parcourt chaque route (`/`, `/projects`, `/blog`, un
+article) sur neuf viewports — un par tranche de breakpoint de largeur, de 360 à 1920 px,
+plus un portable court en 1366×650 — et vérifie deux invariants sur tout le DOM :
+
+| Invariant | Pourquoi il faut le mesurer élément par élément |
+|---|---|
+| **Aucun élément coupé par le bord de l'écran** | `.root, #root` posent `overflow-x: hidden` (`src/index.css`) : un bloc qui déborde ne crée jamais de scroll horizontal, il est coupé en silence. `scrollWidth` ne prouve rien |
+| **Aucun texte sous 10 px** | L'échelle `--text-*` est en **pourcentages du parent** : un `text-3xs` (60 %) dans un `text-3xs` donne 7 px sans erreur. Le plancher attrape l'accident, pas le choix |
+
+Ce qui n'est pas « coupé » : un élément tenu par un ancêtre qui défile ou masque
+horizontalement (swipe, carrousel, illustration dans un conteneur `overflow-hidden`), et
+tout ce qui est sous `aria-hidden`. Un débordement voulu se déclare donc **dans le
+composant**, par son conteneur — jamais par une exception dans le test.
+
+Deux réglages qui tiennent la garde debout :
+
+- **`reducedMotion: "reduce"`**. Sans lui, `ScrollReveal` garde transparents et décalés les
+  blocs qu'il n'a pas encore révélés, et le test les ignore — il est resté vert sur un
+  Contact de 900 px de large tant que ce réglage manquait. Sous mouvement réduit, chaque
+  bloc est à sa place de repos dès le départ.
+- **Profil `desktop` seulement**. La matrice couvre déjà les largeurs de téléphone ; le
+  profil `mobile` saute ces quatre tests.
+
+La garde ne juge pas l'esthétique d'un breakpoint — ça reste l'œil, cf. `portfolio-art`.
+Elle dit qu'aucune largeur ne **casse**. Une section neuve est couverte le jour où elle
+est montée, sans rien écrire ; une règle propre à une section (colonnes côte à côte au-delà
+de `md`, swipe en dessous) s'écrit en plus, dans le spec de la section.
+
+Prouvée par mutation : un `min-w-[900px]` sur `#contact-container` et un `text-[45%]` sur
+le copyright du footer la font rougir, chacun sur sa règle.
+
 ## Chromium
 
 Playwright télécharge ses propres navigateurs ; ils **ne démarrent pas sur NixOS**, où le
@@ -148,7 +181,8 @@ installation manquante.
 
 ## Boucler court
 
-Relancer les 126 tests unitaires coûte deux secondes ; la suite e2e, une quarantaine. Pendant
+Relancer les 126 tests unitaires coûte deux secondes ; la suite e2e, une minute — dont
+une trentaine de secondes pour la garde responsive. Pendant
 un cycle, cibler :
 
 ```bash
@@ -201,12 +235,13 @@ croire sur parole, et **mettre ce tableau à jour dès qu'ils changent pour de b
 | Commande | État de référence |
 |---|---|
 | `npm test` | **126 tests verts**, 7 fichiers — tout échec est une régression |
-| `npm run test:e2e` | **63 passés, 11 ignorés** — l'ignoré est attendu, pas un symptôme |
+| `npm run test:e2e` | **67 passés, 15 ignorés**, environ 1 min — l'ignoré est attendu, pas un symptôme |
 | `npm run build` (`tsc -b`) | **propre** — couvre aussi `tests/` via `tsconfig.test.json` |
 
-Les 11 e2e ignorés le sont par `test.skip` sur la largeur du viewport : le retex change de
-forme à `lg`, et un test de la mise en page de bureau n'a rien à vérifier sur un profil
-mobile.
+Les 15 e2e ignorés le sont par `test.skip` sur le profil : 11 parce que le retex change de
+forme à `lg` et qu'un test de la mise en page de bureau n'a rien à vérifier sur un profil
+mobile, 4 parce que la garde responsive porte sa propre matrice de viewports et ne tourne
+que sur `desktop`.
 
 ## Avant de rendre la main
 
@@ -215,7 +250,11 @@ npm run lint && npm run build && npm run validate && npm test
 ```
 
 Et `npm run test:e2e` dès que la modification touche au rendu, à une route, à un parcours
-ou à une préférence.
+ou à une préférence. Pour un changement de mise en page, au minimum :
+
+```bash
+npx playwright test tests/e2e/responsive.spec.ts --project=desktop
+```
 
 Rapporter la sortie réelle, y compris l'étape rouge : « le test échouait avec *X*, il passe
 maintenant » est ce qui distingue un test qui garde quelque chose d'un test décoratif.
