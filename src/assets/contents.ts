@@ -252,8 +252,8 @@ export const careerTimeline: Array<CareerEntry> = [
     },
     icon: ThalesLogo,
     period: {
-      fr: "Sept. 2026\nAoût 2029",
-      en: "Sept. 2026\nAug. 2029",
+      fr: "Sept 2026\nAoût 2029",
+      en: "Sept 2026\nAug 2029",
     },
     description: {
       fr: "Recherche, prototypage et benchmarking de solutions LLM appliquées à la synchronisation \
@@ -278,8 +278,8 @@ export const careerTimeline: Array<CareerEntry> = [
     },
     icon: ESIEALogo,
     period: {
-      fr: "Sept. 2026\nAoût 2029",
-      en: "Sept. 2026\nAug. 2029",
+      fr: "Sept 2026\nAoût 2029",
+      en: "Sept 2026\nAug 2029",
     },
     description: {
       fr: "Cycle ingénieur à l'École Supérieure d'Informatique et d'Électronique Automatique, \
@@ -304,8 +304,8 @@ export const careerTimeline: Array<CareerEntry> = [
     },
     icon: CGILogo,
     period: {
-      fr: "Sept. 2025\nAoût 2026",
-      en: "Sept. 2025\nAug. 2026",
+      fr: "Sept 2025\nAoût 2026",
+      en: "Sept 2025\nAug 2026",
     },
     description: {
       fr: "R&D sur le projet Grand Angle, ERP à destination des collectivités territoriales. Affecté au module de gestion du cycle de vie des flux financiers \
@@ -329,8 +329,8 @@ export const careerTimeline: Array<CareerEntry> = [
       en: "ALIFE-CORE, Nagoya University, Japan",
     },
     period: {
-      fr: "Avr. 2025\nJuin 2025",
-      en: "Apr. 2025\nJun. 2025",
+      fr: "Avr 2025\nJuin 2025",
+      en: "Apr 2025\nJun 2025",
     },
     description: {
       fr: "Évaluation d'un modèle d'expérience utilisant des LLMs, pour mesurer l'émergence de nouveautés. Étude de cas sur les biais de langage existant \
@@ -380,7 +380,7 @@ export const careerTimeline: Array<CareerEntry> = [
     },
     period: {
       fr: "Juin 2023\nAoût 2023",
-      en: "Jun. 2023\nAug. 2023",
+      en: "Jun 2023\nAug 2023",
     },
     description: {
       fr: "Secourisme et surveillance de la baignade en équipe, bobologie, prévention et sensibilisation du public.\
@@ -401,18 +401,16 @@ export const careerTimeline: Array<CareerEntry> = [
     },
     icon: FNMNSLogo,
     organization: {
-      fr: "Fédération Nationale des Maîtres Nageurs Sauveteurs",
-      en: "National Federation of Swimming Instructors and Lifeguards",
+      fr: "Brevet National de Secourisme et de Sauvetage Aquatique",
+      en: "National Certificate of First Aid and Aquatic Lifeguarding",
     },
     period: {
       fr: "2022",
       en: "2022",
     },
     description: {
-      fr: "Brevet National de Secourisme et de Sauvetage Aquatique, niveau de secoursisme PSE1 : bobologie, réanimation cardio-pulmonaire, problèmes \
-      respiratoires, circulatoires, neurologiques, traumatismes, etc. Sauvetage à la nage de victimes et législation relative à la sécurité en milieu aquatique.",
-      en: "National Certificate of First Aid and Aquatic Rescue, level of first aid PSE1: first aid, cardiopulmonary resuscitation, respiratory, circulatory, \
-      neurological problems, trauma, etc. Swimming rescue of victims and legislation related to safety in aquatic environments.",
+      fr: "Fédération Nationale des Maîtres Nageurs Sauveteurs",
+      en: "National Federation of Swimming Instructors and Lifeguards",
     },
     tags: {
       fr: ["Natation", "Équipe"],
