@@ -216,6 +216,8 @@ une fois ne dit rien d'un bug de timing : `--repeat-each` tranche.
 `.github/workflows/ci.yml`, sur `push` vers `dev` et `feed`, et sur toute pull request
 vers `main`. Deux jobs : `checks` (build, lint, validate, unitaires) puis `e2e`.
 
+- Node **24** sur le runner, comme en local. `jsdom` 30 exige Node ≥ 22.22 : sous Node 20,
+  `npm ci` passe, le build passe, et seule l'étape `npm test` meurt.
 - `npm run validate` est **bloquant**. C'est lui qui attrape un `relatedProjects` pointant
   sur un projet renommé ou un label de `getSkill()` mal orthographié.
 - `npm run lint` est en `continue-on-error` : le dépôt porte trois erreurs préexistantes.
