@@ -38,6 +38,8 @@ const NATURE_TAGS = new Set([
     "alternance", "apprenticeship",
     "stage", "internship",
     "benevolat", "volunteering",
+    "cdd", "ftc",
+    "cdi", "oec",
 ]);
 
 /**

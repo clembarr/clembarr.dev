@@ -384,8 +384,8 @@ export const careerTimeline: Array<CareerEntry> = [
       Quality control on equipments and infrastructures.",
     },
     tags: {
-      fr: ["Secourisme", "Équipe", "Décision"],
-      en: ["First Aid", "Teamwork", "Awareness"],
+      fr: ["CDD", "Secourisme", "Équipe", "Décision"],
+      en: ["FTC", "First Aid", "Teamwork", "Awareness"],
     }
   },
   {
