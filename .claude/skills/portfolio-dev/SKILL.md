@@ -192,7 +192,7 @@ Ces compteurs bougent avec le dépôt : les recompter plutôt que les croire sur
 |---|---|
 | `tsc -b` (via `npm run build`) | **propre** — toute erreur est nouvelle |
 | `npm test` | **130 tests verts** — tout échec est une régression |
-| `npm run test:e2e` | **77 passés, 23 ignorés** (profil de viewport inadapté) |
+| `npm run test:e2e` | **79 passés, 25 ignorés** (profil de viewport inadapté) |
 | `npm run validate` | **0 erreur**, 33 avertissements |
 | `npm run lint` | 3 erreurs, 15 avertissements |
 
@@ -215,7 +215,7 @@ l'essentiel des `react-hooks/exhaustive-deps`. C'est pour ces trois erreurs que 
 lint est en `continue-on-error` dans la CI ; elle passera bloquante quand elles auront
 disparu.
 
-Les 23 tests e2e ignorés le sont par `test.skip` sur le profil de viewport : un test de la
+Les 25 tests e2e ignorés le sont par `test.skip` sur le profil de viewport : un test de la
 mise en page de bureau n'a rien à vérifier sur un profil mobile, et inversement. Ce compte
 est attendu, pas un symptôme — détail dans `portfolio-test`.
 

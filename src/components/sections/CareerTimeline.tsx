@@ -360,7 +360,8 @@ const byStartDesc = (a: CareerEntry, b: CareerEntry): number => readStart(b) - r
  * scrolled independently, experiences and education. Each column carries its own
  * timeline as its scrollbar, so the nature is told by the column and the date by the
  * track. Certifications leave the chronology for a flat band of tokens under the columns.
- * Below md the columns become one horizontal swipe, the band staying where it is.
+ * Below md the columns become two horizontal swipes, experiences then education, the
+ * band following them.
  */
 const CareerTimeline = () => {
     const { currentLang } = useContext(LangContext);
@@ -381,8 +382,6 @@ const CareerTimeline = () => {
         () => careerTimeline.filter((entry) => entry.type === CareerEntryType.EDUCATION).sort(byStartDesc),
         []
     );
-
-    const swipeEntries = useMemo(() => [...experiences, ...education].sort(byStartDesc), [experiences, education]);
 
     const certifications = useMemo(
         () => careerTimeline.filter((entry) => entry.type === CareerEntryType.CERTIFICATION),
@@ -505,7 +504,8 @@ const CareerTimeline = () => {
         <div id="career"
             className={`
                 w-full
-                h-[75vh]
+                md:h-[75vh]
+                md:pb-0 pb-16
                 relative
                 ${styles.flexCol}
                 overflow-hidden
@@ -573,50 +573,68 @@ const CareerTimeline = () => {
             <div id="career-horizontal-view"
                 className={`
                     flex md:hidden
+                    relative
                     ${styles.flexCol}
-                    w-full grow
-                    min-h-0
-                    pb-10
+                    w-full
+                    gap-6
+                    pb-12
                     px-4
                 `}
             >
-                <div id="career-horizontal-scroll"
-                    className={`
-                        flex
-                        w-full grow min-h-0
-                        items-center
-                        overflow-x-auto
-                        snap-x snap-mandatory
-                        no-scrollbar
-                        gap-4
-                    `}
-                >
-                    {swipeEntries.map((entry, index) => (
-                        <div key={`career-swipe-${index}`}
-                            id={`career-swipe-${index}`}
+                {([
+                    ["experience", careerSectionLabels.experience, experiences],
+                    ["education", careerSectionLabels.education, education],
+                ] as const).map(([name, label, entries]) => (
+                    <div key={`career-${name}-swipe`} id={`career-${name}-swipe`} className={`${styles.flexCol} gap-2`}>
+                        <span id={`career-${name}-swipe-label`}
                             className={`
-                                snap-center shrink-0
-                                xs:w-[66vw] w-[72vw]
-                                max-w-[300px]
-                                ${styles.flexCol}
-                                gap-2
+                                font-secondary-semibold
+                                text-3xs
+                                uppercase tracking-widest
+                                text-(--color-quaternary)/35
+                            `}
+                        > {translate(label, currentLang)} </span>
+
+                        <div id={`career-${name}-swipe-scroll`}
+                            className={`
+                                flex
+                                w-full
+                                overflow-x-auto
+                                snap-x snap-mandatory
+                                no-scrollbar
+                                gap-4
                             `}
                         >
-                            <div id={`career-swipe-marker-${index}`} className={`${styles.flexRow} items-center gap-3`}>
-                                <span className={`text-3xs text-(--color-tertiary)`}>
-                                    {translate(entry.period, currentLang).split("\n")[0]}
-                                </span>
-                                <span className={`grow h-px bg-(--color-tertiary)/20`} />
-                                <span className={`w-2 h-2 rounded-full bg-(--color-tertiary)`} />
-                            </div>
+                            {entries.map((entry, index) => (
+                                <div key={`career-${name}-swipe-${index}`}
+                                    id={`career-${name}-swipe-${index}`}
+                                    className={`
+                                        snap-center shrink-0
+                                        xs:w-[66vw] w-[72vw]
+                                        max-w-[300px]
+                                        ${styles.flexCol}
+                                        gap-2
+                                    `}
+                                >
+                                    <div id={`career-${name}-swipe-marker-${index}`} className={`${styles.flexRow} items-center gap-3`}>
+                                        <span className={`text-3xs text-(--color-tertiary)`}>
+                                            {translate(entry.period, currentLang).split("\n")[0]}
+                                        </span>
+                                        <span className={`grow h-px bg-(--color-tertiary)/20`} />
+                                        <span className={`w-2 h-2 rounded-full bg-(--color-tertiary)`} />
+                                    </div>
 
-                            {renderCard(entry, `career-swipe-card-${index}`)}
+                                    <div className={`grow`}>
+                                        {renderCard(entry, `career-${name}-swipe-card-${index}`)}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
 
                 <SwipeIndicator
-                    bottomClass="bottom-1"
+                    bottomClass="bottom-0"
                     animationName="swipe-hint"
                 />
             </div>
@@ -630,7 +648,7 @@ const CareerTimeline = () => {
                     md:px-0 px-4
                     lg:ml-30 xl:ml-[23vw]
                     md:mr-4
-                    2xl:mt-12 xl:mt-10 mt-8
+                    2xl:mt-12 xl:mt-10 md:mt-8 mt-2
                     md:flex-wrap flex-nowrap
                     md:overflow-visible overflow-x-auto
                     no-scrollbar

@@ -4,7 +4,7 @@ import { expect, Page, test } from "@playwright/test";
  * From md up, the career section reads as two columns scrolled on their own, experiences
  * and education, each carrying its timeline as its scrollbar: every year faces the card it
  * dates and scrolls with it, and a thumb on the axis can be dragged. Below md the columns
- * give way to one horizontal swipe. None of this exists outside the layout engine, so it
+ * give way to two horizontal swipes, experiences then education. None of this exists outside the layout engine, so it
  * lives here rather than in jsdom.
  */
 
@@ -125,6 +125,31 @@ test.describe("career swipe", () => {
 
         await expect(page.locator("#career-horizontal-view")).toBeVisible();
         await expect(page.locator("#career-columns-view")).toBeHidden();
-        expect(await page.locator("#career-horizontal-scroll article").count()).toBeGreaterThan(1);
+        expect(await page.locator("#career-horizontal-view article").count()).toBeGreaterThan(1);
+    });
+
+    test("swipes experiences, then education, on two rows of their own", async ({ page }) => {
+        await openCareer(page);
+
+        const experience = await page.locator("#career-experience-swipe").boundingBox();
+        const education = await page.locator("#career-education-swipe").boundingBox();
+
+        expect(experience && education, "both rows are rendered").toBeTruthy();
+        expect(experience!.y + experience!.height).toBeLessThanOrEqual(education!.y);
+
+        for (const name of ["experience", "education"]) {
+            expect(await page.locator(`#career-${name}-swipe article`).count(), `${name} row holds its column`)
+                .toBe(await page.locator(`#career-${name}-cards article`).count());
+        }
+    });
+
+    test("keeps the swipe hint off the certifications", async ({ page }) => {
+        await openCareer(page);
+
+        const hint = await page.locator("#career #mobile-swipe-indicator").boundingBox();
+        const band = await page.locator("#career-certifications-band").boundingBox();
+
+        expect(hint && band, "hint and band are rendered").toBeTruthy();
+        expect(hint!.y + hint!.height).toBeLessThanOrEqual(band!.y);
     });
 });
