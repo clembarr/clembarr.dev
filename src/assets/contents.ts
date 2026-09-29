@@ -184,7 +184,7 @@ export const aboutWidgets: Array<AboutWidget> = [
     },
     content:
     {
-      fr: "Devenir <strong>ingénieur</strong> en IA et modélisation, puis un <strong>rechercheur</strong> en <strong>vie artificielle</strong> et systèmes complexes.",
+      fr: "Devenir <strong>ingénieur</strong> en IA et modélisation, puis un <strong>chercheur</strong> en <strong>vie artificielle</strong> et systèmes complexes.",
       en: "Become an <strong>engineer</strong> in AI and modeling, then a <strong>researcher</strong> in <strong>artificial life</strong> and complex systems.",
     },
   },
